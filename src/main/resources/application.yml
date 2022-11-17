@@ -1,0 +1,24 @@
+spring:
+  # Database Setting
+  datasource:
+    hikari:
+      driver-class-name: org.mariadb.jdbc.Driver
+      jdbc-url: jdbc:mariadb://localhost:3306/community?serverTimezone=Australia/Sydney&useUnicode=true&characterEncoding=utf8
+      username: root
+      password: '0000'
+
+  # JPA Properties
+  jpa:
+    generate-ddl: 'false'
+    database: mysql
+    properties:
+      hibernate:
+        use_sql_comments: 'true'
+        format_sql: 'true'
+        default_batch_fetch_size: 500 #배치 사이즈 (Collection 조회 최적화)
+    hibernate:
+      ddl-auto: none #배포환경에서 create 사용 X
+    show-sql: 'true'
+    open-in-view: 'false' #OSIV 사용하지않기
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+
