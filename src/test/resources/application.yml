@@ -1,0 +1,17 @@
+spring:
+  # Database Setting
+  datasource:
+    hikari:
+      driver-class-name: org.mariadb.jdbc.Driver
+      jdbc-url: jdbc:mariadb://localhost:3306/commtest?serverTimezone=Australia/Sydney&useUnicode=true&characterEncoding=utf8
+      username: root
+      password: '0000'
+  sql:
+    init:
+      mode: always
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: true
