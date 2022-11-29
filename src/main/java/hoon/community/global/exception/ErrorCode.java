@@ -25,6 +25,7 @@ public enum ErrorCode {
 
     ACCESS_DENIED(HttpStatus.UNAUTHORIZED, "액세스가 거부되었습니다."),
 
+    LOGIN_FAILURE(HttpStatus.UNAUTHORIZED, "로그인 정보가 잘못되었습니다."),
     ;
 
     private final HttpStatus status;

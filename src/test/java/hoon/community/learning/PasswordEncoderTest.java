@@ -21,7 +21,10 @@ public class PasswordEncoderTest {
 
         //then
         assertThat(encodedPassword).contains("bcrypt");
+
     }
+
+
 
     @Test
     void matchTest() {
