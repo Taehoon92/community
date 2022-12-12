@@ -1,8 +1,9 @@
 package hoon.community.domain.sign.service;
 
-import hoon.community.domain.member.entity.Member;
-import hoon.community.domain.member.entity.MemberRepository;
-import hoon.community.domain.member.entity.Role;
+import hoon.community.domain.member.entity.*;
+import hoon.community.domain.role.entity.Role;
+import hoon.community.domain.role.entity.RoleRepository;
+import hoon.community.domain.role.entity.RoleType;
 import hoon.community.domain.sign.dto.SignInRequest;
 import hoon.community.domain.sign.dto.SignInResponse;
 import hoon.community.domain.sign.dto.SignUpRequest;
@@ -13,19 +14,24 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class SignService {
 
     private final MemberRepository memberRepository;
+    private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final TokenService tokenService;
 
     @Transactional
     public void signUp(SignUpRequest req) {
         validateSignUpInfo(req);
-        memberRepository.save(SignUpRequest.toEntity(req, Role.USER, passwordEncoder));
+        String encodedPassword = passwordEncoder.encode(req.getPassword());
+        List<Role> roles = List.of(roleRepository.findByRoleType(RoleType.ROLE_USER).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND)));
+        memberRepository.save(SignUpRequest.toEntity(req, roles, passwordEncoder));
     }
 
     public SignInResponse signIn(SignInRequest req) {

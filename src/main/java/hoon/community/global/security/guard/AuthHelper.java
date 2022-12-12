@@ -1,5 +1,6 @@
 package hoon.community.global.security.guard;
 
+import hoon.community.domain.role.entity.RoleType;
 import hoon.community.global.security.CustomAuthenticationToken;
 import hoon.community.global.security.CustomUserDetails;
 import lombok.extern.slf4j.Slf4j;

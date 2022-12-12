@@ -2,16 +2,12 @@ package hoon.community.domain.sign.service;
 
 import hoon.community.domain.member.entity.Member;
 import hoon.community.domain.member.entity.MemberRepository;
-import hoon.community.domain.member.entity.Role;
 import hoon.community.domain.sign.dto.SignInRequest;
 import hoon.community.domain.sign.dto.SignInResponse;
 import hoon.community.domain.sign.dto.SignUpRequest;
 import hoon.community.global.exception.CustomException;
-import hoon.community.global.exception.ErrorCode;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -21,12 +17,10 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class SignServiceTest {

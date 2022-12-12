@@ -3,10 +3,7 @@ package hoon.community.domain.member.service;
 import hoon.community.domain.member.dto.MemberDto;
 import hoon.community.domain.member.entity.Member;
 import hoon.community.domain.member.entity.MemberRepository;
-import hoon.community.domain.member.entity.Role;
 import hoon.community.global.exception.CustomException;
-import hoon.community.global.exception.ErrorCode;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
@@ -19,7 +16,6 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class MemberServiceTest {

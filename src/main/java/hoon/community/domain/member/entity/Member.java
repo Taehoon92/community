@@ -1,9 +1,13 @@
 package hoon.community.domain.member.entity;
 
 import hoon.community.domain.BaseTimeEntity;
+import hoon.community.domain.role.entity.Role;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Getter
@@ -26,15 +30,17 @@ public class Member extends BaseTimeEntity {
     @Column(unique = true)
     private String email;
 
-    @Enumerated(EnumType.STRING)
-    private Role role;
 
-    public Member(String loginId, String password, String username, String email, Role role) {
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<MemberRole> roles;
+
+    public Member(String loginId, String password, String username, String email, List<Role> roles) {
         this.loginId = loginId;
         this.password = password;
         this.username = username;
         this.email = email;
-        this.role = role;
+        this.roles = roles.stream().map(r -> new MemberRole(this, r)).collect(Collectors.toSet());
+
     }
 
     public void updateUsername(String username) {

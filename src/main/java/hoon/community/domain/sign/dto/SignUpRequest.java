@@ -1,7 +1,7 @@
 package hoon.community.domain.sign.dto;
 
 import hoon.community.domain.member.entity.Member;
-import hoon.community.domain.member.entity.Role;
+import hoon.community.domain.role.entity.Role;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,6 +11,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -38,7 +39,7 @@ public class SignUpRequest {
     private String email;
 
 
-    public static Member toEntity(SignUpRequest req, Role role, PasswordEncoder encoder) {
-        return new Member(req.loginId, encoder.encode(req.password), req.username, req.email, role);
+    public static Member toEntity(SignUpRequest req, List<Role> roles, PasswordEncoder encoder) {
+        return new Member(req.loginId, encoder.encode(req.password), req.username, req.email, roles);
     }
 }
