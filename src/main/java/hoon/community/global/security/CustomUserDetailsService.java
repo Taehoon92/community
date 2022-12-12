@@ -1,0 +1,40 @@
+package hoon.community.global.security;
+
+import hoon.community.domain.member.entity.Member;
+import hoon.community.domain.member.entity.MemberRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
+@Component
+@Transactional(readOnly = true)
+@RequiredArgsConstructor
+public class CustomUserDetailsService implements UserDetailsService {
+
+    private final MemberRepository memberRepository;
+
+
+    @Override
+    public CustomUserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
+        Member member = memberRepository.findById(Long.valueOf(userId))
+                .orElseGet(() -> new Member(null, null, null, null, null));
+        return new CustomUserDetails(
+                String.valueOf(member.getId()),
+        (member.getRole()
+
+
+                member.getRole().stream().map(memberRole -> memberRole.getRole())
+                        .map(role -> role.getRoleType())
+                        .map(roleType -> roleType.toString())
+                        .map(SimpleGrantedAuthority::new).collect(Collectors.toSet())
+
+
+        new SimpleGrantedAuthority(String.valueOf(member.getRole()))
+        );
+    }
+
+
+}
