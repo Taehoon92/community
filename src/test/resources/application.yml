@@ -15,3 +15,8 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
+
+  profiles:
+    active: local
+    include: secret

@@ -3,7 +3,9 @@ package hoon.community.domain.member.service;
 import hoon.community.domain.member.dto.MemberDto;
 import hoon.community.domain.member.entity.Member;
 import hoon.community.domain.member.entity.MemberRepository;
+import hoon.community.domain.role.entity.Role;
 import hoon.community.global.exception.CustomException;
+import hoon.community.global.factory.entity.MemberFactory;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
@@ -26,7 +28,7 @@ class MemberServiceTest {
     @Test
     void readTest() {
         //given
-        Member member = createMember();
+        Member member = MemberFactory.createMember();
         BDDMockito.given(memberRepository.findById(ArgumentMatchers.anyLong())).willReturn(Optional.of(member));
 
         //when
@@ -66,8 +68,5 @@ class MemberServiceTest {
         assertThatThrownBy(() -> memberService.delete(1L)).isInstanceOf(CustomException.class);
     }
 
-    private Member createMember() {
-        return new Member("loginId", "password1!", "username", "email@email.com", Role.USER);
-    }
 
 }

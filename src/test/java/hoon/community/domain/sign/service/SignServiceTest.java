@@ -6,6 +6,7 @@ import hoon.community.domain.sign.dto.SignInRequest;
 import hoon.community.domain.sign.dto.SignInResponse;
 import hoon.community.domain.sign.dto.SignUpRequest;
 import hoon.community.global.exception.CustomException;
+import hoon.community.global.factory.entity.MemberFactory;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -56,7 +57,7 @@ class SignServiceTest {
     @Test
     void signInTest() {
         //given
-        given(memberRepository.findByEmail(any())).willReturn(Optional.of(createMember()));
+        given(memberRepository.findByEmail(any())).willReturn(Optional.of(MemberFactory.createMember()));
         given(passwordEncoder.matches(anyString(), anyString())).willReturn(true);
         given(tokenService.createAccessToken(anyString())).willReturn("access");
         given(tokenService.createRefreshToken(anyString())).willReturn("refresh");
@@ -81,7 +82,7 @@ class SignServiceTest {
     @Test
     void signInExceptionByInvalidPasswordTest() {
         //given
-        given(memberRepository.findByEmail(any())).willReturn(Optional.of(createMember()));
+        given(memberRepository.findByEmail(any())).willReturn(Optional.of(MemberFactory.createMember()));
         given(passwordEncoder.matches(anyString(), anyString())).willReturn(false);
 
         //when, then
@@ -94,7 +95,4 @@ class SignServiceTest {
         return new SignUpRequest("loginId","password","username","email");
     }
 
-    private Member createMember() {
-        return new Member("loginId", "password", "username", "email", Role.USER);
-    }
 }
