@@ -3,6 +3,7 @@ package hoon.community.domain.sign.service;
 import hoon.community.global.jwt.JwtHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
 @Service

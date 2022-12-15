@@ -20,6 +20,8 @@ public enum ErrorCode {
 
     /* 404 NOT_FOUND */
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "유저 정보를 찾을 수 없습니다."),
+    ROLE_NOT_FOUND(HttpStatus.NOT_FOUND, "권한 정보를 찾을 수 없습니다."),
+
     POSTS_NOT_FOUND(HttpStatus.NOT_FOUND, "게시글 정보를 찾을 수 없습니다."),
 
     NOT_FOUND(HttpStatus.NOT_FOUND, "요청하신 정보를 찾을 수 없습니다."),

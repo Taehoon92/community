@@ -58,8 +58,9 @@ public class SecurityConfig {
 //                        .antMatchers("/**").permitAll();
                         .antMatchers(HttpMethod.POST, "/api/sign-in","/api/sign-up").permitAll()
                         .antMatchers(HttpMethod.GET, "/api/**").permitAll()
+//                        .antMatchers(HttpMethod.DELETE, "/api/members/{id}/**").authenticated()
                         .antMatchers(HttpMethod.DELETE, "/api/members/{id}/**").access("@memberGuard.check(#id)")
-                        .anyRequest().hasAnyRole("ADMIN")
+                        .anyRequest().hasAnyRole("ROLE_ADMIN")
                 .and()
                     .exceptionHandling().accessDeniedHandler(new CustomAccessDeniedHandler())
                 .and()

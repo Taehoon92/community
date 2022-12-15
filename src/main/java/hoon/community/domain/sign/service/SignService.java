@@ -30,7 +30,7 @@ public class SignService {
     public void signUp(SignUpRequest req) {
         validateSignUpInfo(req);
         String encodedPassword = passwordEncoder.encode(req.getPassword());
-        List<Role> roles = List.of(roleRepository.findByRoleType(RoleType.ROLE_USER).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND)));
+        List<Role> roles = List.of(roleRepository.findByRoleType(RoleType.ROLE_USER).orElseThrow(() -> new CustomException(ErrorCode.ROLE_NOT_FOUND)));
         memberRepository.save(SignUpRequest.toEntity(req, roles, passwordEncoder));
     }
 

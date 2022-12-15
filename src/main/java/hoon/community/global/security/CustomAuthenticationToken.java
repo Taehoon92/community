@@ -15,6 +15,7 @@ public class CustomAuthenticationToken extends AbstractAuthenticationToken {
         super(authorities);
         this.type = type;
         this.principal = principal;
+        setAuthenticated(true);
     }
 
     @Override

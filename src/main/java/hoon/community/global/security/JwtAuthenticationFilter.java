@@ -4,6 +4,7 @@ import hoon.community.domain.sign.service.TokenService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
 
 import javax.servlet.FilterChain;
@@ -15,6 +16,7 @@ import java.io.IOException;
 
 @RequiredArgsConstructor
 @Slf4j
+//@Component
 public class JwtAuthenticationFilter extends GenericFilterBean {
 
     private final TokenService tokenService;
@@ -26,7 +28,7 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
         if(validateAccessToken(token)) {
             setAccessAuthentication("access", token);
         } else if(validateRefreshToken(token)) {
-            setAccessAuthentication("refresh", token);
+            setRefreshAuthentication("refresh", token);
         }
         chain.doFilter(request, response);
     }
