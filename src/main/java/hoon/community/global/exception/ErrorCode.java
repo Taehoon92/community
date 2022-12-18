@@ -11,6 +11,8 @@ public enum ErrorCode {
     /* 400 BAD_REQUEST */
     BAD_REQUEST(HttpStatus.BAD_REQUEST, "잘못된 요청입니다."),
 
+    MISSING_REQUEST_HEADER(HttpStatus.BAD_REQUEST, "요청 헤더가 누락되었습니다"),
+
     /* 401 UNAUTHORIZED */
     LOGIN_FAILURE(HttpStatus.UNAUTHORIZED, "로그인 정보가 잘못되었습니다."),
     UNAUTHORIZED_USER(HttpStatus.UNAUTHORIZED, "인증되지 않은 사용자입니다."),

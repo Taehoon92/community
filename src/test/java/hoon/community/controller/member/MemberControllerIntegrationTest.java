@@ -105,7 +105,7 @@ class MemberControllerIntegrationTest {
     }
 
     @Test
-    void deleteAccessDeniedByRefreshTokenTest() throws Exception {
+    void deleteUnauthorizedByRefreshTokenTest() throws Exception {
         //given
         Member member = memberRepository.findByEmail(initDB.getMember1Email()).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         SignInResponse signInResponse = signService.signIn(new SignInRequest(initDB.getMember1Email(), initDB.getPassword()));
@@ -114,7 +114,7 @@ class MemberControllerIntegrationTest {
         mockMvc.perform(
                         MockMvcRequestBuilders.delete("/api/members/{id}", member.getId()).header("Authorization", signInResponse.getRefreshToken()))
                 .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
-                .andExpect(MockMvcResultMatchers.redirectedUrl("/exception/access-denied"));
+                .andExpect(MockMvcResultMatchers.redirectedUrl("/exception/entry-point"));
     }
 
 }

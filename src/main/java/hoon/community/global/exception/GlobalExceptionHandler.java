@@ -2,10 +2,13 @@ package hoon.community.global.exception;
 
 import javassist.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
@@ -59,5 +62,14 @@ public class GlobalExceptionHandler {
                 .status(ErrorCode.NOT_FOUND.getStatus().value())
                 .body(new ErrorResponse(ErrorCode.NOT_FOUND));
 
+    }
+
+    @ExceptionHandler(MissingRequestHeaderException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    protected ResponseEntity<ErrorResponse> handleMissingRequestHeaderException(final MissingRequestHeaderException e) {
+        log.error("handleMissingRequestHeaderException: {}", e.getMessage());
+        return ResponseEntity
+                .status(ErrorCode.MISSING_REQUEST_HEADER.getStatus().value())
+                .body(new ErrorResponse(ErrorCode.MISSING_REQUEST_HEADER));
     }
 }

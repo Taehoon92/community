@@ -5,6 +5,7 @@ import hoon.community.domain.sign.dto.SignInRequest;
 import hoon.community.domain.sign.dto.SignInResponse;
 import hoon.community.domain.sign.dto.SignUpRequest;
 import hoon.community.domain.sign.service.SignService;
+import hoon.community.global.factory.dto.RefreshTokenResponseFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -78,5 +79,18 @@ class SignControllerTest {
                                 .content(objectMapper.writeValueAsString(request)))
                 .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.result").doesNotExist());
+    }
+
+    @Test
+    void refreshTokenTest() throws  Exception {
+        //given
+        BDDMockito.given(signService.refreshToken("refreshToken")).willReturn(RefreshTokenResponseFactory.createRefreshTokenResponse("accessToken"));
+
+        //when, then
+        mockMvc.perform(
+                        MockMvcRequestBuilders.post("/api/refresh-token")
+                                .header("Authorization", "refreshToken"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.result.data.accessToken").value("accessToken"));
     }
 }
