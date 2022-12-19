@@ -1,5 +1,6 @@
 package hoon.community.global.config;
 
+import hoon.community.domain.sign.service.TokenHelper;
 import hoon.community.domain.sign.service.TokenService;
 import hoon.community.global.security.CustomAccessDeniedHandler;
 import hoon.community.global.security.CustomAuthenticationEntryPoint;
@@ -23,7 +24,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final TokenService tokenService;
+    private final TokenHelper accessTokenHelper;
     private final CustomUserDetailsService userDetailsService;
 
     @Bean
@@ -66,7 +67,7 @@ public class SecurityConfig {
                 .and()
                     .exceptionHandling().authenticationEntryPoint(new CustomAuthenticationEntryPoint())
                 .and()
-                    .addFilterBefore(new JwtAuthenticationFilter(tokenService, userDetailsService), UsernamePasswordAuthenticationFilter.class);
+                    .addFilterBefore(new JwtAuthenticationFilter(accessTokenHelper, userDetailsService), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

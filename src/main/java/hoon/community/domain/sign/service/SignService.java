@@ -26,7 +26,8 @@ public class SignService {
     private final MemberRepository memberRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
-    private final TokenService tokenService;
+    private final TokenHelper accessTokenHelper;
+    private final TokenHelper refreshTokenHelper;
 
     @Transactional
     public void signUp(SignUpRequest req) {
@@ -41,15 +42,15 @@ public class SignService {
         Member member = memberRepository.findByEmail(req.getEmail()).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         validatePassword(req, member);
         String subject = createSubject(member);
-        String accessToken = tokenService.createAccessToken(subject);
-        String refreshToken = tokenService.createRefreshToken(subject);
+        String accessToken = accessTokenHelper.createToken(subject);
+        String refreshToken = refreshTokenHelper.createToken(subject);
         return new SignInResponse(accessToken, refreshToken);
     }
 
     public RefreshTokenResponse refreshToken(String refreshToken) {
         validateRefreshToken(refreshToken);
-        String subject = tokenService.extractRefreshTokenSubject(refreshToken);
-        String accessToken = tokenService.createAccessToken(subject);
+        String subject = refreshTokenHelper.extractSubject(refreshToken);
+        String accessToken = accessTokenHelper.createToken(subject);
         return new RefreshTokenResponse(accessToken);
     }
 
@@ -67,7 +68,7 @@ public class SignService {
     }
 
     private void validateRefreshToken(String refreshToken) {
-        if (!tokenService.validateRefreshToken(refreshToken)) {
+        if (!refreshTokenHelper.validate(refreshToken)) {
             throw new CustomException(ErrorCode.UNAUTHORIZED_USER);
         }
     }

@@ -1,5 +1,6 @@
 package hoon.community.global.security;
 
+import hoon.community.domain.sign.service.TokenHelper;
 import hoon.community.domain.sign.service.TokenService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +20,7 @@ import java.io.IOException;
 //@Component
 public class JwtAuthenticationFilter extends GenericFilterBean {
 
-    private final TokenService tokenService;
+    private final TokenHelper accessTokenHelper;
     private final CustomUserDetailsService userDetailsService;
 
     @Override
@@ -37,11 +38,11 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
     }
 
     private boolean validateToken(String token) {
-        return token != null && tokenService.validateAccessToken(token);
+        return token != null && accessTokenHelper.validate(token);
     }
 
     private void setAuthentication(String token) {
-        String userId = tokenService.extractAccessTokenSubject(token);
+        String userId = accessTokenHelper.extractSubject(token);
         CustomUserDetails userDetails = userDetailsService.loadUserByUsername(userId);
         SecurityContextHolder.getContext().setAuthentication(new CustomAuthenticationToken(userDetails, userDetails.getAuthorities()));
     }
