@@ -38,7 +38,7 @@ public class SecurityConfig {
         return web -> {
             web.ignoring()
                     .antMatchers(
-                            "/css/**", "/fonts/**", "/plugin/**", "/scripts/**", "/favicon.ico", "/resources/**", "/error"
+                            "/css/**", "/fonts/**", "/plugin/**", "/scripts/**", "/favicon.ico", "/resources/**", "/error", "/swagger-ui/**","/swagger-resources/**","/v3/api-docs/**"
                     )
                     .mvcMatchers(
                             "/exception/**"
