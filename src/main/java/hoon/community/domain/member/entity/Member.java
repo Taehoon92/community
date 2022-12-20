@@ -14,6 +14,11 @@ import java.util.stream.Collectors;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
+@NamedEntityGraph(
+        name = "Member.roles",
+        attributeNodes = @NamedAttributeNode(value = "roles", subgraph = "Member.roles.role"),
+        subgraphs = @NamedSubgraph(name = "Member.roles.role", attributeNodes = @NamedAttributeNode("role"))
+)
 public class Member extends BaseTimeEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
