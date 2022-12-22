@@ -2,8 +2,7 @@ package hoon.community.domain.member.service;
 
 import hoon.community.domain.member.dto.MemberDto;
 import hoon.community.domain.member.entity.Member;
-import hoon.community.domain.member.entity.MemberRepository;
-import hoon.community.domain.role.entity.Role;
+import hoon.community.domain.member.repository.MemberRepository;
 import hoon.community.global.exception.CustomException;
 import hoon.community.global.factory.entity.MemberFactory;
 import org.junit.jupiter.api.Test;

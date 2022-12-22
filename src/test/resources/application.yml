@@ -10,11 +10,13 @@ spring:
     init:
       mode: always
   jpa:
+    generate-ddl: 'false'
+    database: mysql
     hibernate:
       ddl-auto: create
     properties:
       hibernate:
-        format_sql: true
+        format_sql: 'true'
 
 
   profiles:

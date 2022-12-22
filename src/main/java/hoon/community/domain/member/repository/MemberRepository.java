@@ -1,5 +1,6 @@
-package hoon.community.domain.member.entity;
+package hoon.community.domain.member.repository;
 
+import hoon.community.domain.member.entity.Member;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 

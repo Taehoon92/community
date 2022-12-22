@@ -1,7 +1,7 @@
 package hoon.community.global.security;
 
 import hoon.community.domain.member.entity.Member;
-import hoon.community.domain.member.entity.MemberRepository;
+import hoon.community.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;

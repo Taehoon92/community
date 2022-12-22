@@ -1,8 +1,9 @@
 package hoon.community.domain.sign.service;
 
 import hoon.community.domain.member.entity.*;
+import hoon.community.domain.member.repository.MemberRepository;
 import hoon.community.domain.role.entity.Role;
-import hoon.community.domain.role.entity.RoleRepository;
+import hoon.community.domain.role.repository.RoleRepository;
 import hoon.community.domain.role.entity.RoleType;
 import hoon.community.domain.sign.dto.RefreshTokenResponse;
 import hoon.community.domain.sign.dto.SignInRequest;
@@ -10,10 +11,8 @@ import hoon.community.domain.sign.dto.SignInResponse;
 import hoon.community.domain.sign.dto.SignUpRequest;
 import hoon.community.global.exception.CustomException;
 import hoon.community.global.exception.ErrorCode;
-import hoon.community.global.security.CustomAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

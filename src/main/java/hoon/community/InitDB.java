@@ -1,9 +1,9 @@
 package hoon.community;
 
 import hoon.community.domain.member.entity.Member;
-import hoon.community.domain.member.entity.MemberRepository;
+import hoon.community.domain.member.repository.MemberRepository;
 import hoon.community.domain.role.entity.Role;
-import hoon.community.domain.role.entity.RoleRepository;
+import hoon.community.domain.role.repository.RoleRepository;
 import hoon.community.domain.role.entity.RoleType;
 import hoon.community.global.exception.CustomException;
 import hoon.community.global.exception.ErrorCode;
@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
-//@Component
+@Component
 @RequiredArgsConstructor
 @Slf4j
 public class InitDB {

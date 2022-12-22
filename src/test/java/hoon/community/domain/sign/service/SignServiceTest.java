@@ -1,9 +1,8 @@
 package hoon.community.domain.sign.service;
 
-import hoon.community.domain.member.entity.Member;
-import hoon.community.domain.member.entity.MemberRepository;
+import hoon.community.domain.member.repository.MemberRepository;
 import hoon.community.domain.role.entity.Role;
-import hoon.community.domain.role.entity.RoleRepository;
+import hoon.community.domain.role.repository.RoleRepository;
 import hoon.community.domain.role.entity.RoleType;
 import hoon.community.domain.sign.dto.RefreshTokenResponse;
 import hoon.community.domain.sign.dto.SignInRequest;
@@ -14,7 +13,6 @@ import hoon.community.global.factory.entity.MemberFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;

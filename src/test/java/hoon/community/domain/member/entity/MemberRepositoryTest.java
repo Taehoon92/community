@@ -1,7 +1,8 @@
 package hoon.community.domain.member.entity;
 
+import hoon.community.domain.member.repository.MemberRepository;
 import hoon.community.domain.role.entity.Role;
-import hoon.community.domain.role.entity.RoleRepository;
+import hoon.community.domain.role.repository.RoleRepository;
 import hoon.community.domain.role.entity.RoleType;
 import hoon.community.global.exception.CustomException;
 import hoon.community.global.exception.ErrorCode;

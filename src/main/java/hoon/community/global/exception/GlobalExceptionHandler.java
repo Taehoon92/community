@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.net.BindException;
+
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
@@ -71,5 +73,14 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(ErrorCode.MISSING_REQUEST_HEADER.getStatus().value())
                 .body(new ErrorResponse(ErrorCode.MISSING_REQUEST_HEADER));
+    }
+
+    @ExceptionHandler(BindException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<ErrorResponse> handleBindException(BindException e) {
+        log.error("handleBindException: {}", e.getMessage());
+        return ResponseEntity
+                .status(ErrorCode.BIND_ERROR.getStatus().value())
+                .body(new ErrorResponse(ErrorCode.BIND_ERROR));
     }
 }

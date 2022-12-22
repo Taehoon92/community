@@ -14,7 +14,7 @@ public class MemberDto {
     private String email;
     private String username;
 
-    public static MemberDto toEntity(Member member) {
+    public static MemberDto toDto(Member member) {
         return new MemberDto(member.getId(), member.getEmail(), member.getUsername());
     }
 }
