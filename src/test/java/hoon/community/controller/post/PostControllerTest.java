@@ -73,4 +73,16 @@ class PostControllerTest {
         BDDMockito.verify(postService).read(id);
     }
 
+    @Test
+    void deleteTest() throws Exception {
+        //given
+        Long id = 1L;
+
+        //when, then
+        mockMvc.perform(
+                MockMvcRequestBuilders.delete("/api/posts/{id}", id))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+        BDDMockito.verify(postService).delete(id);
+    }
+
 }

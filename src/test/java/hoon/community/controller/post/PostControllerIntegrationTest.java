@@ -5,6 +5,7 @@ import hoon.community.domain.member.repository.MemberRepository;
 import hoon.community.domain.post.dto.PostCreateRequest;
 import hoon.community.domain.post.entity.Post;
 import hoon.community.domain.post.repository.PostRepository;
+import hoon.community.domain.post.service.PostService;
 import hoon.community.domain.sign.dto.SignInResponse;
 import hoon.community.domain.sign.service.SignService;
 import hoon.community.global.exception.CustomException;
@@ -27,9 +28,14 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
+import static hoon.community.global.factory.dto.SignInRequestFactory.createSignInRequest;
 import static hoon.community.global.factory.entity.PostFactory.createPost;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -43,6 +49,7 @@ class PostControllerIntegrationTest {
     @Autowired MemberRepository memberRepository;
     @Autowired PostRepository postRepository;
     @Autowired SignService signService;
+    @Autowired PostService postService;
 
     Member member1, member2, admin;
 
@@ -58,12 +65,12 @@ class PostControllerIntegrationTest {
     @Test
     void createTest() throws Exception {
         //given
-        SignInResponse signInResponse = signService.signIn(SignInRequestFactory.createSignInRequest(member1.getEmail(), initDB.getPassword()));
+        SignInResponse signInResponse = signService.signIn(createSignInRequest(member1.getEmail(), initDB.getPassword()));
         PostCreateRequest request = PostCreateRequestFactory.createPostCreateRequest("title", "content", member1.getId());
 
         //when, then
         mockMvc.perform(
-                        MockMvcRequestBuilders.multipart("/api/posts")
+                        multipart("/api/posts")
                                 .param("title", request.getTitle())
                                 .param("content", request.getContent())
                                 .with(requestPostProcessor -> {
@@ -72,7 +79,7 @@ class PostControllerIntegrationTest {
                                 })
                                 .contentType(MediaType.MULTIPART_FORM_DATA)
                                 .header("Authorization", signInResponse.getAccessToken()))
-                .andExpect(MockMvcResultMatchers.status().isCreated());
+                .andExpect(status().isCreated());
 
         Post post = postRepository.findAll().get(0);
         assertThat(post.getTitle()).isEqualTo("title");
@@ -88,7 +95,7 @@ class PostControllerIntegrationTest {
 
         //when, then
         mockMvc.perform(
-                        MockMvcRequestBuilders.multipart("/api/posts")
+                        multipart("/api/posts")
                                 .param("title", request.getTitle())
                                 .param("content", request.getContent())
                                 .with(requestPostProcessor -> {
@@ -96,7 +103,7 @@ class PostControllerIntegrationTest {
                                     return requestPostProcessor;
                                 })
                                 .contentType(MediaType.MULTIPART_FORM_DATA))
-                .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
+                .andExpect(status().is3xxRedirection())
                 .andExpect(MockMvcResultMatchers.redirectedUrl("/exception/entry-point"));
     }
 
@@ -107,7 +114,64 @@ class PostControllerIntegrationTest {
 
         //when, then
         mockMvc.perform(
-                MockMvcRequestBuilders.get("/api/posts/{id}", post.getId()))
-                .andExpect(MockMvcResultMatchers.status().isOk());
+                get("/api/posts/{id}", post.getId()))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void deleteByResourceOwnerTest() throws Exception {
+        //given
+        Post post = postRepository.save(createPost(member1));
+        SignInResponse signInResponse = signService.signIn(createSignInRequest(member1.getEmail(), initDB.getPassword()));
+
+        //when, then
+        mockMvc.perform(
+                delete("/api/posts/{id}", post.getId())
+                        .header("Authorization", signInResponse.getAccessToken()))
+                .andExpect(status().isOk());
+
+        assertThatThrownBy(() -> postService.read(post.getId())).isInstanceOf(CustomException.class);
+    }
+
+    @Test
+    void deleteByAdminTest() throws Exception {
+        //given
+        Post post = postRepository.save(createPost(member1));
+        SignInResponse signInResponse = signService.signIn(createSignInRequest(admin.getEmail(), initDB.getPassword()));
+
+        //when, then
+        mockMvc.perform(
+                delete("/api/posts/{id}", post.getId())
+                        .header("Authorization", signInResponse.getAccessToken()))
+                .andExpect(status().isOk());
+
+        assertThatThrownBy(() -> postService.read(post.getId())).isInstanceOf(CustomException.class);
+    }
+
+    @Test
+    void deleteAccessDeniedByNotResourceOwnerTest() throws Exception {
+        //given
+        Post post = postRepository.save(createPost(member1));
+        SignInResponse signInResponse = signService.signIn(createSignInRequest(member2.getEmail(), initDB.getPassword()));
+
+        //when, then
+        mockMvc.perform(
+                        delete("/api/posts/{id}", post.getId())
+                                .header("Authorization", signInResponse.getAccessToken()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/exception/access-denied"));
+    }
+
+    @Test
+    void deleteUnauthorizedByNoneTokenTest() throws Exception {
+        //given
+        Post post = postRepository.save(createPost(member1));
+        SignInResponse signInResponse = signService.signIn(createSignInRequest(member2.getEmail(), initDB.getPassword()));
+
+        //when, then
+        mockMvc.perform(
+                        delete("/api/posts/{id}", post.getId()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/exception/entry-point"));
     }
 }

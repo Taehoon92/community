@@ -58,8 +58,17 @@ class PostControllerAdviceTest {
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
- */
+    @Test
+    void deleteExceptionByPostNotFoundTest() throws Exception {
+        //given
+        BDDMockito.doThrow(CustomException.class).when(postService).delete(ArgumentMatchers.anyLong());
 
+        //when, then
+        mockMvc.perform(
+                MockMvcRequestBuilders.delete("/api/posts/{id}", 1L))
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
+    }
+ */
     private ResultActions performCreate() throws Exception {
         PostCreateRequest request = PostCreateRequestFactory.createPostCreateRequest();
         return mockMvc.perform(
@@ -72,6 +81,8 @@ class PostControllerAdviceTest {
                         })
                         .contentType(MediaType.MULTIPART_FORM_DATA));
     }
+
+
 
 
 }

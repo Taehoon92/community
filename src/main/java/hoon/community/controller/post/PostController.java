@@ -16,7 +16,7 @@ import javax.validation.Valid;
 
 @Api(value = "Post Controller", tags = "Post")
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/posts")
 @RequiredArgsConstructor
 @Slf4j
 public class PostController {
@@ -24,7 +24,7 @@ public class PostController {
     private final PostService postService;
 
     @ApiOperation(value = "게시글 생성", notes = "게시글을 생성한다")
-    @PostMapping("/posts")
+    @PostMapping("")
     @ResponseStatus(HttpStatus.CREATED)
     @AssignMemberId
     public Response create(@Valid @ModelAttribute PostCreateRequest request) {
@@ -32,9 +32,17 @@ public class PostController {
     }
 
     @ApiOperation(value = "게시글 조회", notes = "게시글을 조회한다")
-    @GetMapping("/posts/{id}")
+    @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public Response read(@ApiParam(value = "게시글 id", required = true) @PathVariable Long id) {
         return Response.success(postService.read(id));
+    }
+
+    @ApiOperation(value = "게시글 삭제", notes = "게시글을 삭제한다")
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public Response delete(@ApiParam(value = "게시글 id", required = true) @PathVariable Long id) {
+        postService.delete(id);
+        return Response.success();
     }
 }
