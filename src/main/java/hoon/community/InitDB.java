@@ -2,6 +2,8 @@ package hoon.community;
 
 import hoon.community.domain.member.entity.Member;
 import hoon.community.domain.member.repository.MemberRepository;
+import hoon.community.domain.post.entity.Post;
+import hoon.community.domain.post.repository.PostRepository;
 import hoon.community.domain.role.entity.Role;
 import hoon.community.domain.role.repository.RoleRepository;
 import hoon.community.domain.role.entity.RoleType;
@@ -17,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Component
 @RequiredArgsConstructor
@@ -25,6 +28,7 @@ public class InitDB {
     private final RoleRepository roleRepository;
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
+    private final PostRepository postRepository;
 
 //    @EventListener(ApplicationReadyEvent.class)
     @Transactional
@@ -34,6 +38,7 @@ public class InitDB {
         initRole();
         initMemberAdmin();
         initMemberTester();
+        initPost();
 
         log.info("initialized database");
 
@@ -63,5 +68,19 @@ public class InitDB {
                                 List.of(roleRepository.findByRoleType(RoleType.ROLE_USER).orElseThrow(()-> new CustomException(ErrorCode.ROLE_NOT_FOUND))))
                 )
         );
+    }
+
+    private void initPost() {
+        Member member1 = memberRepository.findAll().get(0);
+        Member member2 = memberRepository.findAll().get(1);
+        IntStream.range(0, 100)
+                .forEach(i -> postRepository.save(
+                        new Post("title" + i, "content" + i, member1)
+                ));
+        IntStream.range(100, 200)
+                .forEach(i -> postRepository.save(
+                        new Post("title " + i, "content" + i, member2)
+
+                ));
     }
 }

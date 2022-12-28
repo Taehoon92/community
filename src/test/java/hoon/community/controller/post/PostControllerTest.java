@@ -1,10 +1,12 @@
 package hoon.community.controller.post;
 
 import hoon.community.domain.post.dto.PostCreateRequest;
+import hoon.community.domain.post.dto.PostReadCondition;
 import hoon.community.domain.post.dto.PostUpdateRequest;
 import hoon.community.domain.post.entity.Post;
 import hoon.community.domain.post.service.PostService;
 import hoon.community.global.factory.dto.PostCreateRequestFactory;
+import hoon.community.global.factory.dto.PostReadConditionFactory;
 import hoon.community.global.factory.dto.PostUpdateRequestFactory;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,6 +21,7 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -26,6 +29,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+import static hoon.community.global.factory.dto.PostReadConditionFactory.createPostReadCondition;
 import static hoon.community.global.factory.dto.PostUpdateRequestFactory.createPostUpdateRequest;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -110,5 +114,20 @@ class PostControllerTest {
                                 .contentType(MediaType.MULTIPART_FORM_DATA))
                 .andExpect(MockMvcResultMatchers.status().isOk());
         BDDMockito.verify(postService).update(anyLong(), postUpdateRequestArgumentCaptor.capture());
+    }
+
+    @Test
+    void readAllTest() throws Exception {
+        //given
+        PostReadCondition condition = createPostReadCondition(0,1,List.of(1L, 2L));
+
+        //when, then
+        mockMvc.perform(
+                        MockMvcRequestBuilders.get("/api/posts")
+                                .param("page", String.valueOf(condition.getPage())).param("size", String.valueOf(condition.getSize()))
+                                .param("memberId", String.valueOf(condition.getMemberId().get(0)), String.valueOf(condition.getMemberId().get(1))))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+
+        BDDMockito.verify(postService).readAll(condition);
     }
 }

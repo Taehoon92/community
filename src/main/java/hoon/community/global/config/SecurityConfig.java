@@ -60,7 +60,7 @@ public class SecurityConfig {
                         .antMatchers(HttpMethod.POST, "/api/sign-in","/api/sign-up","/api/refresh-token").permitAll()
 
 //                        .antMatchers(HttpMethod.GET, "/api/**").permitAll()
-                        .antMatchers(HttpMethod.GET, "/api/members/{id}/**").access("@memberGuard.check(#id)")
+                        .antMatchers(HttpMethod.GET, "/api/members/{id}/**").permitAll()
                         .antMatchers(HttpMethod.DELETE, "/api/members/{id}/**").access("@memberGuard.check(#id)")
 
                         .antMatchers(HttpMethod.POST, "/api/posts").authenticated()

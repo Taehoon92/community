@@ -1,10 +1,7 @@
 package hoon.community.domain.post.service;
 
 import hoon.community.domain.member.repository.MemberRepository;
-import hoon.community.domain.post.dto.PostCreateRequest;
-import hoon.community.domain.post.dto.PostCreateResponse;
-import hoon.community.domain.post.dto.PostDto;
-import hoon.community.domain.post.dto.PostUpdateRequest;
+import hoon.community.domain.post.dto.*;
 import hoon.community.domain.post.entity.Post;
 import hoon.community.domain.post.repository.PostRepository;
 import hoon.community.global.exception.CustomException;
@@ -41,5 +38,11 @@ public class PostService {
     public void update(Long id, PostUpdateRequest request) {
         Post post = postRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.POSTS_NOT_FOUND));
         post.update(request);
+    }
+
+    public PostListDto readAll(PostReadCondition condition) {
+        return PostListDto.toDto(
+                postRepository.findAllByCondition(condition)
+        );
     }
 }

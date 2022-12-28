@@ -6,19 +6,12 @@ spring:
       jdbc-url: jdbc:mariadb://localhost:3306/commtest?serverTimezone=Australia/Sydney&useUnicode=true&characterEncoding=utf8
       username: root
       password: '0000'
-  sql:
-    init:
-      mode: always
+    url: jdbc:mariadb://localhost:3306/commtest?serverTimezone=Australia/Sydney&useUnicode=true&characterEncoding=utf8
+
   jpa:
-    generate-ddl: 'false'
-    database: mysql
     hibernate:
       ddl-auto: create
-    properties:
-      hibernate:
-        format_sql: 'true'
-
 
   profiles:
-    active: local
+    #active: local
     include: secret

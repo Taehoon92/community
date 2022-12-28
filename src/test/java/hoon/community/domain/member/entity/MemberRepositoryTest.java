@@ -8,6 +8,8 @@ import hoon.community.global.exception.CustomException;
 import hoon.community.global.exception.ErrorCode;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -22,6 +24,7 @@ import java.util.stream.Collectors;
 import static hoon.community.global.factory.entity.MemberFactory.createMember;
 import static hoon.community.global.factory.entity.MemberFactory.createMemberWithRoles;
 import static org.assertj.core.api.Assertions.*;
+
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)

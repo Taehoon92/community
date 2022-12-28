@@ -3,6 +3,10 @@ plugins {
 	id 'org.springframework.boot' version '2.7.5'
 	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
 	id 'war'
+
+	//QueryDSL 추가
+	id 'com.ewerk.gradle.plugins.querydsl' version '1.0.10'
+
 }
 
 group = 'hoon'
@@ -35,6 +39,9 @@ dependencies {
 	//swagger
 	// https://mvnrepository.com/artifact/io.springfox/springfox-boot-starter
 	implementation 'io.springfox:springfox-boot-starter:3.0.0'
+	//QueryDSL 추가
+	implementation 'com.querydsl:querydsl-jpa:5.0.0'
+
 
 	compileOnly 'org.projectlombok:lombok'
 
@@ -45,12 +52,26 @@ dependencies {
 	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
-
-
-
-
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+def querydslDir = "$buildDir/generated/querydsl"
+
+querydsl {
+	library = "com.querydsl:querydsl-apt"
+	jpa = true
+	querydslSourcesDir = querydslDir
+}
+sourceSets {
+	main.java.srcDir querydslDir
+}
+compileQuerydsl{
+	options.annotationProcessorPath = configurations.querydsl
+}
+
+configurations {
+	querydsl.extendsFrom compileClasspath
 }

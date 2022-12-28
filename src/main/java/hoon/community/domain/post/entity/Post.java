@@ -34,7 +34,7 @@ public class Post extends BaseTimeEntity {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Member member;
 
-    private int hits;
+    private Integer hits;
 
     public Post(String title, String content) {
         this.title = title;

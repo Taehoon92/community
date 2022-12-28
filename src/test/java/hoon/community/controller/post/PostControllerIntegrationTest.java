@@ -3,6 +3,7 @@ package hoon.community.controller.post;
 import hoon.community.domain.member.entity.Member;
 import hoon.community.domain.member.repository.MemberRepository;
 import hoon.community.domain.post.dto.PostCreateRequest;
+import hoon.community.domain.post.dto.PostReadCondition;
 import hoon.community.domain.post.entity.Post;
 import hoon.community.domain.post.repository.PostRepository;
 import hoon.community.domain.post.service.PostService;
@@ -11,6 +12,7 @@ import hoon.community.domain.sign.service.SignService;
 import hoon.community.global.exception.CustomException;
 import hoon.community.global.exception.ErrorCode;
 import hoon.community.global.factory.dto.PostCreateRequestFactory;
+import hoon.community.global.factory.dto.PostReadConditionFactory;
 import hoon.community.global.factory.dto.SignInRequestFactory;
 import hoon.community.global.factory.entity.PostFactory;
 import hoon.community.global.init.TestInitDB;
@@ -28,6 +30,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
+import static hoon.community.global.factory.dto.PostReadConditionFactory.createPostReadCondition;
 import static hoon.community.global.factory.dto.SignInRequestFactory.createSignInRequest;
 import static hoon.community.global.factory.entity.PostFactory.createPost;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -245,5 +248,18 @@ class PostControllerIntegrationTest {
                 .andExpect(redirectedUrl("/exception/access-denied"));
 
 
+    }
+
+    @Test
+    void readAllTest() throws Exception {
+        //given
+        PostReadCondition condition = createPostReadCondition(0, 1);
+
+        //when, then
+        mockMvc.perform(
+                        MockMvcRequestBuilders.get("/api/posts")
+                                .param("page", String.valueOf(condition.getPage())).param("size", String.valueOf(condition.getSize()))
+                                .param("memberId", String.valueOf(1L), String.valueOf(2L)))
+                .andExpect(status().isOk());
     }
 }

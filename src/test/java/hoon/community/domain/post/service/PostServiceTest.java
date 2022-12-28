@@ -3,12 +3,14 @@ package hoon.community.domain.post.service;
 import hoon.community.domain.member.repository.MemberRepository;
 import hoon.community.domain.post.dto.PostCreateRequest;
 import hoon.community.domain.post.dto.PostDto;
+import hoon.community.domain.post.dto.PostListDto;
 import hoon.community.domain.post.dto.PostUpdateRequest;
 import hoon.community.domain.post.entity.Post;
 import hoon.community.domain.post.repository.PostRepository;
 import hoon.community.global.exception.CustomException;
 import hoon.community.global.exception.ErrorCode;
 import hoon.community.global.factory.dto.PostCreateRequestFactory;
+import hoon.community.global.factory.dto.PostReadConditionFactory;
 import hoon.community.global.factory.dto.PostUpdateRequestFactory;
 import hoon.community.global.factory.entity.MemberFactory;
 import hoon.community.global.factory.entity.PostFactory;
@@ -20,6 +22,7 @@ import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
 
 import java.util.Optional;
 
@@ -132,6 +135,18 @@ class PostServiceTest {
 
         //when, then
         assertThatThrownBy(() -> postService.update(1L, PostUpdateRequestFactory.createPostUpdateRequest("title", "content"))).isInstanceOf(CustomException.class);
+    }
+
+    @Test
+    void readAllTest() {
+        //given
+        given(postRepository.findAllByCondition(any())).willReturn(Page.empty());
+
+        //when
+        PostListDto postListDto = postService.readAll(PostReadConditionFactory.createPostReadCondition(1, 1));
+
+        //then
+        assertThat(postListDto.getPostList().size()).isZero();
     }
 
 }

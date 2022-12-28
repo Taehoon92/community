@@ -2,6 +2,7 @@ package hoon.community.controller.post;
 
 import hoon.community.controller.response.Response;
 import hoon.community.domain.post.dto.PostCreateRequest;
+import hoon.community.domain.post.dto.PostReadCondition;
 import hoon.community.domain.post.dto.PostUpdateRequest;
 import hoon.community.domain.post.service.PostService;
 import hoon.community.global.aop.AssignMemberId;
@@ -53,5 +54,12 @@ public class PostController {
     public Response update(@ApiParam(value = "게시글 id", required = true) @PathVariable Long id, @Valid @ModelAttribute PostUpdateRequest request) {
         postService.update(id, request);
         return Response.success();
+    }
+
+    @ApiOperation(value = "게시글 목록 조회", notes = "게시글 목록을 조회한다.")
+    @GetMapping("")
+    @ResponseStatus(HttpStatus.OK)
+    public Response readAll(@Valid PostReadCondition condition) {
+        return Response.success(postService.readAll(condition));
     }
 }
