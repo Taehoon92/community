@@ -3,11 +3,13 @@ package hoon.community.domain.post.service;
 import hoon.community.domain.member.repository.MemberRepository;
 import hoon.community.domain.post.dto.PostCreateRequest;
 import hoon.community.domain.post.dto.PostDto;
+import hoon.community.domain.post.dto.PostUpdateRequest;
 import hoon.community.domain.post.entity.Post;
 import hoon.community.domain.post.repository.PostRepository;
 import hoon.community.global.exception.CustomException;
 import hoon.community.global.exception.ErrorCode;
 import hoon.community.global.factory.dto.PostCreateRequestFactory;
+import hoon.community.global.factory.dto.PostUpdateRequestFactory;
 import hoon.community.global.factory.entity.MemberFactory;
 import hoon.community.global.factory.entity.PostFactory;
 import org.assertj.core.api.Assertions;
@@ -105,6 +107,31 @@ class PostServiceTest {
 
         //when, then
         assertThatThrownBy(() -> postService.delete(1L)).isInstanceOf(CustomException.class);
+    }
+
+    @Test
+    void updateTest() {
+        //given
+        Post post = createPost();
+        given(postRepository.findById(anyLong())).willReturn(Optional.of(post));
+        PostUpdateRequest postUpdateRequest = PostUpdateRequestFactory.createPostUpdateRequest("update title", "update content");
+
+        //when
+        postService.update(1L, postUpdateRequest);
+        Post updatedPost = postRepository.findById(1L).orElseThrow(() -> new CustomException(ErrorCode.POSTS_NOT_FOUND));
+
+        //then
+        assertThat(updatedPost.getTitle()).isEqualTo(postUpdateRequest.getTitle());
+        assertThat(updatedPost.getContent()).isEqualTo(postUpdateRequest.getContent());
+    }
+
+    @Test
+    void updateExceptionByPostNotFoundTest() {
+        //given
+        given(postRepository.findById(anyLong())).willReturn(Optional.ofNullable(null));
+
+        //when, then
+        assertThatThrownBy(() -> postService.update(1L, PostUpdateRequestFactory.createPostUpdateRequest("title", "content"))).isInstanceOf(CustomException.class);
     }
 
 }

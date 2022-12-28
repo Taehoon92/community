@@ -2,6 +2,7 @@ package hoon.community.controller.post;
 
 import hoon.community.controller.response.Response;
 import hoon.community.domain.post.dto.PostCreateRequest;
+import hoon.community.domain.post.dto.PostUpdateRequest;
 import hoon.community.domain.post.service.PostService;
 import hoon.community.global.aop.AssignMemberId;
 import io.swagger.annotations.Api;
@@ -43,6 +44,14 @@ public class PostController {
     @ResponseStatus(HttpStatus.OK)
     public Response delete(@ApiParam(value = "게시글 id", required = true) @PathVariable Long id) {
         postService.delete(id);
+        return Response.success();
+    }
+
+    @ApiOperation(value = "게시글 수정", notes = "게시글을 수정한다.")
+    @PatchMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public Response update(@ApiParam(value = "게시글 id", required = true) @PathVariable Long id, @Valid @ModelAttribute PostUpdateRequest request) {
+        postService.update(id, request);
         return Response.success();
     }
 }

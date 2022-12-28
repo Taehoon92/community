@@ -174,4 +174,76 @@ class PostControllerIntegrationTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/exception/entry-point"));
     }
+
+    @Test
+    void updateByResourceOwnerTest() throws Exception {
+        //given
+        SignInResponse signInResponse = signService.signIn(createSignInRequest(member1.getEmail(), initDB.getPassword()));
+        Post post = postRepository.save(createPost(member1));
+        String updatedTitle = "updated title";
+        String updatedContent = "updated content";
+
+        //when, then
+        mockMvc.perform(
+                        multipart("/api/posts/{id}", post.getId())
+                                .param("title", updatedTitle)
+                                .param("content", updatedContent)
+                                .with(requestPostProcessor -> {
+                                    requestPostProcessor.setMethod("PATCH");
+                                    return requestPostProcessor;
+                                })
+                                .contentType(MediaType.MULTIPART_FORM_DATA)
+                                .header("Authorization", signInResponse.getAccessToken()))
+                .andExpect(status().isOk());
+
+        Post updatedPost = postRepository.findById(post.getId()).orElseThrow(() -> new CustomException(ErrorCode.POSTS_NOT_FOUND));
+        assertThat(updatedPost.getTitle()).isEqualTo(updatedTitle);
+        assertThat(updatedPost.getContent()).isEqualTo(updatedContent);
+    }
+
+    @Test
+    void updateUnauthorizedByNoneTokenTest() throws Exception {
+        //given
+        Post post = postRepository.save(createPost(member1));
+        String updatedTitle = "updatedTitle";
+        String updatedContent = "updatedContent";
+
+        //when, then
+        mockMvc.perform(
+                        multipart("/api/posts/{id}", post.getId())
+                                .param("title", updatedTitle)
+                                .param("content", updatedContent)
+                                .with(requestPostProcessor -> {
+                                    requestPostProcessor.setMethod("PATCH");
+                                    return requestPostProcessor;
+                                })
+                                .contentType(MediaType.MULTIPART_FORM_DATA))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/exception/entry-point"));
+    }
+
+    @Test
+    void updateAccessDeniedByNotResourceOwnerTest() throws Exception {
+        //given
+        Post post = postRepository.save(createPost(member1));
+        SignInResponse response = signService.signIn(createSignInRequest(member2.getEmail(), initDB.getPassword()));
+        String updatedTitle = "updatedTitle";
+        String updatedContent = "updatedContent";
+
+        //when,then
+        mockMvc.perform(
+                        multipart("/api/posts/{id}", post.getId())
+                                .param("title", updatedTitle)
+                                .param("content", updatedContent)
+                                .with(requestPostProcessor -> {
+                                    requestPostProcessor.setMethod("PATCH");
+                                    return requestPostProcessor;
+                                })
+                                .contentType(MediaType.MULTIPART_FORM_DATA)
+                                .header("Authorization", response.getAccessToken()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/exception/access-denied"));
+
+
+    }
 }

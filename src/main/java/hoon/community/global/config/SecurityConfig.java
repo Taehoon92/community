@@ -63,9 +63,10 @@ public class SecurityConfig {
                         .antMatchers(HttpMethod.GET, "/api/members/{id}/**").access("@memberGuard.check(#id)")
                         .antMatchers(HttpMethod.DELETE, "/api/members/{id}/**").access("@memberGuard.check(#id)")
 
-                        .antMatchers(HttpMethod.POST, "/api/posts/**").authenticated()
+                        .antMatchers(HttpMethod.POST, "/api/posts").authenticated()
                         .antMatchers(HttpMethod.GET, "/api/posts/**").permitAll()
-                        .antMatchers(HttpMethod.DELETE, "/api/posts/{id}/**").access("@postGuard.check(#id)")
+                        .antMatchers(HttpMethod.PATCH, "/api/posts/{id}").access("@postGuard.check(#id)")
+                        .antMatchers(HttpMethod.DELETE, "/api/posts/{id}").access("@postGuard.check(#id)")
 
                         .anyRequest().hasAnyRole("ROLE_ADMIN")
                 .and()

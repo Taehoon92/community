@@ -22,6 +22,10 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doThrow;
 
 @ExtendWith(MockitoExtension.class)
 class PostControllerAdviceTest {
@@ -38,7 +42,7 @@ class PostControllerAdviceTest {
     @Test
     void createExceptionByMemberNotFoundException() throws Exception {
         //given
-        BDDMockito.given(postService.create(ArgumentMatchers.any())).willThrow(CustomException.class);
+        given(postService.create(ArgumentMatchers.any())).willThrow(CustomException.class);
 
         //when, then
         performCreate()
@@ -50,7 +54,7 @@ class PostControllerAdviceTest {
     @Test
     void readExceptionByPostNotFoundTest() throws Exception {
         //given
-        BDDMockito.given(postService.read(ArgumentMatchers.anyLong())).willThrow(CustomException.class);
+        given(postService.read(ArgumentMatchers.anyLong())).willThrow(CustomException.class);
 
         //when, then
         mockMvc.perform(
@@ -61,14 +65,35 @@ class PostControllerAdviceTest {
     @Test
     void deleteExceptionByPostNotFoundTest() throws Exception {
         //given
-        BDDMockito.doThrow(CustomException.class).when(postService).delete(ArgumentMatchers.anyLong());
+        doThrow(CustomException.class).when(postService).delete(ArgumentMatchers.anyLong());
 
         //when, then
         mockMvc.perform(
                 MockMvcRequestBuilders.delete("/api/posts/{id}", 1L))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
- */
+
+
+
+    @Test
+    void updateExceptionByPostNotFoundTest() throws Exception{
+        //given
+        doThrow(CustomException.class).when(postService).update(anyLong(), any());
+
+        //when, then
+        mockMvc.perform(
+                        MockMvcRequestBuilders.multipart("/api/posts/{id}", 1L)
+                                .param("title", "title")
+                                .param("content", "content")
+                                .with(requestPostProcessor -> {
+                                    requestPostProcessor.setMethod("PATCH");
+                                    return requestPostProcessor;
+                                })
+                                .contentType(MediaType.MULTIPART_FORM_DATA))
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
+
+    }
+*/
     private ResultActions performCreate() throws Exception {
         PostCreateRequest request = PostCreateRequestFactory.createPostCreateRequest();
         return mockMvc.perform(

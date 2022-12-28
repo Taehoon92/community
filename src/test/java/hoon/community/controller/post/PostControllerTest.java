@@ -1,8 +1,11 @@
 package hoon.community.controller.post;
 
 import hoon.community.domain.post.dto.PostCreateRequest;
+import hoon.community.domain.post.dto.PostUpdateRequest;
+import hoon.community.domain.post.entity.Post;
 import hoon.community.domain.post.service.PostService;
 import hoon.community.global.factory.dto.PostCreateRequestFactory;
+import hoon.community.global.factory.dto.PostUpdateRequestFactory;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,7 +26,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+import static hoon.community.global.factory.dto.PostUpdateRequestFactory.createPostUpdateRequest;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 
 @ExtendWith(MockitoExtension.class)
 class PostControllerTest {
@@ -85,4 +91,24 @@ class PostControllerTest {
         BDDMockito.verify(postService).delete(id);
     }
 
+    @Test
+    void updateTest() throws Exception {
+        //given
+        ArgumentCaptor<PostUpdateRequest> postUpdateRequestArgumentCaptor = ArgumentCaptor.forClass(PostUpdateRequest.class);
+        PostUpdateRequest request = createPostUpdateRequest("title", "content");
+
+
+        //when,then
+        mockMvc.perform(
+                        MockMvcRequestBuilders.multipart("/api/posts/{id}", 1L)
+                                .param("title", request.getTitle())
+                                .param("content", request.getContent())
+                                .with(requestPostProcessor -> {
+                                    requestPostProcessor.setMethod("PATCH");
+                                    return requestPostProcessor;
+                                })
+                                .contentType(MediaType.MULTIPART_FORM_DATA))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+        BDDMockito.verify(postService).update(anyLong(), postUpdateRequestArgumentCaptor.capture());
+    }
 }

@@ -2,9 +2,11 @@ package hoon.community.domain.post.repository;
 
 import hoon.community.domain.member.entity.Member;
 import hoon.community.domain.member.repository.MemberRepository;
+import hoon.community.domain.post.dto.PostUpdateRequest;
 import hoon.community.domain.post.entity.Post;
 import hoon.community.global.exception.CustomException;
 import hoon.community.global.exception.ErrorCode;
+import hoon.community.global.factory.dto.PostUpdateRequestFactory;
 import hoon.community.global.factory.entity.MemberFactory;
 import hoon.community.global.factory.entity.PostFactory;
 import org.assertj.core.api.Assertions;
@@ -93,6 +95,24 @@ class PostRepositoryTest {
         //then
         Member foundMember = foundPost.getMember();
         assertThat(foundMember.getEmail()).isEqualTo(member.getEmail());
+    }
+
+    @Test
+    void updateTest() {
+        //given
+        Post post = postRepository.save(createPost(member));
+        clear();
+
+        //when
+        PostUpdateRequest request = PostUpdateRequestFactory.createPostUpdateRequest("update title", "update content");
+        Post foundPost = postRepository.findById(post.getId()).orElseThrow(() -> new CustomException(ErrorCode.POSTS_NOT_FOUND));
+        foundPost.update(request);
+        clear();
+
+        //then
+        Post result = postRepository.findById(post.getId()).orElseThrow(() -> new CustomException(ErrorCode.POSTS_NOT_FOUND));
+        assertThat(result.getTitle()).isEqualTo(request.getTitle());
+        assertThat(result.getContent()).isEqualTo(request.getContent());
     }
 
     void clear() {

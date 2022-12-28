@@ -2,6 +2,7 @@ package hoon.community.domain.post.entity;
 
 import hoon.community.domain.BaseTimeEntity;
 import hoon.community.domain.member.entity.Member;
+import hoon.community.domain.post.dto.PostUpdateRequest;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -47,9 +48,9 @@ public class Post extends BaseTimeEntity {
         this.member = member;
     }
 
-    public void update(String title, String content) {
-        this.title = title;
-        this.content = content;
+    public void update(PostUpdateRequest request) {
+        this.title = request.getTitle();
+        this.content = request.getContent();
     }
 
     public void increaseHits() {
