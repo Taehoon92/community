@@ -23,4 +23,6 @@ public class PostReadCondition {
     private Integer size = 10;
 
     private List<Long> memberId = new ArrayList<>();
+    private List<String> username = new ArrayList<>();
+    private List<String> content = new ArrayList<>();
 }

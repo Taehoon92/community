@@ -57,11 +57,21 @@ public class CustomPostRepositoryImpl extends QuerydslRepositorySupport implemen
 
     private Predicate createPredicate(PostReadCondition condition) {
         return new BooleanBuilder()
-                .and(orConditionsByEqMemberIds(condition.getMemberId()));
+                .and(orConditionsByEqMemberIds(condition.getMemberId()))
+                .and(orConditionsByEqUsername(condition.getUsername()))
+                .and(orConditionsByContainsContent(condition.getContent()));
     }
 
     private Predicate orConditionsByEqMemberIds(List<Long> memberIds) {
         return orConditions(memberIds, post.member.id::eq);
+    }
+
+    private Predicate orConditionsByEqUsername(List<String> username) {
+        return orConditions(username, post.member.username::eq);
+    }
+
+    private Predicate orConditionsByContainsContent(List<String> content) {
+        return orConditions(content, post.content::contains);
     }
 
     private <T> Predicate orConditions(List<T> values, Function<T, BooleanExpression> term) {
