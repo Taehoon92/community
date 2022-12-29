@@ -9,16 +9,10 @@ import hoon.community.domain.post.entity.Post;
 import hoon.community.domain.post.repository.PostRepository;
 import hoon.community.global.exception.CustomException;
 import hoon.community.global.exception.ErrorCode;
-import hoon.community.global.factory.dto.PostCreateRequestFactory;
 import hoon.community.global.factory.dto.PostReadConditionFactory;
 import hoon.community.global.factory.dto.PostUpdateRequestFactory;
-import hoon.community.global.factory.entity.MemberFactory;
-import hoon.community.global.factory.entity.PostFactory;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentMatchers;
-import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -31,7 +25,6 @@ import static hoon.community.global.factory.entity.MemberFactory.createMember;
 import static hoon.community.global.factory.entity.PostFactory.createPost;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
@@ -121,7 +114,7 @@ class PostServiceTest {
 
         //when
         postService.update(1L, postUpdateRequest);
-        Post updatedPost = postRepository.findById(1L).orElseThrow(() -> new CustomException(ErrorCode.POSTS_NOT_FOUND));
+        Post updatedPost = postRepository.findById(1L).orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
 
         //then
         assertThat(updatedPost.getTitle()).isEqualTo(postUpdateRequest.getTitle());

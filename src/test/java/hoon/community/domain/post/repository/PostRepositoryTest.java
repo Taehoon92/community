@@ -8,8 +8,6 @@ import hoon.community.global.exception.CustomException;
 import hoon.community.global.exception.ErrorCode;
 import hoon.community.global.factory.dto.PostUpdateRequestFactory;
 import hoon.community.global.factory.entity.MemberFactory;
-import hoon.community.global.factory.entity.PostFactory;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +22,6 @@ import java.util.List;
 import static hoon.community.global.factory.entity.PostFactory.createPost;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -47,7 +44,7 @@ class PostRepositoryTest {
         clear();
 
         //when
-        Post foundPost = postRepository.findById(post.getId()).orElseThrow(() -> new CustomException(ErrorCode.POSTS_NOT_FOUND));
+        Post foundPost = postRepository.findById(post.getId()).orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
 
         //then
         assertThat(foundPost.getId()).isEqualTo(post.getId());
@@ -65,7 +62,7 @@ class PostRepositoryTest {
         clear();
 
         //then
-        assertThatThrownBy(() -> postRepository.findById(post.getId()).orElseThrow(() -> new CustomException(ErrorCode.POSTS_NOT_FOUND))).isInstanceOf(CustomException.class);
+        assertThatThrownBy(() -> postRepository.findById(post.getId()).orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND))).isInstanceOf(CustomException.class);
     }
 
     @Test
@@ -90,7 +87,7 @@ class PostRepositoryTest {
         Post post = postRepository.save(createPost(member));
 
         //when
-        Post foundPost = postRepository.findByIdWithMember(post.getId()).orElseThrow(() -> new CustomException(ErrorCode.POSTS_NOT_FOUND));
+        Post foundPost = postRepository.findByIdWithMember(post.getId()).orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
 
         //then
         Member foundMember = foundPost.getMember();
@@ -105,12 +102,12 @@ class PostRepositoryTest {
 
         //when
         PostUpdateRequest request = PostUpdateRequestFactory.createPostUpdateRequest("update title", "update content");
-        Post foundPost = postRepository.findById(post.getId()).orElseThrow(() -> new CustomException(ErrorCode.POSTS_NOT_FOUND));
+        Post foundPost = postRepository.findById(post.getId()).orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
         foundPost.update(request);
         clear();
 
         //then
-        Post result = postRepository.findById(post.getId()).orElseThrow(() -> new CustomException(ErrorCode.POSTS_NOT_FOUND));
+        Post result = postRepository.findById(post.getId()).orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
         assertThat(result.getTitle()).isEqualTo(request.getTitle());
         assertThat(result.getContent()).isEqualTo(request.getContent());
     }

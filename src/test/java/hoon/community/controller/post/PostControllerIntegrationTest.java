@@ -12,11 +12,7 @@ import hoon.community.domain.sign.service.SignService;
 import hoon.community.global.exception.CustomException;
 import hoon.community.global.exception.ErrorCode;
 import hoon.community.global.factory.dto.PostCreateRequestFactory;
-import hoon.community.global.factory.dto.PostReadConditionFactory;
-import hoon.community.global.factory.dto.SignInRequestFactory;
-import hoon.community.global.factory.entity.PostFactory;
 import hoon.community.global.init.TestInitDB;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -199,7 +195,7 @@ class PostControllerIntegrationTest {
                                 .header("Authorization", signInResponse.getAccessToken()))
                 .andExpect(status().isOk());
 
-        Post updatedPost = postRepository.findById(post.getId()).orElseThrow(() -> new CustomException(ErrorCode.POSTS_NOT_FOUND));
+        Post updatedPost = postRepository.findById(post.getId()).orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
         assertThat(updatedPost.getTitle()).isEqualTo(updatedTitle);
         assertThat(updatedPost.getContent()).isEqualTo(updatedContent);
     }
