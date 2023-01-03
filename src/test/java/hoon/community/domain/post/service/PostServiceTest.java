@@ -55,7 +55,7 @@ class PostServiceTest {
     void createExceptionByMemberNotFoundTest() {
         //given
         PostCreateRequest request = createPostCreateRequest();
-        given(memberRepository.findById(anyLong())).willReturn(Optional.ofNullable(null));
+        given(memberRepository.findById(anyLong())).willReturn(Optional.empty());
 
         //when, then
         assertThatThrownBy(() -> postService.create(request)).isInstanceOf(CustomException.class);
@@ -77,7 +77,7 @@ class PostServiceTest {
     @Test
     void readExceptionByPostNotFoundTest() {
         //given
-        given(postRepository.findById(anyLong())).willReturn(Optional.ofNullable(null));
+        given(postRepository.findById(anyLong())).willReturn(Optional.empty());
 
         //when, then
         assertThatThrownBy(() -> postService.read(1L)).isInstanceOf(CustomException.class);
@@ -99,7 +99,7 @@ class PostServiceTest {
     @Test
     void deleteExceptionByNotFoundPostTest() {
         //given
-        given(postRepository.findById(anyLong())).willReturn(Optional.ofNullable(null));
+        given(postRepository.findById(anyLong())).willReturn(Optional.empty());
 
         //when, then
         assertThatThrownBy(() -> postService.delete(1L)).isInstanceOf(CustomException.class);
@@ -124,7 +124,7 @@ class PostServiceTest {
     @Test
     void updateExceptionByPostNotFoundTest() {
         //given
-        given(postRepository.findById(anyLong())).willReturn(Optional.ofNullable(null));
+        given(postRepository.findById(anyLong())).willReturn(Optional.empty());
 
         //when, then
         assertThatThrownBy(() -> postService.update(1L, PostUpdateRequestFactory.createPostUpdateRequest("title", "content"))).isInstanceOf(CustomException.class);

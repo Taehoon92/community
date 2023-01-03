@@ -40,7 +40,7 @@ class MemberServiceTest {
     @Test
     void readExceptionByMemberNotFoundTest() {
         //given
-        BDDMockito.given(memberRepository.findById(ArgumentMatchers.anyLong())).willReturn(Optional.ofNullable(null));
+        BDDMockito.given(memberRepository.findById(ArgumentMatchers.anyLong())).willReturn(Optional.empty());
 
         //when, then
         assertThatThrownBy(() -> memberService.read(1L)).isInstanceOf(CustomException.class);
