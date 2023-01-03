@@ -59,14 +59,17 @@ public class SecurityConfig {
 //                        .antMatchers("/**").permitAll();
                         .antMatchers(HttpMethod.POST, "/api/sign-in","/api/sign-up","/api/refresh-token").permitAll()
 
-//                        .antMatchers(HttpMethod.GET, "/api/**").permitAll()
-                        .antMatchers(HttpMethod.GET, "/api/members/{id}/**").permitAll()
+                        .antMatchers(HttpMethod.GET, "/api/**").permitAll()
+
                         .antMatchers(HttpMethod.DELETE, "/api/members/{id}/**").access("@memberGuard.check(#id)")
 
                         .antMatchers(HttpMethod.POST, "/api/posts").authenticated()
                         .antMatchers(HttpMethod.GET, "/api/posts/**").permitAll()
                         .antMatchers(HttpMethod.PATCH, "/api/posts/{id}").access("@postGuard.check(#id)")
                         .antMatchers(HttpMethod.DELETE, "/api/posts/{id}").access("@postGuard.check(#id)")
+
+                        .antMatchers(HttpMethod.POST, "/api/comments").authenticated()
+                        .antMatchers(HttpMethod.DELETE,"/api/comments/{id}").access("@commentGuard.check(#id)")
 
                         .anyRequest().hasAnyRole("ROLE_ADMIN")
                 .and()

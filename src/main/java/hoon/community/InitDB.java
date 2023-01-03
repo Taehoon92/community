@@ -1,5 +1,7 @@
 package hoon.community;
 
+import hoon.community.domain.comment.entity.Comment;
+import hoon.community.domain.comment.repository.CommentRepository;
 import hoon.community.domain.member.entity.Member;
 import hoon.community.domain.member.repository.MemberRepository;
 import hoon.community.domain.post.entity.Post;
@@ -29,6 +31,7 @@ public class InitDB {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final PostRepository postRepository;
+    private final CommentRepository commentRepository;
 
 //    @EventListener(ApplicationReadyEvent.class)
     @Transactional
@@ -39,6 +42,7 @@ public class InitDB {
         initMemberAdmin();
         initMemberTester();
         initPost();
+        initComment();
 
         log.info("initialized database");
 
@@ -82,5 +86,19 @@ public class InitDB {
                         new Post("title " + i, "content" + i, member2)
 
                 ));
+    }
+
+    private void initComment() {
+        Member member = memberRepository.findAll().get(0);
+        Post post = postRepository.findAll().get(0);
+        Comment c1 = commentRepository.save(new Comment("content", member, post, null));
+        Comment c2 = commentRepository.save(new Comment("content", member, post, c1));
+        Comment c3 = commentRepository.save(new Comment("content", member, post, c1));
+        Comment c4 = commentRepository.save(new Comment("content", member, post, c2));
+        Comment c5 = commentRepository.save(new Comment("content", member, post, c2));
+        Comment c6 = commentRepository.save(new Comment("content", member, post, c4));
+        Comment c7 = commentRepository.save(new Comment("content", member, post, c3));
+        Comment c8 = commentRepository.save(new Comment("content", member, post, null));
+
     }
 }
