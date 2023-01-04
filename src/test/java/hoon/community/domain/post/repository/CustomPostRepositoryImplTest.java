@@ -49,12 +49,12 @@ class CustomPostRepositoryImplTest {
         List<Member> members = saveMember(5);
 
         List<Post> posts = IntStream.range(0, 10)
-                .mapToObj(i -> postRepository.save(PostFactory.createPost(members.get(i % 5)))).collect(Collectors.toList());
+                .mapToObj(i -> postRepository.save(PostFactory.createPost(members.get(i % 3)))).collect(Collectors.toList());
         clear();
 
         List<Long> memberIds = List.of(members.get(0).getId(), members.get(2).getId());
         int sizePerPage = 2;
-        long expectedTotalElements = 3;
+        long expectedTotalElements = 7;
 
         PostReadCondition page0Condition = PostReadConditionFactory.createPostReadCondition(0, sizePerPage, memberIds);
         PostReadCondition page1Condition = PostReadConditionFactory.createPostReadCondition(1, sizePerPage, memberIds);
@@ -68,7 +68,7 @@ class CustomPostRepositoryImplTest {
         assertThat(page0.getTotalPages()).isEqualTo((expectedTotalElements + 1) / sizePerPage);
 
         assertThat(page0.getContent().size()).isEqualTo(2);
-        assertThat(page1.getContent().size()).isEqualTo(1);
+        assertThat(page1.getContent().size()).isEqualTo(2);
     }
 
 
