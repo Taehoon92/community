@@ -18,13 +18,11 @@ import java.util.Optional;
 @Slf4j
 public class AssignMemberIdAspect {
 
-    private final AuthHelper authHelper;
-
     @Before("@annotation(hoon.community.global.aop.AssignMemberId)")
     public void assignMemberId(JoinPoint joinPoint) {
         Arrays.stream(joinPoint.getArgs())
                 .forEach(arg -> getMethod(arg.getClass(),"setMemberId")
-                        .ifPresent(setMemberId -> invokeMethod(arg, setMemberId, authHelper.extractMemberId())));
+                        .ifPresent(setMemberId -> invokeMethod(arg, setMemberId, AuthHelper.extractMemberId())));
     }
 
     private Optional<Method> getMethod(Class<?> clazz, String methodName) {

@@ -3,6 +3,8 @@ package hoon.community.global.security.guard;
 import hoon.community.domain.role.entity.RoleType;
 import hoon.community.global.security.CustomAuthenticationToken;
 import hoon.community.global.security.CustomUserDetails;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -11,19 +13,18 @@ import org.springframework.stereotype.Component;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Component
-@Slf4j
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class AuthHelper {
 
-    public boolean isAuthenticated() {
+    public static boolean isAuthenticated() {
         return getAuthentication() instanceof CustomAuthenticationToken && getAuthentication().isAuthenticated();
     }
 
-    public Long extractMemberId() {
+    public static Long extractMemberId() {
         return Long.valueOf(getUserDetails().getUserId());
     }
 
-    public Set<RoleType> extractMemberRoles() {
+    public static Set<RoleType> extractMemberRoles() {
         return getUserDetails().getAuthorities()
                 .stream()
                 .map(authority -> authority.getAuthority())
@@ -31,11 +32,11 @@ public class AuthHelper {
                 .collect(Collectors.toSet());
     }
 
-    private CustomUserDetails getUserDetails() {
+    private static CustomUserDetails getUserDetails() {
         return (CustomUserDetails) getAuthentication().getPrincipal();
     }
 
-    private Authentication getAuthentication() {
+    private static Authentication getAuthentication() {
         return SecurityContextHolder.getContext().getAuthentication();
     }
 }
