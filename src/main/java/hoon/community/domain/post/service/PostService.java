@@ -24,8 +24,11 @@ public class PostService {
         return new PostCreateResponse(post.getId());
     }
 
+    @Transactional
     public PostDto read(Long id) {
-        return PostDto.toDto(postRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND)));
+        Post entity = postRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
+        entity.increaseHits();
+        return PostDto.toDto(entity);
     }
 
     @Transactional
@@ -37,6 +40,7 @@ public class PostService {
     @Transactional
     public void update(Long id, PostUpdateRequest request) {
         Post post = postRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
+        post.decreaseHits();
         post.update(request);
     }
 

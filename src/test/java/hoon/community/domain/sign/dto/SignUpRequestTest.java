@@ -232,18 +232,18 @@ class SignUpRequestTest {
 
 
     private SignUpRequest createRequest() {
-        return new SignUpRequest("loginId", "password1!", "username", "email@email.com");
+        return new SignUpRequest("password1!", "username", "email@email.com");
     }
 
     private SignUpRequest createRequestWithEmail(String email) {
-        return new SignUpRequest("loginId", "password1!", "username", email);
+        return new SignUpRequest("password1!", "username", email);
     }
 
     private SignUpRequest createRequestWithPassword(String password) {
-        return new SignUpRequest("loginId", password, "username", "email@email.com");
+        return new SignUpRequest(password, "username", "email@email.com");
     }
 
     private SignUpRequest createRequestWithUsername(String username) {
-        return new SignUpRequest("loginId", "password1!", username, "email@email.com");
+        return new SignUpRequest("password1!", username, "email@email.com");
     }
 }

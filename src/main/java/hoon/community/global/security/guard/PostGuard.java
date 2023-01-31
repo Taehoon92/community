@@ -8,6 +8,7 @@ import hoon.community.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -22,11 +23,16 @@ public class PostGuard extends Guard {
 
     @Override
     protected List<RoleType> getRoleTypes() {
+        log.info("POST GUARD - getRoleTypes call");
         return roleTypes;
     }
 
     @Override
     protected boolean isResourceOwner(Long id) {
+        log.info("POST GUARD - isResourceOwner call");
+
+        log.info("Post Guard = {}", SecurityContextHolder.getContext().getAuthentication());
+
         Post post = postRepository.findById(id).orElseThrow(() -> {throw new AccessDeniedException("");});
         Long memberId = AuthHelper.extractMemberId();
 

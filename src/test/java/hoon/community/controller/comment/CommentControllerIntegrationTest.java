@@ -27,6 +27,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -35,6 +37,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 import static hoon.community.global.factory.dto.CommentCreateRequestFactory.createCommentCreateRequest;
@@ -63,6 +66,7 @@ class CommentControllerIntegrationTest {
     @Autowired SignService signService;
     ObjectMapper objectMapper = new ObjectMapper();
 
+
     Member member1, member2, admin;
     Post post;
 
@@ -81,17 +85,16 @@ class CommentControllerIntegrationTest {
     void readAllTest() throws Exception {
         //given, when, then
         mockMvc.perform(
-                        MockMvcRequestBuilders.get("/api/comments")
-                                .param("postId", String.valueOf(1)))
-
+                        MockMvcRequestBuilders.get("/api/comments/1"))
                 .andExpect(status().isOk());
     }
 
     @Test
     void createTest() throws Exception {
         //given
+        MockHttpServletResponse servletResponse = new MockHttpServletResponse();
         CommentCreateRequest request = createCommentCreateRequest("content", post.getId(), null, null);
-        SignInResponse signInResponse = signService.signIn(createSignInRequest(member1.getEmail(), initDB.getPassword()));
+        SignInResponse signInResponse = signService.signIn(createSignInRequest(member1.getEmail(), initDB.getPassword()), servletResponse);
 
         //when, then
         mockMvc.perform(
@@ -101,7 +104,9 @@ class CommentControllerIntegrationTest {
                                 .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated());
 
-        List<CommentDto> result = commentService.readAll(createCommentReadCondition(post.getId()));
+//        List<CommentDto> result = commentService.readAll(createCommentReadCondition(post.getId()));
+        List<CommentDto> result = commentService.readAll(post.getId());
+
         assertThat(result.size()).isEqualTo(1);
     }
 
@@ -122,8 +127,9 @@ class CommentControllerIntegrationTest {
     @Test
     void deleteByResourceOwnerTest() throws Exception {
         //given
+        MockHttpServletResponse servletResponse = new MockHttpServletResponse();
         Comment comment = commentRepository.save(createComment(member1, post, null));
-        SignInResponse signInResponse = signService.signIn(createSignInRequest(member1.getEmail(), initDB.getPassword()));
+        SignInResponse signInResponse = signService.signIn(createSignInRequest(member1.getEmail(), initDB.getPassword()), servletResponse);
 
         //when, then
         mockMvc.perform(
@@ -137,8 +143,9 @@ class CommentControllerIntegrationTest {
     @Test
     void deleteByAdminTest() throws Exception {
         //given
+        MockHttpServletResponse servletResponse = new MockHttpServletResponse();
         Comment comment = commentRepository.save(createComment(member1, post, null));
-        SignInResponse signInResponse = signService.signIn(createSignInRequest(admin.getEmail(), initDB.getPassword()));
+        SignInResponse signInResponse = signService.signIn(createSignInRequest(admin.getEmail(), initDB.getPassword()), servletResponse);
 
         //when, then
         mockMvc.perform(
@@ -165,8 +172,9 @@ class CommentControllerIntegrationTest {
     @Test
     void deleteAccessDeniedByNotResourceOwnerTest() throws Exception {
         //given
+        MockHttpServletResponse servletResponse = new MockHttpServletResponse();
         Comment comment = commentRepository.save(createComment(member1, post, null));
-        SignInResponse signInResponse = signService.signIn(createSignInRequest(member2.getEmail(), initDB.getPassword()));
+        SignInResponse signInResponse = signService.signIn(createSignInRequest(member2.getEmail(), initDB.getPassword()), servletResponse);
 
         //when, then
         mockMvc.perform(

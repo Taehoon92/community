@@ -1,13 +1,28 @@
 package hoon.community.domain.member.service;
 
-import hoon.community.domain.member.dto.MemberDto;
+import hoon.community.domain.member.dto.*;
+import hoon.community.domain.member.entity.Member;
+import hoon.community.domain.member.entity.MemberRole;
 import hoon.community.domain.member.repository.MemberRepository;
+import hoon.community.domain.role.entity.RoleType;
 import hoon.community.global.exception.CustomException;
 import hoon.community.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 
+import java.awt.print.Pageable;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+@Slf4j
 @RequiredArgsConstructor
 @Service
 @Transactional(readOnly = true)
@@ -15,8 +30,27 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
 
+    private final PasswordEncoder passwordEncoder;
+
     public MemberDto read(Long id) {
         return MemberDto.toDto(memberRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND)));
+    }
+
+    public Set<MemberDetailsTestTestDto> findAll() {
+
+        List<Member> allMember = memberRepository.findAll();
+        return allMember.stream().map(member -> MemberDetailsTestTestDto.toDto(member)).collect(Collectors.toSet());
+    }
+
+    public Page<MemberDetailsTestTestDto> findAllPageable(Pageable pageable) {
+
+//        Page<MemberDetailsTestTestDto> allMember = memberRepository.findAllOrderByIdDesc(pageable);
+        return null;
+    }
+
+
+    public MemberListDto readAll(MemberReadCondition condition) {
+        return MemberListDto.toDto(memberRepository.findAllByCondition2(condition));
     }
 
     @Transactional
@@ -25,7 +59,42 @@ public class MemberService {
         memberRepository.deleteById(id);
     }
 
+    public MemberDetailsDto memberDetails(Long id) {
+        Member member = memberRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        /*
+        Set<String> memberRoles = member.getRoles().stream().map(memberRole -> memberRole.getRole())
+                .map(role -> role.getRoleType())
+                .map(roleType -> roleType.toString()).collect(Collectors.toSet());
+
+         */
+        Set<RoleType> memberRoles = member.getRoles().stream().map(memberRole -> memberRole.getRole())
+                .map(role -> role.getRoleType()).collect(Collectors.toSet());
+
+        return MemberDetailsDto.toDto(member, memberRoles);
+    }
+
     private boolean notExistsMember(Long id) {
         return !memberRepository.existsById(id);
+    }
+
+    @Transactional
+    public boolean modifyPassword(MemberPasswordModifyDto request, BindingResult bindingResult) {
+        Member member = memberRepository.findById(request.getMemberId()).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+        //현재 비밀번호가 일치하는지 확인
+        if(!passwordEncoder.matches(request.getOldPassword(), member.getPassword())) {
+            bindingResult.addError(new FieldError("dto", "oldPassword", "이전 비밀번호가 일치하지 않습니다."));
+            return false;
+        };
+
+        //현재 비밀번호와 새 비밀번호가 다른지 확인
+        if(request.getOldPassword().equals(request.getNewPassword())) {
+            bindingResult.addError(new FieldError("dto", "newPassword", "변경할 비밀번호는 현재 비밀번호와 달라야합니다."));
+            return false;
+        }
+
+        //새 비밀번호를 저장
+        member.updatePassword(passwordEncoder.encode(request.getNewPassword()));
+        return true;
     }
 }

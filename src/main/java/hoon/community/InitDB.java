@@ -56,7 +56,7 @@ public class InitDB {
 
     private void initMemberAdmin() {
         memberRepository.save(
-                new Member("admin", passwordEncoder.encode("password1!"), "admin", "admin@admin.com",
+                new Member(passwordEncoder.encode("password1!"), "admin", "admin@admin.com",
                         List.of(roleRepository.findByRoleType(RoleType.ROLE_USER).orElseThrow(() -> new CustomException(ErrorCode.ROLE_NOT_FOUND)),
                                 roleRepository.findByRoleType(RoleType.ROLE_ADMIN).orElseThrow(() -> new CustomException(ErrorCode.ROLE_NOT_FOUND)))
                 )
@@ -64,14 +64,22 @@ public class InitDB {
     }
 
     private void initMemberTester() {
+        IntStream.range(1,1000)
+                        .forEach(i -> memberRepository.save(
+                                new Member(passwordEncoder.encode("password1!"), "tester" +i, "tester"+i+"@tester.com",
+                                        List.of(roleRepository.findByRoleType(RoleType.ROLE_USER).orElseThrow(() -> new CustomException(ErrorCode.ROLE_NOT_FOUND))))
+                        ));
+        /*
         memberRepository.saveAll(
                 List.of(
-                        new Member("tester1", passwordEncoder.encode("password1!"), "tester1", "tester1@tester.com",
+                        new Member(passwordEncoder.encode("password1!"), "tester1", "tester1@tester.com",
                                 List.of(roleRepository.findByRoleType(RoleType.ROLE_USER).orElseThrow(()-> new CustomException(ErrorCode.ROLE_NOT_FOUND)))),
-                        new Member("tester2", passwordEncoder.encode("password1!"), "tester2", "tester2@tester.com",
+                        new Member(passwordEncoder.encode("password1!"), "tester2", "tester2@tester.com",
                                 List.of(roleRepository.findByRoleType(RoleType.ROLE_USER).orElseThrow(()-> new CustomException(ErrorCode.ROLE_NOT_FOUND))))
                 )
         );
+
+         */
     }
 
     private void initPost() {
@@ -89,16 +97,17 @@ public class InitDB {
     }
 
     private void initComment() {
-        Member member = memberRepository.findAll().get(0);
+        Member member1 = memberRepository.findAll().get(0);
+        Member member2 = memberRepository.findAll().get(1);
         Post post = postRepository.findAll().get(0);
-        Comment c1 = commentRepository.save(new Comment("content", member, post, null));
-        Comment c2 = commentRepository.save(new Comment("content", member, post, c1));
-        Comment c3 = commentRepository.save(new Comment("content", member, post, c1));
-        Comment c4 = commentRepository.save(new Comment("content", member, post, c2));
-        Comment c5 = commentRepository.save(new Comment("content", member, post, c2));
-        Comment c6 = commentRepository.save(new Comment("content", member, post, c4));
-        Comment c7 = commentRepository.save(new Comment("content", member, post, c3));
-        Comment c8 = commentRepository.save(new Comment("content", member, post, null));
+        Comment c1 = commentRepository.save(new Comment("content", member1, post, null));
+        Comment c2 = commentRepository.save(new Comment("content", member1, post, c1));
+        Comment c3 = commentRepository.save(new Comment("content", member2, post, c1));
+        Comment c4 = commentRepository.save(new Comment("content", member1, post, c2));
+        Comment c5 = commentRepository.save(new Comment("content", member1, post, c2));
+        Comment c6 = commentRepository.save(new Comment("content", member2, post, c4));
+        Comment c7 = commentRepository.save(new Comment("content", member2, post, c3));
+        Comment c8 = commentRepository.save(new Comment("content", member2, post, null));
 
     }
 }

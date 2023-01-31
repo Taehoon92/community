@@ -130,33 +130,33 @@ class MemberRepositoryTest {
     @Test
     void memberUniqueEmailTest() {
         //given
-        Member member = memberRepository.save(createMember("loginId1","password1","username1","email1"));
+        Member member = memberRepository.save(createMember("password1","username1","email1"));
         clear();
 
         //when, then
-        assertThatThrownBy(() -> memberRepository.save(createMember("loginId2", "password2", "username2", member.getEmail())))
+        assertThatThrownBy(() -> memberRepository.save(createMember("password2", "username2", member.getEmail())))
                 .isInstanceOf(DataIntegrityViolationException.class);
     }
 
     @Test
     void memberUniqueloginIdTest() {
         //given
-        Member member = memberRepository.save(createMember("loginId1", "password1", "username1", "email1"));
+        Member member = memberRepository.save(createMember("password1", "username1", "email1"));
         clear();
 
         //when, then
-        assertThatThrownBy(() -> memberRepository.save(createMember(member.getLoginId(), "password2", "username2", "email2")))
+        assertThatThrownBy(() -> memberRepository.save(createMember("password2", "username2", "email2")))
                 .isInstanceOf(DataIntegrityViolationException.class);
     }
 
     @Test
     void memberUniqueUsernameTest() {
         //given
-        Member member = memberRepository.save(createMember("loginId1", "password1", "username1", "email"));
+        Member member = memberRepository.save(createMember("password1", "username1", "email"));
         clear();
 
         //when, then
-        assertThatThrownBy(() -> memberRepository.save(createMember("loginId2", "password2", "username1", "email2")))
+        assertThatThrownBy(() -> memberRepository.save(createMember("password2", "username1", "email2")))
                 .isInstanceOf(DataIntegrityViolationException.class);
     }
 
@@ -169,17 +169,6 @@ class MemberRepositoryTest {
         //when,then
         assertThat(memberRepository.existsByEmail(member.getEmail())).isTrue();
         assertThat(memberRepository.existsByEmail(member.getEmail()+"a")).isFalse();
-    }
-
-    @Test
-    void memberExistsByLoginIdTest() {
-        //given
-        Member member = memberRepository.save(createMember());
-        clear();
-
-        //when,then
-        assertThat(memberRepository.existsByLoginId(member.getLoginId())).isTrue();
-        assertThat(memberRepository.existsByLoginId(member.getLoginId()+"a")).isFalse();
     }
 
     @Test

@@ -7,6 +7,7 @@ import hoon.community.global.security.CustomAuthenticationEntryPoint;
 import hoon.community.global.security.CustomUserDetailsService;
 import hoon.community.global.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -37,8 +38,9 @@ public class SecurityConfig {
 
         return web -> {
             web.ignoring()
+                    .requestMatchers(PathRequest.toStaticResources().atCommonLocations())
                     .antMatchers(
-                            "/css/**", "/fonts/**", "/plugin/**", "/scripts/**", "/favicon.ico", "/resources/**", "/error", "/swagger-ui/**","/swagger-resources/**","/v3/api-docs/**"
+                            "/css/**", "/fonts/**", "/plugin/**", "/scripts/**", "/favicon.ico", "/resources/**", "/error", "/swagger-ui/**","/swagger-resources/**","/v3/api-docs/**", "**/favicon.ico"
                     )
                     .mvcMatchers(
                             "/exception/**"
@@ -55,30 +57,52 @@ public class SecurityConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 
                 .and()
-                    .authorizeRequests()
-//                        .antMatchers("/**").permitAll();
-                        .antMatchers(HttpMethod.POST, "/api/sign-in","/api/sign-up","/api/refresh-token").permitAll()
+                .authorizeRequests()
 
-                        .antMatchers(HttpMethod.GET, "/api/**").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/sign-in", "/api/sign-up", "/api/refresh-token").permitAll()
 
-                        .antMatchers(HttpMethod.DELETE, "/api/members/{id}/**").access("@memberGuard.check(#id)")
+                .antMatchers(HttpMethod.DELETE, "/api/members/{id}/**").access("@memberGuard.check(#id)")
+                .antMatchers(HttpMethod.GET, "/api/members/details").authenticated()
+                .antMatchers(HttpMethod.GET, "/api/members").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/members/all").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/members/allPageable").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/members/modify/password").authenticated()
 
-                        .antMatchers(HttpMethod.POST, "/api/posts").authenticated()
-                        .antMatchers(HttpMethod.GET, "/api/posts/**").permitAll()
-                        .antMatchers(HttpMethod.PATCH, "/api/posts/{id}").access("@postGuard.check(#id)")
-                        .antMatchers(HttpMethod.DELETE, "/api/posts/{id}").access("@postGuard.check(#id)")
 
-                        .antMatchers(HttpMethod.POST, "/api/comments").authenticated()
-                        .antMatchers(HttpMethod.DELETE,"/api/comments/{id}").access("@commentGuard.check(#id)")
+                .antMatchers(HttpMethod.POST, "/api/posts").authenticated()
+                .antMatchers(HttpMethod.GET, "/api/posts/**").permitAll()
+//                        .antMatchers(HttpMethod.GET, "/api/posts/**").access("@postGuard.check(#id)")
+                .antMatchers(HttpMethod.PATCH, "/api/posts/{id}").access("@postGuard.check(#id)")
+                .antMatchers(HttpMethod.DELETE, "/api/posts/{id}").access("@postGuard.check(#id)")
 
-                        .anyRequest().hasAnyRole("ROLE_ADMIN")
+                .antMatchers(HttpMethod.GET, "/api/comments/{id}").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/comments").authenticated()
+                .antMatchers(HttpMethod.DELETE, "/api/comments/{id}").access("@commentGuard.check(#id)")
+
+                .antMatchers(HttpMethod.GET, "/posts/create").authenticated()
+                .antMatchers(HttpMethod.POST, "/posts/create").authenticated()
+                .antMatchers(HttpMethod.GET, "/posts/update/{id}").access("@postGuard.check(#id)")
+
+//                        .antMatchers(HttpMethod.PATCH, "/posts/update/{id}").access("@postGuard.check(#id)")
+                .antMatchers(HttpMethod.GET, "/posts", "/posts/{id}").permitAll()
+
+                .antMatchers(HttpMethod.GET, "/members/details", "/members/modify/**").authenticated()
+                .antMatchers(HttpMethod.POST, "/members/modify/password").authenticated()
+
+
+                .antMatchers("/auth/**").permitAll()
+                .antMatchers("/").permitAll()
+                .antMatchers("/index").permitAll()
+
+                .anyRequest().hasAnyRole("ROLE_ADMIN")
                 .and()
-                    .exceptionHandling().accessDeniedHandler(new CustomAccessDeniedHandler())
+                .exceptionHandling().accessDeniedHandler(new CustomAccessDeniedHandler())
                 .and()
-                    .exceptionHandling().authenticationEntryPoint(new CustomAuthenticationEntryPoint())
+                .exceptionHandling().authenticationEntryPoint(new CustomAuthenticationEntryPoint())
                 .and()
-                    .addFilterBefore(new JwtAuthenticationFilter(accessTokenHelper, userDetailsService), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JwtAuthenticationFilter(accessTokenHelper, userDetailsService), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
 }
+

@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" layout:decorate="layout">
+
+<th:block layout:fragment="content">
+    <div class="card-content">
+        <form class="form-horizontal form-view">
+            <div class="form-group">
+                <label for="inp-type-1" class="col-sm-2 control-label">제목</label>
+                <div class="col-sm-10"><p id="title" class="form-control"></p></div>
+            </div>
+
+            <div class="form-group">
+                <label for="inp-type-2" class="col-sm-2 control-label">이름</label>
+                <div class="col-sm-10"><p id="writer" class="form-control"></p></div>
+            </div>
+
+            <div class="form-group">
+                <label for="inp-type-5" class="col-sm-2 control-label">내용</label>
+                <div class="col-sm-10"><p id="content" class="form-control"></p></div>
+            </div>
+
+            <div class="form-group">
+                <label for="inp-type-5" class="col-sm-2 control-label">등록일</label>
+                <div class="col-sm-10"><p id="createdDate" class="form-control"></p></div>
+            </div>
+
+            <div class="form-group">
+                <label for="inp-type-5" class="col-sm-2 control-label">조회 수</label>
+                <div class="col-sm-10"><p id="hits" class="form-control"></p></div>
+            </div>
+        </form>
+
+        <div class="btn_wrap text-center">
+            <a href="javascript: void(0);" onclick="goList();" class="btn btn-default waves-effect waves-light">뒤로가기</a>
+            <a href="javascript: void(0);" onclick="goUpdate();" class="btn btn-primary waves-effect waves-light">수정하기</a>
+            <button type="button" onclick="deleteBoard();" class="btn btn-danger waves-effect waves-light">삭제하기</button>
+        </div>
+
+        <div class="comments">
+            <label for="inp-type-5" class="col-sm-2 control-label">댓글</label>
+            <form action="" id="form-comment" class="form-comment">
+                <div class="form-group">
+                    <div class="comment-area">
+                        <textarea id="commentContent" name="commentContent"class="form-control comment-textarea" placeholder="댓글을 입력하세요."></textarea>
+                    </div>
+                    <div class="comment-write-button">
+                        <button type="button" onclick="save()" class="btn-comment btn btn-primary waves-effect waves-light">Save</button>
+                    </div>
+
+
+                </div>
+            </form>
+
+            <div class="col-sm-10"><p id="comments"></p></div>
+        </div>
+
+
+    </div>
+    <!-- /.card-content -->
+</th:block>
+
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+
+        let commentHtml = '';
+        let commentDepth = 0;
+
+
+        window.onload = () => {
+            getPostInfo();
+            getComments();
+        }
+
+        /**
+         * 게시글 조회
+         */
+        function getPostInfo() {
+            const id = /*[[ ${id} ]]*/;
+            $.ajax({
+                type: "GET",
+                url: `/api/posts/${id}`,
+                success: function (json) {
+                    if (json) {
+
+                        json.result.data.createdDate = moment(json.result.data.createdDate).format('YYYY-MM-DD HH:mm:ss');
+                        Object.keys(json.result.data).forEach(key => {
+                            const elem = document.getElementById(key);
+                            if(key == "member") {
+                                const writerElem = document.getElementById("writer");
+                                writerElem.innerText = json.result.data[key].username;
+                            }
+                            if(elem) {
+                                elem.innerText = json.result.data[key];
+                            }
+                        });
+                    }
+                },
+                error: function (error) {
+                    alert('게시글 정보를 찾을 수 없습니다');
+                }
+
+            });
+        }
+
+        // 왜 fetch 통해서는 데이터 안받와아질까??
+        function getPost() {
+            const id = /*[[ ${id} ]]*/;
+            fetch(`/api/posts/${id}`).then(response => {
+
+                if(!response.ok) {
+                    throw new Error('Request failed...');
+                    console.log("error");
+                }
+
+                return response.json();
+
+            }).then(json => {
+                json.createdDate = moment(json.createdDate).format('YYYY-MM-DD HH:mm:ss');
+                Object.keys(json).forEach(key => {
+                    const elem = document.getElementById(key);
+                    if(elem) {
+                        elem.innerText = json[key];
+                    }
+                });
+            }).catch(error => {
+                alert('게시글 정보를 찾을 수 없습니다');
+                goList();
+            });
+        }
+
+
+        function getComments() {
+            const id = /*[[ ${id} ]]*/;
+            const uri = `/api/comments/${id}`;
+            const params = {
+                postId: `${id}`
+            };
+            $.ajax({
+                type: "GET",
+                url: uri,
+                contentType: 'application/json',
+                //dataType:'json',
+                //data: JSON.stringify(params),
+                success: function (json) {
+                    if (!json.success) {
+                        console.log('에러발생');
+                    }
+                    console.log(json.result.data);
+                    recursiveGetComments(json.result.data);
+                    document.getElementById('comments').innerHTML = commentHtml;
+                },
+                error: function (error) {
+                    alert('게시글 정보를 찾을 수 없습니다');
+                }
+            });
+/*
+            fetch(uri, {
+                method: 'GET',
+                headers: {
+                    'Content-Type':'application/json'
+                },
+                body: JSON.stringify(params)
+            }).then(response => {
+                console.log(response);
+                if(!response.ok){
+                    throw new Error('Request failed');
+                }
+
+            }).catch(error => {
+                console.log('오류 발생');
+            });
+
+ */
+        }
+
+        function recursiveGetComments(arrComments) {
+            arrComments.forEach((obj) => {
+                commentHtml += `<div class="comment-block">
+                    <span>`;
+                for(let i = 0 ; i <= commentDepth ; i++) {
+                    commentHtml += `&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`;
+                }
+                commentHtml += `</span>`;
+                if(obj.deleted) {//삭제된 경우
+                    commentHtml +=`
+                        <span class="comment-username">***</span><span class="comment-createdDate">(${moment(obj.createdDate).format('YYYY-MM-DD HH:mm')})</span>
+
+                        <p class="comment-content">`;
+                } else {
+                    commentHtml += `
+                        <span class="comment-username">${obj.member.username}</span><span class="comment-createdDate">(${moment(obj.createdDate).format('YYYY-MM-DD HH:mm')})</span>
+                        <span class="comment-link"><a class="comment-link" href="javascript:void(0);" onclick="replyComment(${obj.id})">reply</a></span>
+                        <span class="comment-link"><a class="comment-link" href="javascript:void(0);" onclick="deleteComment(${obj.id})">delete</a></span>
+
+                        <p class="comment-content">`;
+                }
+
+                for(let i = 0 ; i <= commentDepth ; i++) {
+                    commentHtml += `&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`;
+                }
+
+                if(obj.deleted) {
+                    commentHtml += `
+                        삭제된 댓글입니다.</p></div>
+                    `;
+                } else {
+                    commentHtml += `
+                        ${obj.content}</p>
+                        <div id="reply-comment-${obj.id}"></div></div>
+                    `;
+                }
+
+
+                if(obj.children.length != 0) {
+                    commentDepth ++;
+                    recursiveGetComments(obj.children);
+                }
+            })
+            commentDepth --;
+        }
+
+        /**
+         * 뒤로가기
+         */
+        function goList() {
+            location.href = '/posts' + location.search;
+        }
+
+        /**
+         * 수정하기
+         */
+        function goUpdate() {
+            const id = /*[[ ${id} ]]*/;
+            location.href = `/posts/update/${id}`;
+        }
+
+        /**
+         * 게시글 삭제하기
+         */
+        function deleteBoard() {
+            const id = /*[[ ${id} ]]*/;
+
+            if(!confirm(`${id}번 게시글을 삭제할까요?`)) {
+                return false;
+            }
+
+            fetch(`/api/posts/${id}`, {
+                method: 'DELETE',
+                headers: {'Content-Type': 'application/json'},
+            }).then(response => {
+                if(!response.ok) {
+                    throw new Error('Request failed...');
+                }
+
+                alert('삭제되었습니다');
+                goList();
+            }).catch(error => {
+                alert('오류가 발생하였습니다');
+            });
+        }
+
+        /**
+         * 댓글 등록
+         */
+        function save() {
+            const id = /*[[ ${id} ]]*/;
+            const form = document.getElementById('form-comment');
+            const params = {
+                content: form.commentContent.value,
+                postId: id
+            };
+            const uri = `/api/comments`
+
+            fetch(uri, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(params)
+            }).then(response => {
+                if(!response.ok) {
+                    throw new Error('Request failed');
+                }
+                console.log(response);
+                location.href = `/posts/${id}`;
+            }).catch(error => {
+                alert('오류가 발생했습니다');
+            });
+        }
+
+        function replySave(commentId) {
+
+            const id = /*[[ ${id} ]]*/;
+            const form = document.getElementById('form-reply-comment');
+            const params = {
+                content: form.commentContent.value,
+                postId: id,
+                parentId: commentId
+            };
+            console.log("params");
+            console.log(JSON.stringify(params));
+            const uri = `/api/comments`
+
+            fetch(uri, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(params)
+            }).then(response => {
+                if(!response.ok) {
+                    throw new Error('Request failed');
+                }
+                console.log(response);
+                location.href = `/posts/${id}`;
+            }).catch(error => {
+                alert('오류가 발생했습니다');
+            });
+
+
+        }
+
+        /**
+         * 댓글 답글 등록
+         */
+        function replyComment(commentId) {
+            console.log("reply Comment! comment " + commentId);
+            let replyAddFormHtml = '';
+            replyAddFormHtml += `
+                <form action="" id="form-reply-comment" className="form-comment">
+                    <div className="form-group">
+                        <div className="col-sm-10">
+                            <input id="commentContent" name="commentContent" className="form-control"
+                                      placeholder="댓글을 입력하세요."/>
+                            <button type="button" onClick="replySave(${commentId})" className="btn btn-primary waves-effect waves-light">등록
+                            </button>
+                        </div>
+                    </div>
+                </form>`;
+
+            document.getElementById('reply-comment-'+commentId).innerHTML = replyAddFormHtml;
+
+        }
+
+
+
+        /**
+         * 댓글 삭제
+         */
+        function deleteComment(commentId) {
+            const postId = /*[[ ${id} ]]*/;
+            const uri = `/api/comments/${commentId}`;
+
+            if(!confirm(`댓글을 삭제할까요?`)) {
+                return false;
+            }
+
+            fetch(uri, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then(response => {
+                if(!response.ok) {
+                    throw new Error('Request failed');
+                }
+                console.log(response);
+                location.href = `/posts/${postId}`;
+            }).catch(error => {
+                alert('오류가 발생했습니다');
+            });
+
+        }
+
+
+        /*]]>*/
+    </script>
+</th:block>
+
+</html>

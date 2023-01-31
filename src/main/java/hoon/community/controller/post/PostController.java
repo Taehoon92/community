@@ -51,7 +51,7 @@ public class PostController {
     @ApiOperation(value = "게시글 수정", notes = "게시글을 수정한다.")
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Response update(@ApiParam(value = "게시글 id", required = true) @PathVariable Long id, @Valid @ModelAttribute PostUpdateRequest request) {
+    public Response update(@ApiParam(value = "게시글 id", required = true) @PathVariable Long id, @Valid @RequestBody PostUpdateRequest request) {
         postService.update(id, request);
         return Response.success();
     }
@@ -59,7 +59,7 @@ public class PostController {
     @ApiOperation(value = "게시글 목록 조회", notes = "게시글 목록을 조회한다.")
     @GetMapping("")
     @ResponseStatus(HttpStatus.OK)
-    public Response readAll(@Valid PostReadCondition condition) {
+    public Response readAll(@Valid @ModelAttribute PostReadCondition condition) {
         return Response.success(postService.readAll(condition));
     }
 }

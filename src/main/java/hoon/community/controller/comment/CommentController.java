@@ -25,10 +25,12 @@ public class CommentController {
     private final CommentService commentService;
 
     @ApiOperation(value = "댓글 목록 조회", notes = "댓글 목록을 조회한다.")
-    @GetMapping("")
+    @GetMapping("/{postId}")
     @ResponseStatus(HttpStatus.OK)
-    public Response readAll(@Valid CommentReadCondition condition) {
-        return Response.success(commentService.readAll(condition));
+//    public Response readAll(@Valid @PathVariable CommentReadCondition condition) {
+    public Response readAll(@Valid @PathVariable Long postId) {
+        log.info("condition = {}", postId);
+        return Response.success(commentService.readAll(postId));
     }
 
     @ApiOperation(value = "댓글 생성", notes = "댓글을 생성한다")
@@ -36,6 +38,7 @@ public class CommentController {
     @ResponseStatus(HttpStatus.CREATED)
     @AssignMemberId
     public Response create(@Valid @RequestBody CommentCreateRequest request) {
+        log.info("CommentCreateRequest = {}",request);
         commentService.create(request);
         return Response.success();
     }

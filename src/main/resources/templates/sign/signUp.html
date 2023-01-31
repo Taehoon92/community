@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" layout:decorate="layout">
+
+<th:block layout:fragment="content">
+
+    <div class="container">
+
+        <div class="py-5 text-center">
+            <h2>회원 가입</h2>
+        </div>
+
+        <h4 class="mb-3">회원 정보 입력</h4>
+
+        <form action="/api/sign-up" th:action th:object="${member}" method="post">
+
+            <div th:if="${#fields.hasGlobalErrors()}">
+                <p class="field-error" th:each="err : ${#fields.globalErrors()}" th:text="${err}">전체 오류 메시지</p>
+            </div>
+
+            <div>
+                <label for="loginId">ID</label>
+                <input type="text" id="loginId" th:field="*{loginId}" class="form-control"
+                       th:errorclass="field-error">
+                <div class="field-error" th:errors="*{loginId}" />
+            </div>
+            <div>
+                <label for="password">비밀번호</label>
+                <input type="password" id="password" th:field="*{password}" class="form-control"
+                       th:errorclass="field-error">
+                <div class="field-error" th:errors="*{password}" />
+            </div>
+            <div>
+                <label for="username">이름</label>
+                <input type="text" id="username" th:field="*{username}" class="form-control"
+                       th:errorclass="field-error">
+                <div class="field-error" th:errors="*{username}" />
+            </div>
+            <div>
+                <label for="email">이메일</label>
+                <input type="text" id="email" th:field="*{email}" class="form-control"
+                       th:errorclass="field-error">
+                <div class="field-error" th:text="${duplicateLoginId}? ${duplicateLoginIdErr}:''"></div>
+                <button type="button" class="btn btn-secondary" onclick="duplicateEmailCheck()">ID 중복 확인</button>
+                <div class="field-error" th:errors="*{email}" />
+                <span id="duplicateCheckResult"></span>
+            </div>
+
+            <hr class="my-4">
+
+            <div class="row">
+                <div class="col">
+                    <button class="btn btn-primary" type="submit">회원 가입</button>
+                    <button class="btn btn-secondary" th:onclick="|location.href='@{/}'|"
+                            type="button">취소</button>
+                </div>
+            </div>
+
+        </form>
+
+    </div> <!-- /container -->
+
+</th:block>
+
+<th:block layout:fragment="script">
+
+    <style>
+        .container {
+            max-width: 560px;
+        }
+        .field-error {
+            border-color: #dc3545;
+            color: #dc3545;
+        }
+    </style>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <script type="text/javascript">
+        function duplicateEmailCheck() {
+
+            var email = {"email": $("#email").val()};
+            $.ajax({
+                type: "POST",
+                url: "/api/duplicate-email-check",
+                data: JSON.stringify(email),
+                dataType: 'json',
+                contentType: "application/json",
+                success: function(data) {
+                    if(!data.success) {
+                        //id 중복
+                        $("#duplicateCheckResult").text(data.result.msg);
+                    }
+                    else {
+                        $("#duplicateCheckResult").text("사용 가능한 email 입니다.");
+                    }
+                }
+            });
+        }
+    </script>
+
+</th:block>
+
+
+</html>

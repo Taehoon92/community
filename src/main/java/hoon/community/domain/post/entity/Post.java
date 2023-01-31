@@ -46,6 +46,7 @@ public class Post extends BaseTimeEntity {
         this.title = title;
         this.content = content;
         this.member = member;
+        this.hits = 0;
     }
 
     public void update(PostUpdateRequest request) {
@@ -55,5 +56,8 @@ public class Post extends BaseTimeEntity {
 
     public void increaseHits() {
         this.hits ++;
+    }
+    public void decreaseHits() {
+        this.hits --;
     }
 }

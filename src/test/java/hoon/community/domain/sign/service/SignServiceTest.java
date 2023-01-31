@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
@@ -38,7 +39,7 @@ class SignServiceTest {
 
     @BeforeEach
     void beforeEach() {
-        signService = new SignService(memberRepository, roleRepository, passwordEncoder, accessTokenHelper, refreshTokenHelper);
+        signService = new SignService(memberRepository, roleRepository, passwordEncoder, accessTokenHelper, refreshTokenHelper, null);
     }
 
 
@@ -73,9 +74,10 @@ class SignServiceTest {
         given(passwordEncoder.matches(anyString(), anyString())).willReturn(true);
         given(accessTokenHelper.createToken(anyString())).willReturn("access");
         given(refreshTokenHelper.createToken(anyString())).willReturn("refresh");
+        MockHttpServletResponse servletResponse = new MockHttpServletResponse();
 
         //when
-        SignInResponse response = signService.signIn(new SignInRequest("email", "password"));
+        SignInResponse response = signService.signIn(new SignInRequest("email", "password"), servletResponse);
 
         //then
         assertThat(response.getAccessToken()).isEqualTo("access");
@@ -86,9 +88,11 @@ class SignServiceTest {
     void SignInExceptionByNoneMemberTest() {
         //given
         given(memberRepository.findByEmail(any())).willReturn(Optional.empty());
+        MockHttpServletResponse servletResponse = new MockHttpServletResponse();
+
 
         //when, then
-        assertThatThrownBy(() -> signService.signIn(new SignInRequest("email", "password"))).isInstanceOf(CustomException.class);
+        assertThatThrownBy(() -> signService.signIn(new SignInRequest("email", "password"), servletResponse)).isInstanceOf(CustomException.class);
     }
 
     @Test
@@ -96,9 +100,10 @@ class SignServiceTest {
         //given
         given(memberRepository.findByEmail(any())).willReturn(Optional.of(MemberFactory.createMember()));
         given(passwordEncoder.matches(anyString(), anyString())).willReturn(false);
+        MockHttpServletResponse servletResponse = new MockHttpServletResponse();
 
         //when, then
-        assertThatThrownBy(() -> signService.signIn(new SignInRequest("email","password"))).isInstanceOf(CustomException.class);
+        assertThatThrownBy(() -> signService.signIn(new SignInRequest("email","password"), servletResponse)).isInstanceOf(CustomException.class);
     }
 
     @Test
@@ -132,7 +137,7 @@ class SignServiceTest {
 
 
     private SignUpRequest createSignUpRequest() {
-        return new SignUpRequest("loginId","password","username","email");
+        return new SignUpRequest("password","username","email");
     }
 
 }

@@ -16,6 +16,7 @@ public class PostDto {
     private String title;
     private String content;
     private MemberDto member;
+    private Integer hits;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Australia/Sydney")
     private LocalDateTime createdDate;
@@ -28,6 +29,7 @@ public class PostDto {
                 post.getTitle(),
                 post.getContent(),
                 MemberDto.toDto(post.getMember()),
+                post.getHits(),
                 post.getCreatedDate(),
                 post.getModifiedDate()
         );

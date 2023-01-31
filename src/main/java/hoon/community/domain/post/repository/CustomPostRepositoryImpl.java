@@ -59,7 +59,8 @@ public class CustomPostRepositoryImpl extends QuerydslRepositorySupport implemen
         return new BooleanBuilder()
                 .and(orConditionsByEqMemberIds(condition.getMemberId()))
                 .and(orConditionsByEqUsername(condition.getUsername()))
-                .and(orConditionsByContainsContent(condition.getContent()));
+                .and(orConditionsByContainsContent(condition.getContent()))
+                .and(orConditionsByContainsTitle(condition.getTitle()));
     }
 
     private Predicate orConditionsByEqMemberIds(List<Long> memberIds) {
@@ -72,6 +73,10 @@ public class CustomPostRepositoryImpl extends QuerydslRepositorySupport implemen
 
     private Predicate orConditionsByContainsContent(List<String> content) {
         return orConditions(content, post.content::contains);
+    }
+
+    private Predicate orConditionsByContainsTitle(List<String> title) {
+        return orConditions(title, post.title::contains);
     }
 
     private <T> Predicate orConditions(List<T> values, Function<T, BooleanExpression> term) {

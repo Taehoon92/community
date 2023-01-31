@@ -20,6 +20,7 @@ import java.util.List;
 public class CommentDto {
     private Long id;
     private String content;
+    private boolean deleted;
     private MemberDto member;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Australia/Sydney")
     private LocalDateTime createdDate;
@@ -28,7 +29,7 @@ public class CommentDto {
     public static List<CommentDto> toDtoList(List<Comment> comments) {
         NestedConvertHelper helper = NestedConvertHelper.newInstance(
                 comments,
-                c -> new CommentDto(c.getId(), c.isDeleted() ? null : c.getContent(), c.isDeleted() ? null : MemberDto.toDto(c.getMember()), c.getCreatedDate(), new ArrayList<>()),
+                c -> new CommentDto(c.getId(), c.isDeleted() ? null : c.getContent(), c.isDeleted(), c.isDeleted() ? null : MemberDto.toDto(c.getMember()), c.getCreatedDate(), new ArrayList<>()),
                 c -> c.getParent(),
                 c -> c.getId(),
                 d -> d.getChildren());

@@ -1,7 +1,10 @@
 package hoon.community.global.security;
 
+import com.querydsl.core.types.dsl.BooleanExpression;
+import hoon.community.domain.role.entity.RoleType;
 import hoon.community.domain.sign.service.TokenHelper;
 import hoon.community.domain.sign.service.TokenService;
+import hoon.community.global.security.guard.AuthHelper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -12,8 +15,12 @@ import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -25,9 +32,31 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        String token = extractToken(request);
+
+        String token;
+
+        /**
+         * View 용 쿠키에 임시 저장된 토큰값 가져오기
+         */
+        Cookie cookie = null;
+        if(((HttpServletRequest) request).getCookies() != null) {
+            cookie = Arrays.stream(((HttpServletRequest) request).getCookies()).filter(c -> c.getName().equals("accessToken")).findAny().orElse(null);
+            log.info("JWT - Cookie = {}", cookie);
+        }
+
+        
+        if(cookie != null) {
+            token = "Bearer " + cookie.getValue(); // 쿠키에서 accessToken 가져오기 위해서 임의로 작성한 코드
+        }
+        else {
+            token = extractToken(request);
+        }
+
         if(validateToken(token)) {
+            log.info("JWT - validation -> setAuthentication");
             setAuthentication(token);
+
+            setSession(request, token);
         }
 
         chain.doFilter(request, response);
@@ -42,9 +71,31 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
     }
 
     private void setAuthentication(String token) {
+        log.info("SET AUTHENTICATION");
+
         String userId = accessTokenHelper.extractSubject(token);
         CustomUserDetails userDetails = userDetailsService.loadUserByUsername(userId);
         SecurityContextHolder.getContext().setAuthentication(new CustomAuthenticationToken(userDetails, userDetails.getAuthorities()));
+    }
+
+    //사용자 정보용 세션 set
+    private void setSession(ServletRequest request, String token) {
+        HttpSession session = ((HttpServletRequest)request).getSession();
+
+        /**
+         * TODO!
+         * 세션이 계속 set 되는데, 이를 어떻게 해결할까?!
+         */
+        Optional userRole;
+        userRole = AuthHelper.extractMemberRoles().stream().filter(roleType -> roleType == RoleType.ROLE_ADMIN).findAny();
+
+        log.info("SetSession Role = {}", userRole);
+        if (userRole.isPresent()) {
+            session.setAttribute("role", "Admin");
+        }
+        else {
+            session.setAttribute("role", "User");
+        }
     }
 
 }

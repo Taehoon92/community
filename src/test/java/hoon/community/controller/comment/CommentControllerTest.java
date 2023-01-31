@@ -48,11 +48,11 @@ class CommentControllerTest {
 
         //when, then
         mockMvc.perform(
-                        MockMvcRequestBuilders.get("/api/comments/")
-                                .param("postId", String.valueOf(condition.getPostId())))
+                        MockMvcRequestBuilders.get("/api/comments/1"))
                 .andExpect(MockMvcResultMatchers.status().isOk());
 
-        verify(commentService).readAll(condition);
+//        verify(commentService).readAll(condition);
+        verify(commentService).readAll(1L);
 
     }
 

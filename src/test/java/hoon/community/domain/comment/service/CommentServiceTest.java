@@ -56,7 +56,8 @@ class CommentServiceTest {
                 );
 
         //when
-        List<CommentDto> result = commentService.readAll(createCommentReadCondition());
+//        List<CommentDto> result = commentService.readAll(createCommentReadCondition());
+        List<CommentDto> result = commentService.readAll(1L);
 
         //then
         assertThat(result.size()).isEqualTo(2);
@@ -71,7 +72,9 @@ class CommentServiceTest {
                 );
 
         //when
-        List<CommentDto> result = commentService.readAll(createCommentReadCondition());
+//        List<CommentDto> result = commentService.readAll(createCommentReadCondition());
+        List<CommentDto> result = commentService.readAll(1L);
+
 
         //then
         assertThat(result.size()).isEqualTo(2);

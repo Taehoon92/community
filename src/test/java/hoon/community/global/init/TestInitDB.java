@@ -43,7 +43,7 @@ public class TestInitDB {
 
     private void initTestAdmin() {
         memberRepository.save(
-                new Member("loginId", passwordEncoder.encode(password), "admin", adminEmail,
+                new Member(passwordEncoder.encode(password), "admin", adminEmail,
                         List.of(roleRepository.findByRoleType(RoleType.ROLE_USER).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND)),
                                 roleRepository.findByRoleType(RoleType.ROLE_ADMIN).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND))))
         );
@@ -52,9 +52,9 @@ public class TestInitDB {
     private void initTestMember() {
         memberRepository.saveAll(
                 List.of(
-                        new Member("login1", passwordEncoder.encode(password), "member1", member1Email,
+                        new Member(passwordEncoder.encode(password), "member1", member1Email,
                                 List.of(roleRepository.findByRoleType(RoleType.ROLE_USER).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND)))),
-                        new Member("login2", passwordEncoder.encode(password), "member2", member2Email,
+                        new Member(passwordEncoder.encode(password), "member2", member2Email,
                                 List.of(roleRepository.findByRoleType(RoleType.ROLE_USER).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND)))))
         );
     }

@@ -75,7 +75,7 @@ class CustomPostRepositoryImplTest {
 
     private List<Member> saveMember(int size) {
         return IntStream.range(0, size)
-                .mapToObj(i -> memberRepository.save(MemberFactory.createMember("member"+i, "password"+i, "username"+i, "member"+i+"@email.com"))).collect(Collectors.toList());
+                .mapToObj(i -> memberRepository.save(MemberFactory.createMember("password"+i, "username"+i, "member"+i+"@email.com"))).collect(Collectors.toList());
     }
     private void clear() {
         em.flush();

@@ -13,6 +13,11 @@ public enum ErrorCode {
 
     BIND_ERROR(HttpStatus.BAD_REQUEST, "바인딩 오류입니다."),
 
+    SAME_AS_OLD_PASSWORD(HttpStatus.BAD_REQUEST, "이전 비밀번호와 현재 비밀번호가 같습니다."),
+
+    WRONG_OLD_PASSWORD(HttpStatus.BAD_REQUEST, "현재 비밀번호가 일치하지 않습니다."),
+
+
     MISSING_REQUEST_HEADER(HttpStatus.BAD_REQUEST, "요청 헤더가 누락되었습니다"),
 
     /* 401 UNAUTHORIZED */

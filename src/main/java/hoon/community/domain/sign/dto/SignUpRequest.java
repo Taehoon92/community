@@ -22,22 +22,16 @@ import java.util.List;
 @NoArgsConstructor
 public class SignUpRequest {
 
-    @ApiModelProperty(value = "아이디", notes = "아이디는 영어만 입력가능합니다.", required = true, example = "userid")
-    @NotBlank(message = "아이디를 입력하세요")
-    @Size(min = 2, message = "아이디가 너무 짧습니다")
-    @Pattern(regexp = "^[A-Za-z]+$", message = "아이디는 영어만 입력가능합니다")
-    private String loginId;
-
     @ApiModelProperty(value = "비밀번호", notes = "비밀번호는 최소 8자리이면서 1개 이상의 알파벳, 숫자, 특수문자를 포함해야합니다.", required = true, example = "password1!")
     @NotBlank(message = "비밀번호를 입력하세요")
     @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,}$",
             message = "비밀번호는 최소 8자리이면서 1개 이상의 알파벳, 숫자, 특수문자를 포함해야합니다.")
     private String password;
 
-    @ApiModelProperty(value = "사용자 이름", notes = "유저이름은 영어만 입력가능합니다", required = true, example = "username")
+    @ApiModelProperty(value = "사용자 이름", notes = "유저이름은 영어와 숫자만 입력가능합니다", required = true, example = "username")
     @NotBlank(message = "사용자 이름을 입력하세요")
     @Size(min = 2, message = "이름이 너무 짧습니다")
-    @Pattern(regexp = "^[A-Za-z0-9]+$", message = "유저이름은 영어만 입력가능합니다")
+    @Pattern(regexp = "^[A-Za-z0-9]+$", message = "유저이름은 영어와 숫자만 입력가능합니다")
     private String username;
 
     @ApiModelProperty(value = "이메일", notes = "이메일을 입력하세요.", required = true, example = "example@gmail.com")
@@ -47,6 +41,10 @@ public class SignUpRequest {
 
 
     public static Member toEntity(SignUpRequest req, List<Role> roles, PasswordEncoder encoder) {
-        return new Member(req.loginId, encoder.encode(req.password), req.username, req.email, roles);
+        return new Member(encoder.encode(req.password), req.username, req.email, roles);
+    }
+
+    public static SignInRequest toSignInRequest(SignUpRequest request) {
+        return new SignInRequest(request.getEmail(), request.getPassword());
     }
 }

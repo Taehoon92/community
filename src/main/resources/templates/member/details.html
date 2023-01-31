@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" layout:decorate="layout">
+<head>
+    <meta charset="UTF-8">
+</head>
+
+<th:block layout:fragment="content">
+
+    <div class="table-responsive clearfix">
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>Email</th>
+                <th>Username</th>
+                <th>User Roles</th>
+                <th>Sign-up Date</th>
+            </tr>
+            </thead>
+
+            <tbody id="user-detail">
+
+            </tbody>
+        </table>
+    </div>
+
+    <div class="table-responsive clearfix">
+        <p><span>작성한 게시글 : </span><span id="member-post-total"></span></p>
+
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>번호</th>
+                <th>제목</th>
+                <th>등록일</th>
+                <th>조회 수</th>
+            </tr>
+            </thead>
+
+            <tbody id="post-list">
+
+            </tbody>
+        </table>
+    </div>
+
+    <div class="btn_wrap text-right">
+        <a th:href="@{/members/modify/password}" class="btn btn-primary waves-effect waves-light">Change Password</a>
+        <a href="javascript: void(0);" onclick="deleteAccount();" class="btn btn-primary waves-effect waves-light">Delete Account</a>
+    </div>
+
+
+
+
+</th:block>
+
+
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
+
+        window.onload = () => {
+            getUserDetails();
+        }
+
+        let id = '';
+        let page = 0;
+        let size = 10;
+
+        function getUserDetails() {
+            const uri = `/api/members/details`;
+
+            fetch(uri)
+                .then(response => {
+                    return response.json()
+            }).then(response => {
+                let html = '';
+                let roles = '';
+                if(!response.success) {
+                    return false;
+                }
+
+                id = response.result.data.id;
+
+                response.result.data.roles.forEach((role, idx) => {
+                    if(idx > 0) roles += ' & '
+
+                    if(role == 'ROLE_USER') roles += 'USER';
+                    else if(role == 'ROLE_SOCIAL') roles += 'SOCIAL_USER';
+                    else if(role == 'ROLE_ADMIN') roles += 'ADMIN';
+                });
+
+                html += `
+                    <tr>
+                    <td>${response.result.data.email}</td>
+                    <td>${response.result.data.username}</td>
+                    <td>${roles}</td>
+                    <td>${moment(response.result.data.createdDate).format('YYYY-MM-DD HH:mm:ss')}</td>
+                    </tr>
+                `;
+
+                document.getElementById('user-detail').innerHTML = html;
+
+                const getPostUri = `/api/posts?page=${page}&size=${size}&memberId=${id}`;
+                fetch(getPostUri, {
+                    method: 'GET',
+                }).then(response => {
+                    if(response.ok) {
+                        return response.json();
+                    }
+                }).then(json => {
+                    console.log(json);
+                    let postHtml ='';
+                    let postCount = 0;
+                    if(json.result.data.postList.length == 0) {
+                        //게시글 x
+                    }
+                    else {
+                        //전체 게시글 수 업데이트
+                        postCount = json.result.data.totalElements;
+                        document.getElementById('member-post-total').innerText = postCount;
+
+                        //게시글 목록 생성
+                        json.result.data.postList.forEach((obj, idx) => {
+                            postHtml += `
+                                <tr>
+                                <td>${json.result.data.totalElements - idx}</td>
+                                <td class = "text-left">
+                                    <a href="javascript: void(0);" onclick="goView(${obj.id})">${obj.title}</a>
+                                </td>
+                                <td>${moment(obj.createdDate).format('YYYY-MM-DD HH:mm:ss')}</td>
+                                <td>${obj.hits}</td>
+                            `;
+                        });
+                    }
+
+                    document.getElementById('post-list').innerHTML = postHtml;
+
+                }).catch(error => {
+                    console.log('error');
+                });
+
+            }).catch(error => {
+                console.log('error');
+            });
+        }
+
+        function deleteAccount() {
+            const uri = `/api/members/${id}`;
+            if(!confirm('정말 탈퇴하시겠습니까?')) {
+                return false;
+            }
+
+            fetch(uri, {
+                method: 'DELETE',
+            }).then(response => {
+                if(!response.ok) {
+                    throw new Error('Request failed');
+                }
+                alert('삭제되었습니다');
+                location.href = `/auth/sign-out`
+            }).catch(error => {
+                alert('오류가 발생하였습니다');
+            });
+        }
+
+
+    </script>
+
+</th:block>
+
+</html>

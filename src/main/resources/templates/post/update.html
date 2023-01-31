@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" layout:decorate="layout">
+<head>
+  <meta charset="UTF-8">
+</head>
+
+<th:block layout:fragment="content">
+  <div class="card-content">
+    <form action="" id="form" class="form-horizontal">
+      <div class="form-group">
+        <label for="title" class="col-sm-2 control-label">제목</label>
+        <div class="col-sm-10">
+          <input type="text" id="title" name="title" class="form-control" placeholder="제목을 입력해 주세요." />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="content" class="col-sm-2 control-label">내용</label>
+        <div class="col-sm-10">
+          <textarea id="content" name="content" class="form-control" placeholder="내용을 입력해 주세요."></textarea>
+        </div>
+      </div>
+
+
+      <div class="btn_wrap text-center">
+        <a href="javascript:void(0);" onclick="goList();" class="btn btn-default waves-effect waves-light">뒤로가기</a>
+        <button type="button" onclick="save();" class="btn btn-primary waves-effect waves-light">저장하기</button>
+      </div>
+    </form>
+  </div>
+</th:block>
+
+
+<th:block layout:fragment="script">
+  <script th:inline="javascript">
+    /*<![CDATA[*/
+
+    window.onload = () => {
+      findPost();
+    }
+
+    function findPost() {
+      const id = /*[[ ${id} ]]*/;
+      if(!id) {
+        location.href = '/posts';
+      }
+
+      fetch(`/api/posts/${id}`).then(response => {
+
+        if(!response.ok) {
+          throw new Error('Request failed..');
+        }
+        return response.json();
+      }).then(json => {
+        const form = document.getElementById('form');
+        form.title.value = json.result.data.title;
+        form.content.value = json.result.data.content;
+      }).catch(error => {
+        alert('게시글 정보를 찾을 수 없습니다');
+        location.href = '/posts';
+      });
+    }
+
+    function save() {
+      const form = document.getElementById('form');
+
+      const params = {
+        title: form.title.value,
+        content: form.content.value
+      };
+
+      const id = /*[[ ${id} ]]*/;
+      const uri = `/api/posts/${id}`;
+
+      fetch(uri, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type':'application/json'
+        },
+        body: JSON.stringify(params)
+      }).then(response => {
+        console.log(response);
+        if(!response.ok) {
+          throw new Error('Request failed');
+        }
+
+        alert('저장되었습니다');
+        location.href = `/posts/${id}`;
+      }).catch(error => {
+        alert('오류가 발생되었습니다.');
+      });
+
+    }
+
+    function goList() {
+      location.href = '/posts' + location.search;
+    }
+
+
+    /*]]>*/
+  </script>
+</th:block>
+
+</html>

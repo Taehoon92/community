@@ -23,9 +23,21 @@ public class CommentService {
     private final MemberRepository memberRepository;
     private final PostRepository postRepository;
 
+    /**
+    * 게시글에서 댓글 조회할때 controller 에서 pathVariable로 바로 postId받아서 댓글조회하면 됨. 그리고 마이너스가 들어올일이 없으니까..? 있을수도 있긴한데,,
+     * 이를 어떻게 처리하면 될지
+    *
+
     public List<CommentDto> readAll(CommentReadCondition condition) {
         return CommentDto.toDtoList(
             commentRepository.findAllWithMemberAndParentByPostIdOrderByParentIdAscNullsFirstCommentIdAsc(condition.getPostId())
+        );
+    }
+     */
+
+    public List<CommentDto> readAll(Long postId) {
+        return CommentDto.toDtoList(
+            commentRepository.findAllWithMemberAndParentByPostIdOrderByParentIdAscNullsFirstCommentIdAsc(postId)
         );
     }
 

@@ -14,10 +14,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import javax.servlet.http.HttpServletResponse;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -26,6 +29,7 @@ class SignControllerTest {
 
     @InjectMocks SignController signController;
     @Mock SignService signService;
+
     MockMvc mockMvc;
     ObjectMapper objectMapper = new ObjectMapper();
 
@@ -37,7 +41,7 @@ class SignControllerTest {
     @Test
     void signUpTest() throws Exception {
         //given
-        SignUpRequest request = new SignUpRequest("loginId", "password1!", "username", "test@email.com");
+        SignUpRequest request = new SignUpRequest("password1!", "username", "test@email.com");
 
         //when, then
         mockMvc.perform(
@@ -52,8 +56,12 @@ class SignControllerTest {
     @Test
     void signInTest() throws Exception {
         //given
+        MockHttpServletResponse servletResponse = new MockHttpServletResponse();
         SignInRequest request = new SignInRequest("test@email.com", "password1!");
-        BDDMockito.given(signService.signIn(request)).willReturn(new SignInResponse("access", "refresh"));
+
+//        BDDMockito.given(signService.signIn(request, BDDMockito.any())).willReturn(new SignInResponse("access", "refresh"));
+        BDDMockito.given(signService.signIn(request, BDDMockito.any(MockHttpServletResponse.class))).willReturn(new SignInResponse("access", "refresh"));
+
 
         //when, then
         mockMvc.perform(
@@ -64,13 +72,15 @@ class SignControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.result.data.accessToken").value("access"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.result.data.refreshToken").value("refresh"));
 
-        BDDMockito.verify(signService).signIn(request);
+
+
+        BDDMockito.verify(signService).signIn(request, servletResponse);
     }
 
     @Test
     void ignoreNullValueInJsonResponseTest() throws Exception {
         //given
-        SignUpRequest request = new SignUpRequest("loginId", "password1!", "username", "email@email.com");
+        SignUpRequest request = new SignUpRequest("password1!", "username", "email@email.com");
 
         //when,then
         mockMvc.perform(

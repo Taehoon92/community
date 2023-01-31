@@ -26,3 +26,13 @@ spring:
   profiles:
     active: local
     include: secret
+
+  #thymeleaf
+  thymeleaf:
+    cache: false
+
+
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true

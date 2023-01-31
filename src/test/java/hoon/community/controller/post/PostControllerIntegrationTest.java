@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -64,7 +65,8 @@ class PostControllerIntegrationTest {
     @Test
     void createTest() throws Exception {
         //given
-        SignInResponse signInResponse = signService.signIn(createSignInRequest(member1.getEmail(), initDB.getPassword()));
+        MockHttpServletResponse servletResponse = new MockHttpServletResponse();
+        SignInResponse signInResponse = signService.signIn(createSignInRequest(member1.getEmail(), initDB.getPassword()),servletResponse);
         PostCreateRequest request = PostCreateRequestFactory.createPostCreateRequest("title", "content", member1.getId());
 
         //when, then
@@ -121,7 +123,8 @@ class PostControllerIntegrationTest {
     void deleteByResourceOwnerTest() throws Exception {
         //given
         Post post = postRepository.save(createPost(member1));
-        SignInResponse signInResponse = signService.signIn(createSignInRequest(member1.getEmail(), initDB.getPassword()));
+        MockHttpServletResponse servletResponse = new MockHttpServletResponse();
+        SignInResponse signInResponse = signService.signIn(createSignInRequest(member1.getEmail(), initDB.getPassword()), servletResponse);
 
         //when, then
         mockMvc.perform(
@@ -136,7 +139,8 @@ class PostControllerIntegrationTest {
     void deleteByAdminTest() throws Exception {
         //given
         Post post = postRepository.save(createPost(member1));
-        SignInResponse signInResponse = signService.signIn(createSignInRequest(admin.getEmail(), initDB.getPassword()));
+        MockHttpServletResponse servletResponse = new MockHttpServletResponse();
+        SignInResponse signInResponse = signService.signIn(createSignInRequest(admin.getEmail(), initDB.getPassword()), servletResponse);
 
         //when, then
         mockMvc.perform(
@@ -151,7 +155,8 @@ class PostControllerIntegrationTest {
     void deleteAccessDeniedByNotResourceOwnerTest() throws Exception {
         //given
         Post post = postRepository.save(createPost(member1));
-        SignInResponse signInResponse = signService.signIn(createSignInRequest(member2.getEmail(), initDB.getPassword()));
+        MockHttpServletResponse servletResponse = new MockHttpServletResponse();
+        SignInResponse signInResponse = signService.signIn(createSignInRequest(member2.getEmail(), initDB.getPassword()), servletResponse);
 
         //when, then
         mockMvc.perform(
@@ -165,7 +170,8 @@ class PostControllerIntegrationTest {
     void deleteUnauthorizedByNoneTokenTest() throws Exception {
         //given
         Post post = postRepository.save(createPost(member1));
-        SignInResponse signInResponse = signService.signIn(createSignInRequest(member2.getEmail(), initDB.getPassword()));
+        MockHttpServletResponse servletResponse = new MockHttpServletResponse();
+        SignInResponse signInResponse = signService.signIn(createSignInRequest(member2.getEmail(), initDB.getPassword()), servletResponse);
 
         //when, then
         mockMvc.perform(
@@ -177,7 +183,8 @@ class PostControllerIntegrationTest {
     @Test
     void updateByResourceOwnerTest() throws Exception {
         //given
-        SignInResponse signInResponse = signService.signIn(createSignInRequest(member1.getEmail(), initDB.getPassword()));
+        MockHttpServletResponse servletResponse = new MockHttpServletResponse();
+        SignInResponse signInResponse = signService.signIn(createSignInRequest(member1.getEmail(), initDB.getPassword()), servletResponse);
         Post post = postRepository.save(createPost(member1));
         String updatedTitle = "updated title";
         String updatedContent = "updated content";
@@ -192,6 +199,7 @@ class PostControllerIntegrationTest {
                                     return requestPostProcessor;
                                 })
                                 .contentType(MediaType.MULTIPART_FORM_DATA)
+//                                .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
                                 .header("Authorization", signInResponse.getAccessToken()))
                 .andExpect(status().isOk());
 
@@ -225,7 +233,8 @@ class PostControllerIntegrationTest {
     void updateAccessDeniedByNotResourceOwnerTest() throws Exception {
         //given
         Post post = postRepository.save(createPost(member1));
-        SignInResponse response = signService.signIn(createSignInRequest(member2.getEmail(), initDB.getPassword()));
+        MockHttpServletResponse servletResponse = new MockHttpServletResponse();
+        SignInResponse response = signService.signIn(createSignInRequest(member2.getEmail(), initDB.getPassword()), servletResponse);
         String updatedTitle = "updatedTitle";
         String updatedContent = "updatedContent";
 
