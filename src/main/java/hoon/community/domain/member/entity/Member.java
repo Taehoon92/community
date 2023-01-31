@@ -3,6 +3,7 @@ package hoon.community.domain.member.entity;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import hoon.community.domain.BaseTimeEntity;
 import hoon.community.domain.role.entity.Role;
+import hoon.community.domain.role.entity.RoleType;
 import lombok.*;
 
 import javax.persistence.*;
@@ -38,6 +39,8 @@ public class Member extends BaseTimeEntity {
     @JsonManagedReference
     private Set<MemberRole> roles;
 
+    @ElementCollection
+    private Set<String> roleTypes;
 
     public Member(String password, String username, String email, List<Role> roles) {
         this.password = password;
