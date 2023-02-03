@@ -1,10 +1,9 @@
 package hoon.community.domain.sign.dto;
 
 import hoon.community.domain.member.entity.Member;
-import hoon.community.domain.role.entity.Role;
+import hoon.community.domain.role.entity.RoleType;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -40,8 +39,8 @@ public class SignUpRequest {
     private String email;
 
 
-    public static Member toEntity(SignUpRequest req, List<Role> roles, PasswordEncoder encoder) {
-        return new Member(encoder.encode(req.password), req.username, req.email, roles);
+    public static Member toEntity(SignUpRequest req, List<RoleType> roleTypes, PasswordEncoder encoder) {
+        return new Member(encoder.encode(req.password), req.username, req.email, roleTypes);
     }
 
     public static SignInRequest toSignInRequest(SignUpRequest request) {

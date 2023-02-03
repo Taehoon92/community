@@ -59,13 +59,11 @@ public class SecurityConfig {
                 .and()
                 .authorizeRequests()
 
-                .antMatchers(HttpMethod.POST, "/api/sign-in", "/api/sign-up", "/api/refresh-token").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/sign-in", "/api/sign-up", "/api/refresh-token", "/api/duplicate-email-check").permitAll()
 
                 .antMatchers(HttpMethod.DELETE, "/api/members/{id}/**").access("@memberGuard.check(#id)")
                 .antMatchers(HttpMethod.GET, "/api/members/details").authenticated()
                 .antMatchers(HttpMethod.GET, "/api/members").permitAll()
-                .antMatchers(HttpMethod.GET, "/api/members/all").permitAll()
-                .antMatchers(HttpMethod.GET, "/api/members/allPageable").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/members/modify/password").authenticated()
 
 
@@ -87,7 +85,9 @@ public class SecurityConfig {
                 .antMatchers(HttpMethod.GET, "/posts", "/posts/{id}").permitAll()
 
                 .antMatchers(HttpMethod.GET, "/members/details", "/members/modify/**").authenticated()
+                .antMatchers(HttpMethod.GET, "/members/list").permitAll()
                 .antMatchers(HttpMethod.POST, "/members/modify/password").authenticated()
+                .antMatchers(HttpMethod.POST, "/members/modify/roles/**").permitAll()
 
 
                 .antMatchers("/auth/**").permitAll()

@@ -1,8 +1,6 @@
 package hoon.community.domain.sign.service;
 
 import hoon.community.domain.member.repository.MemberRepository;
-import hoon.community.domain.role.entity.Role;
-import hoon.community.domain.role.repository.RoleRepository;
 import hoon.community.domain.role.entity.RoleType;
 import hoon.community.domain.sign.dto.RefreshTokenResponse;
 import hoon.community.domain.sign.dto.SignInRequest;

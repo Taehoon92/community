@@ -1,7 +1,6 @@
 package hoon.community.global.factory.entity;
 
 import hoon.community.domain.member.entity.Member;
-import hoon.community.domain.role.entity.Role;
 
 import java.util.Collections;
 import java.util.List;

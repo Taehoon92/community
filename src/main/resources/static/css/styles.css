@@ -11335,3 +11335,8 @@ header.masthead .site-heading .h1 {
 
   color: #fff;
 }
+
+
+.toggle {
+  display:none;
+}

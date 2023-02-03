@@ -13,9 +13,9 @@ public class MemberListDto {
     private Long totalElements;
     private Integer totalPages;
     private boolean hasNext;
-    private List<MemberDetailsTestTestDto> memberList;
+    private List<MemberDetailsDto> memberList;
 
-    public static MemberListDto toDto(Page<MemberDetailsTestTestDto> page) {
+    public static MemberListDto toDto(Page<MemberDetailsDto> page) {
         return new MemberListDto(page.getTotalElements(), page.getTotalPages(), page.hasNext(), page.getContent());
     }
 }

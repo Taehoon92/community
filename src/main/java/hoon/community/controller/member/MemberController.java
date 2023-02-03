@@ -38,14 +38,6 @@ public class MemberController {
         return Response.success(memberService.readAll(condition));
     }
 
-    @GetMapping("/api/members/all")
-    @ResponseStatus(HttpStatus.OK)
-    public Response findAll() {
-        return Response.success(memberService.findAll());
-    }
-
-
-
 
     @ApiOperation(value = "사용자 정보 삭제", notes = "사용자 정보를 삭제한다.")
     @DeleteMapping("/api/members/{id}")
