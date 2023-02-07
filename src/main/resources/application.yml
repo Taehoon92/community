@@ -22,10 +22,14 @@ spring:
     open-in-view: 'false' #OSIV 사용하지않기
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
 
-
+  #JWT, #OAuth
   profiles:
     active: local
-    include: secret
+    include: secret, oauth
+
+
+
+
 
   #thymeleaf
   thymeleaf:

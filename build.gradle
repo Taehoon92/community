@@ -41,6 +41,8 @@ dependencies {
 	implementation 'io.springfox:springfox-boot-starter:3.0.0'
 	//QueryDSL 추가
 	implementation 'com.querydsl:querydsl-jpa:5.0.0'
+	//OAuth2
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 
 
 	compileOnly 'org.projectlombok:lombok'

@@ -1,6 +1,7 @@
 package hoon.community.domain.post.entity;
 
 import hoon.community.domain.BaseTimeEntity;
+import hoon.community.domain.comment.entity.Comment;
 import hoon.community.domain.member.entity.Member;
 import hoon.community.domain.post.dto.PostUpdateRequest;
 import lombok.AccessLevel;
@@ -11,6 +12,8 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Table(name = "POST")
 @Getter
@@ -34,7 +37,12 @@ public class Post extends BaseTimeEntity {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Member member;
 
-    private Integer hits;
+    @OneToMany
+    @JoinColumn(name = "comment_id")
+    private List<Comment> comments;
+
+    @Column(columnDefinition = "integer default 0", nullable = false)
+    private int hits;
 
     public Post(String title, String content) {
         this.title = title;
@@ -47,6 +55,7 @@ public class Post extends BaseTimeEntity {
         this.content = content;
         this.member = member;
         this.hits = 0;
+        this.comments = new ArrayList<>();
     }
 
     public void update(PostUpdateRequest request) {
@@ -59,5 +68,9 @@ public class Post extends BaseTimeEntity {
     }
     public void decreaseHits() {
         this.hits --;
+    }
+
+    public void addComment(Comment comment) {
+        this.comments.add(comment);
     }
 }

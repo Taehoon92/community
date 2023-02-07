@@ -145,6 +145,10 @@
             });
         }
 
+        function goView(id) {
+            location.href = `/posts/${id}`;
+        }
+
         function deleteAccount() {
             const uri = `/api/members/${id}`;
             if(!confirm('정말 탈퇴하시겠습니까?')) {

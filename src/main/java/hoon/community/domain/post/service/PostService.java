@@ -7,9 +7,11 @@ import hoon.community.domain.post.repository.PostRepository;
 import hoon.community.global.exception.CustomException;
 import hoon.community.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -24,10 +26,10 @@ public class PostService {
         return new PostCreateResponse(post.getId());
     }
 
-    @Transactional
+//    @Transactional
     public PostDto read(Long id) {
         Post entity = postRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
-        entity.increaseHits();
+//        entity.increaseHits();
         return PostDto.toDto(entity);
     }
 
@@ -41,6 +43,7 @@ public class PostService {
     public void update(Long id, PostUpdateRequest request) {
         Post post = postRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
         post.decreaseHits();
+        post.decreaseHits();
         post.update(request);
     }
 
@@ -48,5 +51,10 @@ public class PostService {
         return PostListDto.toDto(
                 postRepository.findAllByCondition(condition)
         );
+    }
+
+    @Transactional
+    public int updateHits(Long id) {
+        return postRepository.updateHits(id);
     }
 }

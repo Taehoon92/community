@@ -1,6 +1,7 @@
 package hoon.community.domain.post.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import hoon.community.domain.comment.entity.Comment;
 import hoon.community.domain.member.dto.MemberDto;
 import hoon.community.domain.post.entity.Post;
 import lombok.AllArgsConstructor;
@@ -17,6 +18,7 @@ public class PostDto {
     private String content;
     private MemberDto member;
     private Integer hits;
+    private Integer comments;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Australia/Sydney")
     private LocalDateTime createdDate;
@@ -30,6 +32,7 @@ public class PostDto {
                 post.getContent(),
                 MemberDto.toDto(post.getMember()),
                 post.getHits(),
+                post.getComments().size(),
                 post.getCreatedDate(),
                 post.getModifiedDate()
         );

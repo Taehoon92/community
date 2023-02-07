@@ -5,6 +5,7 @@ import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import hoon.community.domain.comment.entity.QComment;
 import hoon.community.domain.post.dto.PostInfoDto;
 import hoon.community.domain.post.dto.PostReadCondition;
 import hoon.community.domain.post.entity.Post;
@@ -19,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.function.Function;
 
+import static hoon.community.domain.comment.entity.QComment.comment;
 import static hoon.community.domain.post.entity.QPost.post;
 
 @Transactional(readOnly = true)
@@ -43,7 +45,7 @@ public class CustomPostRepositoryImpl extends QuerydslRepositorySupport implemen
         return getQuerydsl().applyPagination(
                 pageable,
                 jpaQueryFactory
-                        .select(Projections.constructor(PostInfoDto.class, post.id, post.title, post.member.username, post.hits, post.createdDate))
+                        .select(Projections.constructor(PostInfoDto.class, post.id, post.title, post.member.username, post.hits, post.comments.size(), post.createdDate))
                         .from(post)
                         .join(post.member)
                         .where(predicate)

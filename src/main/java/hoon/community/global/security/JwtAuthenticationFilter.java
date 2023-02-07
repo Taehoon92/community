@@ -89,7 +89,10 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
         Optional userRole;
         userRole = AuthHelper.extractMemberRoles().stream().filter(roleType -> roleType == RoleType.ROLE_ADMIN).findAny();
 
+
+
         log.info("SetSession Role = {}", userRole);
+        log.info("세션에 저장된 username - {}", session.getAttribute("username"));
         if (userRole.isPresent()) {
             session.setAttribute("role", "Admin");
         }

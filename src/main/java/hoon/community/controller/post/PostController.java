@@ -37,6 +37,7 @@ public class PostController {
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public Response read(@ApiParam(value = "게시글 id", required = true) @PathVariable Long id) {
+        postService.updateHits(id);
         return Response.success(postService.read(id));
     }
 
