@@ -7,16 +7,23 @@
 <th:block layout:fragment="content">
 
     <div class="table-responsive clearfix">
-        <table class="table table-hover">
+        <table class="table table-hover table-member-list">
+            <colgroup>
+                <col style="width:3%">
+                <col style="width:29%">
+                <col style="width:20%">
+                <col style="width:30%">
+                <col style="width:15%">
+                <col style="width:3%">
+            </colgroup>
             <thead>
             <tr>
-                <th>No.</th>
-                <th>Email</th>
-                <th>Username</th>
-                <th>User Roles</th>
-                <th>Sign-up Date</th>
-                <th>Delete</th>
                 <th></th>
+                <th scope="col">Email</th>
+                <th scope="col">Username</th>
+                <th scope="col">User Roles</th>
+                <th scope="col">Sign-up Date</th>
+                <th scope="col"></th>
             </tr>
             </thead>
 
@@ -26,7 +33,9 @@
         </table>
 
         <!-- 페이지네이션 Rendering 영역 -->
-        <div id="page-navigation">
+        <div class="member-list-page-navigation">
+            <div id="page-navigation">
+            </div>
         </div>
 
     </div>
@@ -86,7 +95,7 @@
                             }
                             else if(role == 'ROLE_SOCIAL') {
                                 checkedSocial = true;
-                                roles += 'SOCIAL_USER';
+                                roles += 'SOCIAL';
                             }
                             else if(role == 'ROLE_ADMIN') {
                                 checkedAdmin = true;
@@ -100,31 +109,43 @@
 
                         html += `
                             <tr>
-                                <td>${json.result.data.totalElements - (page * size) - idx}</td>
-                                <td>${obj.email}</td>
-                                <td>${obj.username}</td>
                                 <td>
-                                    <a href="javascript: void(0);" onclick="toggle(${obj.id})">${roles}</a>
-                                    <div class="toggle" id="toggle-${obj.id}">
-                                        <form id="form-${obj.id}" action="/members/modify/roles/${obj.id}" method="post">
-                                            <div>
-                                                <input type="checkbox" value="ADMIN" name="roles" id="roleCheckbox-admin-${obj.id}" >
-                                                <input type="hidden" name="_roleCheckbox-${obj.id}" value="on"/>
-                                                <label for="roleCheckbox-admin-${obj.id}">ADMIN</label>
-                                                <input type="checkbox" value="USER" name="roles" id="roleCheckbox-user-${obj.id}" >
-                                                <input type="hidden" name="_roleCheckbox-${obj.id}" value="on"/>
-                                                <label for="roleCheckbox-user-${obj.id}">USER</label>
-                                                <input type="checkbox" value="SOCIAL" name="roles" id="roleCheckbox-social-${obj.id}">
-                                                <input type="hidden" name="_roleCheckbox-${obj.id}" value="on"/>
-                                                <label for="roleCheckbox-social-${obj.id}">SOCIAL</label>
-                                            </div>
-                                            <button type="submit">저장</button>
-                                            <a href="javascript: void(0)" onclick="toggleClose(${obj.id})">취소</a>
-                                        </form>
+                                    <div class="list-number">${json.result.data.totalElements - (page * size) - idx}</div>
+                                </td>
+                                <td>
+                                    <div class="list-email">${obj.email}</div>
+                                </td>
+                                <td>
+                                    <div class="list-username">${obj.username}</div>
+                                </td>
+                                <td>
+                                    <div class="list-roles">
+                                        <a href="javascript: void(0);" onclick="toggle(${obj.id})">${roles}</a>
+                                        <div class="toggle" id="toggle-${obj.id}">
+                                            <form id="form-${obj.id}" action="/members/modify/roles/${obj.id}" method="post">
+                                                <div>
+                                                    <input type="checkbox" value="ADMIN" name="roles" id="roleCheckbox-admin-${obj.id}" >
+                                                    <input type="hidden" name="_roleCheckbox-${obj.id}" value="on"/>
+                                                    <label for="roleCheckbox-admin-${obj.id}">ADMIN</label>
+                                                    <input type="checkbox" value="USER" name="roles" id="roleCheckbox-user-${obj.id}" >
+                                                    <input type="hidden" name="_roleCheckbox-${obj.id}" value="on"/>
+                                                    <label for="roleCheckbox-user-${obj.id}">USER</label>
+                                                    <input type="checkbox" value="SOCIAL" name="roles" id="roleCheckbox-social-${obj.id}">
+                                                    <input type="hidden" name="_roleCheckbox-${obj.id}" value="on"/>
+                                                    <label for="roleCheckbox-social-${obj.id}">SOCIAL</label>
+                                                </div>
+                                                <button type="submit">저장</button>
+                                                <a href="javascript: void(0)" onclick="toggleClose(${obj.id})">취소</a>
+                                            </form>
+                                        </div>
                                     </div>
                                 </td>
-                                <td>${moment(obj.createdDate).format('YYYY-MM-DD HH:mm:ss')}</td>
-                                <td><button type="button" onclick="deleteMember(${obj.id})">DELETE</button></td>
+                                <td>
+                                    <div class="list-date">${moment(obj.createdDate).format('YYYY-MM-DD')}</div>
+                                </td>
+                                <td>
+                                    <div class="list-delete-btn"><a class="fa-regular fa-trash-can" href="javascript:void(0)" onclick="deleteMember(${obj.id})"></a></div>
+                                </td>
                             </tr>
                         `;
                     });

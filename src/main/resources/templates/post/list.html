@@ -4,18 +4,18 @@
 <th:block layout:fragment="content">
 
     <!--/* 검색 영역 */-->
-    <div class="input-group" id="adv-search">
+    <div class="input-group post-list-search" id="adv-search">
         <form id="searchForm" onsubmit="return false;">
             <select id="searchType" class="form-control" style="width: 100px;">
-                <option value="">전체</option>
-                <option value="title">제목</option>
-                <option value="content">내용</option>
-                <option value="username">작성자</option>
+                <option value="">Select</option>
+                <option value="title">Title</option>
+                <option value="content">Content</option>
+                <option value="username">Writer</option>
             </select>
             <input type="text" id="keyword" class="form-control" placeholder="키워드를 입력해 주세요." style="width: 300px;" />
         </form>
-        <button type="button" class="btn btn-primary" onclick="findAll(0)">
-            <span aria-hidden="true" class="glyphicon glyphicon-search"></span>
+        <button type="button" class="btn btn-primary btn-search" onclick="findAll(0)">
+            <span class="fa-solid fa-magnifying-glass"></span>
         </button>
     </div>
 
@@ -33,10 +33,10 @@
             <thead>
             <tr>
                 <th></th>
-                <th scope="col">제목</th>
-                <th scope="col">작성자</th>
-                <th scope="col">작성일</th>
-                <th scope="col">조회</th>
+                <th scope="col">Title</th>
+                <th scope="col">Writer</th>
+                <th scope="col">Date</th>
+                <th scope="col">Hits</th>
             </tr>
             </thead>
 
