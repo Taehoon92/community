@@ -11262,7 +11262,10 @@ header.masthead .site-heading .h1 {
 
 
 /**********************************/
-
+.field-error {
+  color:#dc3545;
+  border-color:#dc3545;
+}
 
 /* Post List */
 .post-list-search {
@@ -11392,6 +11395,26 @@ header.masthead .site-heading .h1 {
 }
 
 
+/* Post Create */
+.post-create input {
+  border-radius: 5px;
+}
+
+.post-create .form-group {
+  padding-bottom:20px;
+}
+
+.post-create textarea {
+  min-height: 350px;
+  resize: none;
+  border-radius:5px;
+}
+
+.post-title {
+  padding-bottom:10px;
+}
+
+
 
 
 
@@ -11404,7 +11427,7 @@ header.masthead .site-heading .h1 {
   text-align: right;
 }
 
-.btn-post button{
+.btn-common button{
   width:80px;
   height:40px;
   border-radius: 5px;
@@ -11497,8 +11520,6 @@ header.masthead .site-heading .h1 {
 
 
 
-
-
 .comment-title {
   padding-bottom:10px;
 }
@@ -11554,9 +11575,7 @@ header.masthead .site-heading .h1 {
 }
 
 
-
 /* Member List (ADMIN Page) */
-
 .toggle {
   display: none;
 }
@@ -11587,3 +11606,85 @@ header.masthead .site-heading .h1 {
   display:flex;
   justify-content: center;
 }
+
+/* Signin */
+.sign-block {
+  padding-left:15%;
+  padding-right:15%;
+  max-width:700px;
+  margin:auto;
+}
+
+.sign-block input {
+  border-radius : 5px;
+}
+
+.btn-block {
+  text-align: center;
+}
+
+.btn-login {
+  margin-bottom:10px;
+}
+
+.btn-login .btn-primary {
+  width:170px;
+}
+
+.btn-signup .btn-secondary {
+  margin-left:5px;
+}
+
+.google-login-button img {
+  width:205px;
+}
+
+.fb-login-button img {
+
+}
+
+.btn-google img{
+  content:url(/img/signin/btn_google_signin_normal.png);
+}
+
+.btn-google img:active{
+  content:url(/img/signin/btn_google_signin_pressed.png);
+}
+
+.btn-oauth button{
+  padding : 0;
+}
+
+.btn-fb img{
+  content:url(/img/signin/btn_fb_signin.png);
+}
+
+.btn-github img{
+  content:url(/img/signin/btn_github_signin.png);
+  border-radius:2px;
+}
+
+/* Sign up */
+.sign-form-email label {
+  display:block;
+}
+.sign-form-email input {
+  float:left;
+  width:72%;
+}
+
+.sign-form-email button {
+  width:27%;
+  height: 38px;
+  margin-left:1%;
+  padding:0;
+}
+
+.sign-form-input div {
+  margin-bottom : 20px;
+}
+
+.sign-form-input .field-error {
+  margin-bottom: 0px;
+}
+

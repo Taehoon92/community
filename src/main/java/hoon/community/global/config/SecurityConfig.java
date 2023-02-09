@@ -40,7 +40,7 @@ public class SecurityConfig {
             web.ignoring()
                     .requestMatchers(PathRequest.toStaticResources().atCommonLocations())
                     .antMatchers(
-                            "/css/**", "/fonts/**", "/plugin/**", "/scripts/**", "/favicon.ico", "/resources/**", "/error", "/swagger-ui/**","/swagger-resources/**","/v3/api-docs/**", "**/favicon.ico"
+                            "/css/**", "/img/**", "/fonts/**", "/plugin/**", "/scripts/**", "/favicon.ico", "/resources/**", "/error", "/swagger-ui/**","/swagger-resources/**","/v3/api-docs/**", "**/favicon.ico"
                     )
                     .mvcMatchers(
                             "/exception/**"
