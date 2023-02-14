@@ -28,11 +28,6 @@ public class MemberWebController {
 
     private final MemberService memberService;
 
-    @GetMapping("/modify")
-    public String modify() {
-        return "member/modifyMember";
-    }
-
     @GetMapping("/details")
     public String details() {
         return "member/details";

@@ -11391,7 +11391,7 @@ header.masthead .site-heading .h1 {
 .list-reply {
   font-size: 1.1rem;
   margin-left: 3px;
-  color: #c74949;
+  color: #dc3545;
 }
 
 
@@ -11602,7 +11602,7 @@ header.masthead .site-heading .h1 {
 
 }
 
-.member-list-page-navigation {
+.page-navigation-single {
   display:flex;
   justify-content: center;
 }
@@ -11688,3 +11688,38 @@ header.masthead .site-heading .h1 {
   margin-bottom: 0px;
 }
 
+
+/* member details */
+.member-detail-tr {
+  text-align: center;
+}
+
+.member-detail-email, .member-detail-username, .member-detail-roles {
+  border-right : 1px solid #88888882;
+}
+
+.member-detail-button {
+  text-align: right;
+}
+
+.member-detail-button a {
+  padding: 10px;
+}
+
+.member-post-tr {
+  text-align:center;
+}
+
+.member-post-title {
+  padding-left:20px;
+  text-align: left;
+}
+
+.member-post-title, .member-post-date {
+  border-right:1px solid #88888882;
+}
+
+/* modify password */
+.modify-password-old, .modify-password-new {
+  margin-bottom: 20px;
+}

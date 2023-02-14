@@ -98,9 +98,11 @@
                     if(!data.success) {
                         //id 중복
                         $("#duplicateCheckResult").text(data.result.msg);
+                        $("#duplicateCheckResult").css('color', "#dc3545");
                     }
                     else {
                         $("#duplicateCheckResult").text("사용 가능한 email 입니다.");
+                        $("#duplicateCheckResult").css('color', 'black');
                     }
                 }
             });
