@@ -6,6 +6,8 @@ import hoon.community.global.security.CustomAccessDeniedHandler;
 import hoon.community.global.security.CustomAuthenticationEntryPoint;
 import hoon.community.global.security.CustomUserDetailsService;
 import hoon.community.global.security.JwtAuthenticationFilter;
+import hoon.community.global.security.oauth.CustomOAuth2UserService;
+import hoon.community.global.security.oauth.OAuth2AuthenticationSuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -27,6 +29,9 @@ public class SecurityConfig {
 
     private final TokenHelper accessTokenHelper;
     private final CustomUserDetailsService userDetailsService;
+    private final CustomOAuth2UserService customOAuth2UserService;
+
+    private final OAuth2AuthenticationSuccessHandler authenticationSuccessHandler;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -100,7 +105,17 @@ public class SecurityConfig {
                 .and()
                 .exceptionHandling().authenticationEntryPoint(new CustomAuthenticationEntryPoint())
                 .and()
+
+                .oauth2Login()
+                    .userInfoEndpoint().userService(customOAuth2UserService)
+                .and()
+                .successHandler(authenticationSuccessHandler)
+
+                .and()
                 .addFilterBefore(new JwtAuthenticationFilter(accessTokenHelper, userDetailsService), UsernamePasswordAuthenticationFilter.class);
+
+
+
 
         return http.build();
     }

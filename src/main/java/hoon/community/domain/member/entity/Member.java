@@ -2,6 +2,7 @@ package hoon.community.domain.member.entity;
 
 import hoon.community.domain.BaseTimeEntity;
 import hoon.community.domain.role.entity.RoleType;
+import hoon.community.global.security.oauth.AuthProvider;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
@@ -23,7 +24,7 @@ public class Member extends BaseTimeEntity {
 
     private String password;
 
-    @Column(unique = true)
+//    @Column(unique = true)
     private String username;
 
     @Column(unique = true)
@@ -33,6 +34,8 @@ public class Member extends BaseTimeEntity {
     private Set<RoleType> roleTypes;
 
     private String mainRole;
+
+    private AuthProvider authProvider;
 
     public Member(String password, String username, String email, List<RoleType> roleTypes) {
         this.password = password;
@@ -60,7 +63,11 @@ public class Member extends BaseTimeEntity {
         return this;
     }
 
-    public String setMainRole(Set<RoleType> roles) {
+    public void updateAuthProvider(AuthProvider authProvider) {
+        this.authProvider = authProvider;
+    }
+
+    public static String setMainRole(Set<RoleType> roles) {
         if(roles.contains(RoleType.ROLE_ADMIN)) {
             return "ADMIN";
         } else if(roles.contains(RoleType.ROLE_USER)) {

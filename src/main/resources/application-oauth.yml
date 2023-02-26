@@ -9,3 +9,46 @@ spring:
             scope:
               - profile
               - email
+          github:
+            clientId: 4bec8d00b883f613586d
+            clientSecret: e58975be693afbae3a766c66338db6e25e2fb067
+          facebook:
+            clientId: 715480296738491
+            clientSecret: 96e81643ef39edc041b34d695242172b
+            scope:
+              - email
+              - public_profile
+#          kakao:
+#            clientId: f7b315d7af4ec228e0eb36c84e7ebb13
+#            clientSecret: ureuvWQdwwc6NugH3jQD5ckOKT4BSaab
+#            clientAuthenticationMethod: post
+#            authorizationGrantType: authorization_code
+#            redirectUri: "{baseUrl}/{action}/oauth2/code/{registrationId}"
+#            scope:
+#              - profile_nickname
+#              - profile_image
+#              - account_email
+#            clientName: Kakao
+#          naver:
+#            clientId: ss
+#            clientSecret: ss
+#            clientAuthenticationMethod: post
+#            authorizationGrantType: authorization_code
+#            redirectUri: "{baseUrl}/{action}/oauth2/code/{registrationId}"
+#            scope:
+#              - nickname
+#              - email
+#              - profile_image
+#            clientName: Naver
+#        # Provider 설정
+#      provider:
+#        naver:
+#          authorizationUri: https://nid.naver.com/oauth2.0/authorize
+#          tokenUri: https://nid.naver.com/oauth2.0/token
+#          userInfoUri: https://openapi.naver.com/v1/nid/me
+#          userNameAttribute: response
+#        kakao:
+#          authorizationUri: https://kauth.kakao.com/oauth/authorize
+#          tokenUri: https://kauth.kakao.com/oauth/token
+#          userInfoUri: https://kapi.kakao.com/v2/user/me
+#          userNameAttribute: id

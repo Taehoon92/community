@@ -7,6 +7,7 @@ import hoon.community.domain.role.dto.RoleModifyDto;
 import hoon.community.domain.role.entity.RoleType;
 import hoon.community.global.exception.CustomException;
 import hoon.community.global.exception.ErrorCode;
+import hoon.community.global.security.oauth.OAuth2UserInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,6 +17,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -100,4 +102,5 @@ public class MemberService {
 
         return true;
     }
+
 }

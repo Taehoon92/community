@@ -25,15 +25,9 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .orElseGet(() -> new Member(null, null, null, List.of()));
         return new CustomUserDetails(
                 String.valueOf(member.getId()),
+                String.valueOf(member.getEmail()),
                 member.getRoleTypes().stream().map(roleType -> roleType.toString())
                                 .map(SimpleGrantedAuthority::new).collect(Collectors.toSet())
-                /*
-                member.getRoles().stream().map(memberRole -> memberRole.getRole())
-                        .map(role -> role.getRoleType())
-                        .map(roleType -> roleType.toString())
-                        .map(SimpleGrantedAuthority::new).collect(Collectors.toSet())
-
-                 */
         );
     }
 }
