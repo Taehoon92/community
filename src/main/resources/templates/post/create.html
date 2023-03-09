@@ -11,7 +11,7 @@
             <h2 id="title-text" class="title-text">Posting</h2>
         </div>
         <div class="post-create">
-            <form action="/posts/create" method="post" id="form" class="form-horizontal">
+            <form action="/posts/create" method="post" id="form" class="form-horizontal" enctype="multipart/form-data">
                 <div class="form-group">
                     <div class="post-create-title">
                         <input type="text" id="title" name="title" class="form-control" placeholder="제목을 입력해 주세요." />
@@ -21,6 +21,9 @@
                 <div class="form-group">
                     <div class="post-create-content">
                         <textarea id="content" name="content" class="form-control" placeholder="내용을 입력해 주세요."></textarea>
+                    </div>
+                    <div class="post-file-upload">
+                        <input type="file" name="images[]" accept="image/*" multiple>
                     </div>
                 </div>
 

@@ -115,6 +115,7 @@
             }).then(json => {
                 let html = '';
                 let navHtml = '';
+                let imgIconHtml = '';
                 console.log(json.result.data);
                 if(json.result.data.postList.length == 0) {
                     //게시글 x
@@ -123,6 +124,12 @@
                     console.log(json.result.data.postList);
 
                     json.result.data.postList.forEach((obj, idx) => {
+
+                        if(obj.existImages) { // 첨부된 이미지 있을떄
+                            imgIconHtml = `<i class="fa-regular fa-image"></i>`;
+                        } else {
+                            imgIconHtml = ``;
+                        }
                         html += `
                             <tr>
                             <td colspan="2" class = "td-post">
@@ -132,7 +139,7 @@
                                 <div class = "post-title">
                                     <div class="inner-title">
                                         <a class="list-subject" href="javascript: void(0);" onclick="goView(${obj.id})">${obj.title}</a>
-                                        <span class="list-icon"></span>
+                                        <span class="list-icon">${imgIconHtml}</span>
                                         <span class="list-reply">[${obj.comments}]</span>
                                     </div>
                                 </div>
@@ -161,6 +168,7 @@
 
                 document.getElementById('list').innerHTML = html;
                 document.getElementById('page-navigation').innerHTML = navHtml;
+
             }).catch(error => {
                 alert('오류가 발생했습니다');
             })

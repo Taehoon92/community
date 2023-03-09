@@ -8,6 +8,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 @AllArgsConstructor
@@ -17,6 +19,7 @@ public class PostDto {
     private String title;
     private String content;
     private MemberDto member;
+    private List<ImageDto> images;
     private Integer hits;
     private Integer comments;
 
@@ -31,6 +34,7 @@ public class PostDto {
                 post.getTitle(),
                 post.getContent(),
                 MemberDto.toDto(post.getMember()),
+                post.getImages().stream().map(i -> ImageDto.toDto(i)).collect(Collectors.toList()),
                 post.getHits(),
                 post.getComments().size(),
                 post.getCreatedDate(),

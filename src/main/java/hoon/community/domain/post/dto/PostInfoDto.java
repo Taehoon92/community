@@ -16,6 +16,7 @@ public class PostInfoDto {
     private String username;
     private Integer hits;
     private Integer comments;
+    private boolean existImages;
 
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Australia/Sydney")

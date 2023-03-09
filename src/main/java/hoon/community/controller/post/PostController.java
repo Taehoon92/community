@@ -52,7 +52,8 @@ public class PostController {
     @ApiOperation(value = "게시글 수정", notes = "게시글을 수정한다.")
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Response update(@ApiParam(value = "게시글 id", required = true) @PathVariable Long id, @Valid @RequestBody PostUpdateRequest request) {
+    public Response update(@ApiParam(value = "게시글 id", required = true) @PathVariable Long id, @Valid /*@RequestBody*/ PostUpdateRequest request) {
+        log.info("REQUEST UPDATE = {}", request);
         postService.update(id, request);
         return Response.success();
     }

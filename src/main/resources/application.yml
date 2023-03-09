@@ -27,16 +27,16 @@ spring:
     active: local
     include: secret, oauth
 
-
-
-
-
   #thymeleaf
   thymeleaf:
     cache: false
-
 
   mvc:
     hiddenmethod:
       filter:
         enabled: true
+
+  #file upload size
+  servlet.multipart:
+    max-file-size: 5MB
+    max-request-size: 5MB

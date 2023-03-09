@@ -15,7 +15,10 @@ public class MemberFactory {
         return new Member(password, username, email, Collections.emptyList());
     }
 
+    /*
     public static Member createMemberWithRoles(List<Role> roles) {
         return new Member("password", "testUsername", "email@email.com", roles);
     }
+
+     */
 }

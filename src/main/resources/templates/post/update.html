@@ -24,6 +24,16 @@
           </div>
         </div>
 
+        <div class="form-group">
+          <div class="post-image-list" id="post-image-list">
+
+          </div>
+          <div class="post-file-upload">
+            <input type="file" id="addedImages" name="addedImages" accept="image/*" multiple>
+          </div>
+        </div>
+
+
         <div class="btn_wrap text-center btn-post">
           <button type="button" onclick="goList();" class="btn btn-default waves-effect waves-light">Cancel</button>
           <button type="button" onclick="save();" class="btn btn-primary waves-effect waves-light">Save</button>
@@ -45,11 +55,15 @@
       findPost();
     }
 
+    let deletedImage = new Array();
+
     function findPost() {
       const id = /*[[ ${id} ]]*/;
       if(!id) {
         location.href = '/posts';
       }
+
+      let imgListHtml = '';
 
       fetch(`/api/posts/${id}`).then(response => {
 
@@ -58,9 +72,23 @@
         }
         return response.json();
       }).then(json => {
+        console.log(json);
         const form = document.getElementById('form');
         form.title.value = json.result.data.title;
         form.content.value = json.result.data.content;
+
+        if(json.result.data.images.length) {
+          imgListHtml += `<ul>`;
+          json.result.data.images.forEach(obj => {
+            imgListHtml += `
+              <li id="img-list-${obj.id}">
+                <span>${obj.originName}</span>
+                <i class="fa-solid fa-xmark" onclick="deleteImage(${obj.id})"></i>
+              </li>
+            `;
+          });
+          document.getElementById('post-image-list').innerHTML = imgListHtml;
+        }
       }).catch(error => {
         alert('게시글 정보를 찾을 수 없습니다');
         location.href = '/posts';
@@ -70,20 +98,37 @@
     function save() {
       const form = document.getElementById('form');
 
+      let formData = new FormData();
+      formData.append('title', form.title.value);
+      formData.append('content', form.content.value);
+      Array.from(form.addedImages.files).forEach((img => formData.append('addedImages',img)));
+      deletedImage.forEach((id => formData.append('deletedImages', id)));
+      // formData.append('addedImages', null);
+      // formData.append('deletedImages', null);
       const params = {
         title: form.title.value,
-        content: form.content.value
+        content: form.content.value,
+        // addedImages: form.images.value
       };
 
       const id = /*[[ ${id} ]]*/;
       const uri = `/api/posts/${id}`;
 
+
       fetch(uri, {
         method: 'PATCH',
+
         headers: {
+          // 'Content-Type':'multipart/form-data'
+        },
+        body: formData
+
+        /*headers: {
           'Content-Type':'application/json'
         },
         body: JSON.stringify(params)
+
+         */
       }).then(response => {
         console.log(response);
         if(!response.ok) {
@@ -96,10 +141,22 @@
         alert('오류가 발생되었습니다.');
       });
 
+
+
     }
 
     function goList() {
       location.href = '/posts' + location.search;
+    }
+
+    function deleteImage(id) {
+      if(!confirm('이미지를 제거하시겠습니까?')) {
+        return false;
+      }
+      deletedImage.push(id);
+      let deletedList = document.getElementById(`img-list-${id}`);
+      deletedList.remove();
+
     }
 
 

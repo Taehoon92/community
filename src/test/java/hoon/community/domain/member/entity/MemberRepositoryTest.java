@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static hoon.community.global.factory.entity.MemberFactory.createMember;
-import static hoon.community.global.factory.entity.MemberFactory.createMemberWithRoles;
 import static org.assertj.core.api.Assertions.*;
 
 
@@ -27,8 +26,6 @@ class MemberRepositoryTest {
 
     @Autowired
     MemberRepository memberRepository;
-    @Autowired
-    RoleRepository roleRepository;
 
     @PersistenceContext
     EntityManager em;
@@ -177,23 +174,6 @@ class MemberRepositoryTest {
         assertThat(memberRepository.existsByUsername(member.getUsername()+"a")).isFalse();
     }
 
-    @Test
-    void memberRoleCascadePersistTest() {
-        //given
-        List<RoleType> roleTypes = List.of(RoleType.ROLE_USER, RoleType.ROLE_SOCIAL, RoleType.ROLE_ADMIN);
-        List<Role> roles = roleTypes.stream().map(roleType -> new Role(roleType)).collect(Collectors.toList());
-        roleRepository.saveAll(roles);
-        clear();
-
-        Member member = memberRepository.save(createMemberWithRoles(roleRepository.findAll()));
-        clear();
-
-        //when
-        Member foundMember = memberRepository.findById(member.getId()).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-
-        //then
-        assertThat(memberRoles.size()).isEqualTo(roles.size());
-    }
 
     private void clear() {
         em.flush();

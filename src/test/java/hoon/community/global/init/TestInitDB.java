@@ -13,8 +13,6 @@ import java.util.stream.Collectors;
 @Component
 public class TestInitDB {
     @Autowired
-    RoleRepository roleRepository;
-    @Autowired
     MemberRepository memberRepository;
     @Autowired
     PasswordEncoder passwordEncoder;
@@ -26,16 +24,10 @@ public class TestInitDB {
 
     @Transactional
     public void initDB() {
-        initRole();
         initTestAdmin();
         initTestMember();
     }
 
-    private void initRole() {
-        roleRepository.saveAll(
-                List.of(RoleType.values()).stream().map(roleType -> new Role(roleType)).collect(Collectors.toList())
-        );
-    }
 
     private void initTestAdmin() {
         memberRepository.save(

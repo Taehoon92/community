@@ -25,6 +25,8 @@
         <div class="post-body">
             <div class="post-content">
                 <p id="post-contents"></p>
+                <div id="post-content-images">
+                </div>
             </div>
         </div>
     </div>
@@ -63,6 +65,7 @@
         let commentHtml = '';
         let commentDepthIdx = 0;
         let totalComments = 0;
+        let imageHtml = '';
 
 
         window.onload = () => {
@@ -81,6 +84,8 @@
                 success: function (json) {
                     if (json) {
 
+                        console.log(json.result.data);
+
                         const title = json.result.data.title;
                         const username = json.result.data.member.username;
                         const role = json.result.data.member.mainRole;
@@ -88,10 +93,21 @@
                         let modifiedDate = moment(json.result.data.modifiedDate).format('YYYY-MM-DD HH:mm');
                         const hits = json.result.data.hits;
                         const contents = json.result.data.content;
+                        const images = json.result.data.images;
 
                         document.getElementById("title-text").innerText = title;
                         document.getElementById("title-username").innerText = username;
                         document.getElementById("title-role").innerText = role;
+
+                        if(images.length != 0) {
+                            images.forEach( i => {
+                                imageHtml += `
+                                    <img src="../image/${i.uniqueName}"/>
+                                `
+                            })
+                            document.getElementById("post-content-images").innerHTML = imageHtml;
+                        }
+
                         document.getElementById("title-created-date-text").innerText = createdDate;
                         if(createdDate !== modifiedDate) {
                             modifiedDate = "(modified : " +modifiedDate+ ")";
@@ -100,10 +116,6 @@
 
                         document.getElementById("title-hits-text").innerText = hits;
                         document.getElementById("post-contents").innerText = contents;
-
-
-
-
 
                         document.getElementById('comment-total-count').innerText = json.result.data.comments;
 

@@ -45,7 +45,7 @@ public class CustomPostRepositoryImpl extends QuerydslRepositorySupport implemen
         return getQuerydsl().applyPagination(
                 pageable,
                 jpaQueryFactory
-                        .select(Projections.constructor(PostInfoDto.class, post.id, post.title, post.member.username, post.hits, post.comments.size(), post.createdDate))
+                        .select(Projections.constructor(PostInfoDto.class, post.id, post.title, post.member.username, post.hits, post.comments.size(), post.existImages, post.createdDate))
                         .from(post)
                         .join(post.member)
                         .where(predicate)

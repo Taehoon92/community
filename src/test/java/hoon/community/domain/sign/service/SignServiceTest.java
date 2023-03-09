@@ -30,14 +30,13 @@ class SignServiceTest {
 
     SignService signService;
     @Mock MemberRepository memberRepository;
-    @Mock RoleRepository roleRepository;
     @Mock PasswordEncoder passwordEncoder;
     @Mock TokenHelper accessTokenHelper;
     @Mock TokenHelper refreshTokenHelper;
 
     @BeforeEach
     void beforeEach() {
-        signService = new SignService(memberRepository, roleRepository, passwordEncoder, accessTokenHelper, refreshTokenHelper, null);
+        signService = new SignService(memberRepository, passwordEncoder, accessTokenHelper, refreshTokenHelper, null);
     }
 
 
@@ -45,7 +44,6 @@ class SignServiceTest {
     void signUpTest() {
         //given
         SignUpRequest req = createSignUpRequest();
-        given(roleRepository.findByRoleType(RoleType.ROLE_USER)).willReturn(Optional.of(new Role(RoleType.ROLE_USER)));
 
         //when
         signService.signUp(req);
