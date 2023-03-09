@@ -11487,6 +11487,10 @@ header.masthead .site-heading .h1 {
   min-height: 400px;
 }
 
+.post-content img {
+  display: block;
+}
+
 
 .comment-write {
   border: 1px solid #bbbbbb;
