@@ -31,8 +31,8 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarResponsive">
         <ul class="navbar-nav ms-auto py-4 py-lg-0">
-          <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="/posts">Board 1</a></li>
-          <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="/board2">Board 2</a></li>
+          <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="/posts/notice">Notice</a></li>
+          <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="/posts/forum">Forum</a></li>
           <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="/members">Member</a></li>
           <li th:if="${session.username == null}" class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="/auth/sign-in">Login</a></li>
           <li th:if="${session.username}" class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="/members/details" th:text="|${session.role} : ${session.username}|"></a></li>

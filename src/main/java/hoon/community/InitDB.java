@@ -6,6 +6,7 @@ import hoon.community.domain.comment.repository.CommentRepository;
 import hoon.community.domain.comment.service.CommentService;
 import hoon.community.domain.member.entity.Member;
 import hoon.community.domain.member.repository.MemberRepository;
+import hoon.community.domain.post.entity.BoardType;
 import hoon.community.domain.post.entity.Post;
 import hoon.community.domain.post.repository.PostRepository;
 import hoon.community.domain.role.entity.RoleType;
@@ -89,12 +90,16 @@ public class InitDB {
         Member member2 = memberRepository.findAll().get(1);
         IntStream.range(0, 100)
                 .forEach(i -> postRepository.save(
-                        new Post("title" + i, "content" + i, member1)
+                        new Post("title" + i, "content" + i, BoardType.FORUM, member1, List.of())
                 ));
         IntStream.range(100, 200)
                 .forEach(i -> postRepository.save(
-                        new Post("title " + i, "content" + i, member2)
+                        new Post("title " + i, "content" + i, BoardType.FORUM, member2, List.of())
+                ));
 
+        IntStream.range(0,10)
+                .forEach(i -> postRepository.save(
+                        new Post("NOTICE" + i, "THIS IS NOTICE", BoardType.NOTICE, member1, List.of())
                 ));
     }
 

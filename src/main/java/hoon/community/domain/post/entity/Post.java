@@ -36,6 +36,9 @@ public class Post extends BaseTimeEntity {
     @Column(nullable = false)
     private String content;
 
+    @Column(nullable = false)
+    private BoardType boardType;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
@@ -59,9 +62,10 @@ public class Post extends BaseTimeEntity {
     }
 
     @Builder
-    public Post(String title, String content, Member member, List<Image> images) {
+    public Post(String title, String content, BoardType boardType, Member member, List<Image> images) {
         this.title = title;
         this.content = content;
+        this.boardType = boardType;
         this.member = member;
         this.hits = 0;
         this.comments = new ArrayList<>();

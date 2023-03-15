@@ -47,13 +47,19 @@
         </table>
         <div class="list-button-area">
             <div>
-
+                <select name = "selectSize" class="form-control" onchange="setSize(this.value)">
+                    <option value="">Posts per Page</option>
+                    <option value="10">10 posts</option>
+                    <option value="15">15 posts</option>
+                    <option value="20">20 posts</option>
+                    <option value="30">30 posts</option>
+                </select>
             </div>
             <!-- 페이지네이션 Rendering 영역 -->
             <div id="page-navigation">
             </div>
             <div>
-                <a th:href="@{/posts/create}" class="btn-write btn btn-primary waves-effect waves-light">Write</a>
+                <a th:href="@{/posts/create/{board}(board=${board})}" class="btn-write btn btn-primary waves-effect waves-light">Write</a>
             </div>
 
 
@@ -67,10 +73,12 @@
 
         let page = 0;
         let size = 10;
+        const boardType = /*[[ ${boardType} ]]*/;
+
 
 
         window.onload = () => {
-            findAll(page);
+            findAll(page, size);
             addEnterSearchEvent();
         }
 
@@ -90,18 +98,23 @@
             location.href = `/posts/${id}`;
         }
 
-        function findAll(page) {
+        function findAll(page, size) {
             const searchTypeElement = document.getElementById('searchType');
             const searchType = searchTypeElement.options[searchTypeElement.selectedIndex].value;
             const keyword = document.getElementById('keyword').value;
             console.log(searchType);
 
-            let uri = '';
+            // let uri = `/api/posts/${boardType}`;
+            let uri = `/api/posts`;
+
+            if(boardType == null) {
+                throw err;
+            } else {
+                uri += `?boardType=${boardType}&page=${page}&size=${size}`
+            }
 
             if(searchType && keyword) {
-                uri += `/api/posts?page=${page}&size=${size}&${searchType}=${keyword}`;
-            } else {
-                uri += `/api/posts?page=${page}&size=${size}`;
+                uri += `&${searchType}=${keyword}`;
             }
 
 
@@ -183,8 +196,8 @@
 
             if(page != 0) {
                 generatedHtml += `
-                    <a href="javascript:void(0)", onclick="findAll(0);" aria-label="Previous">&laquo;</a>
-                    <a href="javascript:void(0)", onclick="findAll(${page-1});" aria-label="Previous">&lsaquo;</a>
+                    <a href="javascript:void(0)", onclick="findAll(0, size);" aria-label="Previous">&laquo;</a>
+                    <a href="javascript:void(0)", onclick="findAll(${page-1}, size);" aria-label="Previous">&lsaquo;</a>
                 `;
             }
 
@@ -196,19 +209,26 @@
                 const active = (i === page+1) ? 'class="active"' : '';
 
                 generatedHtml += `
-                    <a href="javascript:void(0)" onclick="findAll(${i-1})" ${active}>${i}</a>`;
+                    <a href="javascript:void(0)" onclick="findAll(${i-1}, size)" ${active}>${i}</a>`;
             }
 
             if(json.result.data.hasNext) {
                 generatedHtml += `
-                    <a href="javascript:void(0)" onclick="findAll(${page + 1});" aria-label="Next">&rsaquo;</a>
-                    <a href="javascript:void(0)" onclick="findAll(${json.result.data.totalPages - 1});" aria-label="Next">&raquo;</a>
+                    <a href="javascript:void(0)" onclick="findAll(${page + 1}, size);" aria-label="Next">&rsaquo;</a>
+                    <a href="javascript:void(0)" onclick="findAll(${json.result.data.totalPages - 1}, size);" aria-label="Next">&raquo;</a>
                 `;
             }
 
             return generatedHtml;
 
 
+        }
+
+        function setSize(value) {
+            if(value !== "") {
+                size = parseInt(value);
+                findAll(page, size);
+            }
         }
 
     </script>

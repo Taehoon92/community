@@ -8,6 +8,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import hoon.community.domain.comment.entity.QComment;
 import hoon.community.domain.post.dto.PostInfoDto;
 import hoon.community.domain.post.dto.PostReadCondition;
+import hoon.community.domain.post.entity.BoardType;
 import hoon.community.domain.post.entity.Post;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -62,7 +63,8 @@ public class CustomPostRepositoryImpl extends QuerydslRepositorySupport implemen
                 .and(orConditionsByEqMemberIds(condition.getMemberId()))
                 .and(orConditionsByEqUsername(condition.getUsername()))
                 .and(orConditionsByContainsContent(condition.getContent()))
-                .and(orConditionsByContainsTitle(condition.getTitle()));
+                .and(orConditionsByContainsTitle(condition.getTitle()))
+                .and(orConditionsByBoardType(condition.getBoardType()));
     }
 
     private Predicate orConditionsByEqMemberIds(List<Long> memberIds) {
@@ -80,6 +82,11 @@ public class CustomPostRepositoryImpl extends QuerydslRepositorySupport implemen
     private Predicate orConditionsByContainsTitle(List<String> title) {
         return orConditions(title, post.title::contains);
     }
+
+    private Predicate orConditionsByBoardType(List<BoardType> boardType) {
+        return orConditions(boardType, post.boardType::eq);
+    }
+
 
     private <T> Predicate orConditions(List<T> values, Function<T, BooleanExpression> term) {
         return values.stream()

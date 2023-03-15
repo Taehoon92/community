@@ -64,6 +64,8 @@ public class SecurityConfig {
                 .and()
                 .authorizeRequests()
 
+                .antMatchers(HttpMethod.GET, "/image/**").permitAll()
+
                 .antMatchers(HttpMethod.POST, "/api/sign-in", "/api/sign-up", "/api/refresh-token", "/api/duplicate-email-check").permitAll()
 
                 .antMatchers(HttpMethod.DELETE, "/api/members/{id}/**").access("@memberGuard.check(#id)")
@@ -73,6 +75,7 @@ public class SecurityConfig {
 
 
                 .antMatchers(HttpMethod.POST, "/api/posts").authenticated()
+                .antMatchers(HttpMethod.POST, "/api/posts/**").authenticated()
                 .antMatchers(HttpMethod.GET, "/api/posts/**").permitAll()
 //                        .antMatchers(HttpMethod.GET, "/api/posts/**").access("@postGuard.check(#id)")
                 .antMatchers(HttpMethod.PATCH, "/api/posts/{id}").access("@postGuard.check(#id)")
@@ -83,11 +86,9 @@ public class SecurityConfig {
                 .antMatchers(HttpMethod.DELETE, "/api/comments/{id}").access("@commentGuard.check(#id)")
 
                 .antMatchers(HttpMethod.GET, "/posts/create").authenticated()
-                .antMatchers(HttpMethod.POST, "/posts/create").authenticated()
                 .antMatchers(HttpMethod.GET, "/posts/update/{id}").access("@postGuard.check(#id)")
 
-//                        .antMatchers(HttpMethod.PATCH, "/posts/update/{id}").access("@postGuard.check(#id)")
-                .antMatchers(HttpMethod.GET, "/posts", "/posts/{id}").permitAll()
+                .antMatchers(HttpMethod.GET, "/posts/**", "/posts/{id}").permitAll()
 
                 .antMatchers(HttpMethod.GET, "/members/details", "/members/modify/**").authenticated()
                 .antMatchers(HttpMethod.GET, "/members/list").permitAll()

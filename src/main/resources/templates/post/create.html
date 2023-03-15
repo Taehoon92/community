@@ -11,7 +11,7 @@
             <h2 id="title-text" class="title-text">Posting</h2>
         </div>
         <div class="post-create">
-            <form action="/posts/create" method="post" id="form" class="form-horizontal" enctype="multipart/form-data">
+            <form action="" id="form" class="form-horizontal">
                 <div class="form-group">
                     <div class="post-create-title">
                         <input type="text" id="title" name="title" class="form-control" placeholder="제목을 입력해 주세요." />
@@ -22,14 +22,17 @@
                     <div class="post-create-content">
                         <textarea id="content" name="content" class="form-control" placeholder="내용을 입력해 주세요."></textarea>
                     </div>
+                </div>
+
+                <div class="form-group">
                     <div class="post-file-upload">
-                        <input type="file" name="images[]" accept="image/*" multiple>
+                        <input type="file" id="images" name="images" accept="image/*" multiple>
                     </div>
                 </div>
 
                 <div class="btn_wrap text-center btn-post">
                     <button type="button" onclick="goList();" class="btn btn-default waves-effect waves-light">Cancel</button>
-                    <button type="submit" class="btn btn-primary waves-effect waves-light">Save</button>
+                    <button type="button" onclick="create();" class="btn btn-primary waves-effect waves-light">Save</button>
                 </div>
             </form>
         </div>
@@ -40,8 +43,39 @@
 <th:block layout:fragment="script">
     <script th:inline="javascript">
 
+        const board = /*[[ ${board} ]]*/;
+
+        function create() {
+            const form = document.getElementById('form');
+            const uri = `/api/posts/${board}`;
+
+            let formData = new FormData();
+            formData.append('title', form.title.value);
+            formData.append('content',form.content.value);
+            Array.from(form.images.files).forEach((img => formData.append('images',img)));
+
+            console.log(uri);
+
+            fetch(uri, {
+                method: 'POST',
+                body: formData
+            }).then(response => {
+                console.log(response);
+                if(!response.ok) {
+                    throw new Error('Request failed');
+                }
+                alert('저장되었습니다');
+                location.href = `/posts/${board}`;
+            }).catch(error => {
+                alert('오류가 발생되었습니다');
+            })
+
+
+
+        }
+
         function goList() {
-            location.href = '/posts' + location.search;
+            location.href = `/posts/${board}` + location.search;
         }
 
     </script>
