@@ -3,6 +3,7 @@ package hoon.community.domain.post.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import hoon.community.domain.comment.entity.Comment;
 import hoon.community.domain.member.dto.MemberDto;
+import hoon.community.domain.post.entity.BoardType;
 import hoon.community.domain.post.entity.Post;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,6 +23,7 @@ public class PostDto {
     private List<ImageDto> images;
     private Integer hits;
     private Integer comments;
+    private BoardType boardType;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Australia/Sydney")
     private LocalDateTime createdDate;
@@ -37,6 +39,7 @@ public class PostDto {
                 post.getImages().stream().map(i -> ImageDto.toDto(i)).collect(Collectors.toList()),
                 post.getHits(),
                 post.getComments().size(),
+                post.getBoardType(),
                 post.getCreatedDate(),
                 post.getModifiedDate()
         );

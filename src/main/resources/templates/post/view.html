@@ -66,6 +66,7 @@
         let commentDepthIdx = 0;
         let totalComments = 0;
         let imageHtml = '';
+        let board;
 
 
         window.onload = () => {
@@ -94,6 +95,15 @@
                         const hits = json.result.data.hits;
                         const contents = json.result.data.content;
                         const images = json.result.data.images;
+
+                        const boardType = json.result.data.boardType;
+                        if(boardType == "FORUM") {
+                            console.log("board type = " + boardType);
+                            board = 'forum';
+                        } else if (boardType == "NOTICE") {
+                            console.log("board type = " + boardType);
+                            board = 'notice';
+                        }
 
                         document.getElementById("title-text").innerText = title;
                         document.getElementById("title-username").innerText = username;
@@ -314,7 +324,7 @@
          * 뒤로가기
          */
         function goList() {
-            location.href = '/posts' + location.search;
+            location.href = `/posts/${board}` + location.search;
         }
 
         /**
