@@ -1,6 +1,7 @@
 package hoon.community.domain.post.dto;
 
 import hoon.community.domain.post.entity.BoardType;
+import hoon.community.domain.validation.Enum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,7 +24,7 @@ public class PostReadCondition {
     @Positive(message = "올바른 페이지 크기를 입력해주세요.")
     private Integer size = 10;
 
-
+    @Enum(enumClass = BoardType.class, ignoreCase = true)
     @NotNull(message = "게시판 타입을 입력해주세요.")
     private List<BoardType> boardType = new ArrayList<>();
 
