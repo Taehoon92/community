@@ -5,6 +5,7 @@ import hoon.community.domain.sign.dto.DuplicateEmailCheckRequest;
 import hoon.community.domain.sign.dto.SignInRequest;
 import hoon.community.domain.sign.dto.SignUpRequest;
 import hoon.community.domain.sign.service.SignService;
+import hoon.community.global.exception.CustomException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -26,9 +27,16 @@ public class SignController {
     @ApiOperation(value = "회원가입", notes = "회원가입을 한다.")
     @PostMapping("/api/sign-up")
     @ResponseStatus(HttpStatus.CREATED)
-    public Response signUp(@Valid @RequestBody SignUpRequest request) {
+    public Response signUp(@Valid @RequestBody SignUpRequest request, BindingResult bindingResult, HttpServletResponse servletResponse) {
+        if(bindingResult.hasErrors()) {
+            return Response.failure(0, bindingResult.getFieldError().getDefaultMessage());
+        }
+        if(signService.duplicateEmailCheck(request.getEmail())){
+            return Response.failure(0, "이미 존재하는 이메일입니다.");
+        }
         signService.signUp(request);
-        return Response.success();
+        SignInRequest signInRequest = new SignInRequest(request.getEmail(), request.getPassword());
+        return Response.success(signService.signIn(signInRequest, servletResponse));
     }
 
     @ApiOperation(value = "로그인", notes = "로그인을 한다.")
@@ -45,6 +53,7 @@ public class SignController {
         return Response.success(signService.refreshToken(refreshToken));
     }
 
+    @ApiOperation(value = "이메일 중복 확인", notes = "이메일 중복 확인을 한다.")
     @PostMapping("/api/duplicate-email-check")
     @ResponseStatus(HttpStatus.OK)
     public Response duplicateEmailCheck(@Valid @RequestBody DuplicateEmailCheckRequest request, BindingResult bindingResult) {

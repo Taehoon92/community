@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -47,6 +48,10 @@ public class SignWebController {
     @PostMapping("/sign-up")
     public String join(@Valid @ModelAttribute("member") SignUpRequest request, BindingResult bindingResult, HttpServletResponse servletResponse) {
         if (bindingResult.hasErrors()) {
+            return "sign/signUp";
+        }
+        if(signService.duplicateEmailCheck(request.getEmail())) {
+            bindingResult.addError(new FieldError("member", "email", "중복된 email이 존재합니다."));
             return "sign/signUp";
         }
         signService.signUp(request);

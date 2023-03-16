@@ -9,7 +9,7 @@
         </div>
 
         <div class="sign-form">
-            <form action="/api/sign-up" th:action th:object="${member}" method="post">
+            <form action="" th:action th:object="${member}" method="post">
                 <div class="sign-form-input">
                     <div th:if="${#fields.hasGlobalErrors()}">
                         <p class="field-error" th:each="err : ${#fields.globalErrors()}" th:text="${err}">전체 오류 메시지</p>
