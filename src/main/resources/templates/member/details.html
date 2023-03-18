@@ -6,14 +6,18 @@
 
 <th:block layout:fragment="content">
 
+    <div class="member-detail-title">
+        <h2 id="title-text" class="title-text" th:text="#{member.detail}">Member Details</h2>
+    </div>
+
     <div class="table-responsive clearfix">
         <table class="table table-hover">
             <thead>
             <tr>
-                <th>Email</th>
-                <th>Username</th>
-                <th>User Roles</th>
-                <th>Sign-up Date</th>
+                <th th:text="#{member.detail.email}">Email</th>
+                <th th:text="#{member.detail.username}">Username</th>
+                <th th:text="#{member.detail.roles}">User Roles</th>
+                <th th:text="#{member.detail.signUpDate}">Sign-up Date</th>
             </tr>
             </thead>
 
@@ -24,14 +28,14 @@
     </div>
     <div class="member-detail-button">
         <div class="btn_wrap text-right">
-            <a th:href="@{/members/modify/password}" class="btn btn-primary waves-effect waves-light">Change Password</a>
-            <a href="javascript: void(0);" onclick="deleteAccount();" class="btn btn-danger waves-effect waves-light">Delete Account</a>
+            <a th:href="@{/members/modify/password}" class="btn btn-primary waves-effect waves-light" th:text="#{button.changePassword}">Change Password</a>
+            <a href="javascript: void(0);" onclick="deleteAccount();" class="btn btn-danger waves-effect waves-light" th:text="#{button.deleteAccount}">Delete Account</a>
         </div>
     </div>
 
 
     <div class="table-responsive clearfix">
-        <p><span>작성한 게시글 : </span><span id="member-post-total"></span></p>
+        <p><span th:text="#{member.detail.userPosts}">User Posts : </span><span id="member-post-total"></span></p>
 
         <table class="table table-hover">
             <colgroup>
@@ -43,9 +47,9 @@
             <thead>
             <tr>
                 <th></th>
-                <th scope="col">제목</th>
-                <th scope="col">등록일</th>
-                <th scope="col">조회 수</th>
+                <th scope="col" th:text="#{board.list.title}">Title</th>
+                <th scope="col" th:text="#{board.list.date}">Date</th>
+                <th scope="col" th:text="#{board.list.hits}">Hits</th>
             </tr>
             </thead>
 

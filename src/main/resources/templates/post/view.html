@@ -18,9 +18,9 @@
             </div>
         </div>
         <div class="btn-wrap btn-post btn-common">
-            <button type="button" onclick="goList();" class="btn btn-default waves-effect waves-light">Back</button>
-            <button type="button" onclick="goUpdate();" class="btn btn-primary waves-effect waves-light">Modify</button>
-            <button type="button" onclick="deleteBoard();" class="btn btn-danger waves-effect waves-light">Delete</button>
+            <button type="button" onclick="goList();" class="btn btn-default waves-effect waves-light" th:text="#{button.back}">Back</button>
+            <button type="button" onclick="goUpdate();" class="btn btn-primary waves-effect waves-light" th:text="#{button.modify}">Modify</button>
+            <button type="button" onclick="deleteBoard();" class="btn btn-danger waves-effect waves-light" th:text="#{button.delete}">Delete</button>
         </div>
         <div class="post-body">
             <div class="post-content">
@@ -36,7 +36,7 @@
 
     <div class="comment">
         <div class="comment-title">
-            <strong>댓글 </strong><strong id="comment-total-count"></strong><strong>개</strong>
+            <strong th:text="#{board.view.comments}+ ' : '">Comments : </strong><strong id="comment-total-count"></strong>
         </div>
         <div class="comment-block">
             <ul class="comment-list" id="comment-list">
@@ -45,12 +45,12 @@
         </div>
 
         <div class="comment-write">
-            <strong class="comment-write-title">댓글 쓰기</strong>
+            <strong class="comment-write-title" th:text="#{board.view.comments.write}">Leave comments</strong>
             <div class="comment-text-block">
-                <textarea id="comment-content" name="commentContent"class="form-control comment-textarea" placeholder="댓글을 입력하세요."></textarea>
+                <textarea id="comment-content" name="commentContent"class="form-control comment-textarea" th:placeholder="#{board.view.comments.write.placeholder}" placeholder="Enter a comment"></textarea>
             </div>
             <div class="comment-write-button">
-                <button type="button" onclick="save()" class="btn-comment-save btn-comment btn btn-primary waves-effect waves-light">Save</button>
+                <button type="button" onclick="save()" class="btn-comment-save btn-comment btn btn-primary waves-effect waves-light" th:text="#{button.save}">Save</button>
             </div>
 
         </div>
@@ -241,19 +241,19 @@
                             </div>
                             <div class="comment-info-box">
                                 <span class="comment-createdDate">${createdDate}</span>
-                                <a class="comment-button comment-button-reply" role="button" onclick="toggleReply(${obj.id})">Reply</a>
-                                <a class="comment-button comment-button-delete" role="button" onclick="deleteComment(${obj.id})">Delete</a>
+                                <a class="comment-button comment-button-reply" role="button" onclick="toggleReply(${obj.id})" th:text="#{button.reply}">Reply</a>
+                                <a class="comment-button comment-button-delete" role="button" onclick="deleteComment(${obj.id})" th:text="#{button.delete}">Delete</a>
                             </div>
                         </div>
                     </li>
                     <li id="comment-reply-${obj.id}" class="comment-reply" style="padding-left: ${commentDepth}%">
                         <div class="comment-reply-area">
                             <div class="comment-reply-text-box">
-                                <textarea id="comment-reply-content-${obj.id}" class="form-control comment-reply-textarea" placeholder="댓글을 입력하세요."></textarea>
+                                <textarea id="comment-reply-content-${obj.id}" class="form-control comment-reply-textarea" th:placeholder="#{board.view.comments.write.placeholder}" placeholder="Enter a comment"></textarea>
                             </div>
                             <div class="comment-reply-buttons">
-                                <a class="comment-button comment-reply-button-cancel" role="button" onclick="cancelReply(${obj.id})">Cancel</a>
-                                <a class="comment-button comment-reply-button-save" role="button" onclick="replySave(${obj.id})">Save</a>
+                                <a class="comment-button comment-reply-button-cancel" role="button" onclick="cancelReply(${obj.id})" th:text="#{button.cancel}">Cancel</a>
+                                <a class="comment-button comment-reply-button-save" role="button" onclick="replySave(${obj.id})" th:text="#{button.save}">Save</a>
                             </div>
                         </div>
                     </li>

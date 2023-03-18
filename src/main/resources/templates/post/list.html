@@ -7,12 +7,12 @@
     <div class="input-group post-list-search" id="adv-search">
         <form id="searchForm" onsubmit="return false;">
             <select id="searchType" class="form-control" style="width: 100px;">
-                <option value="">Select</option>
-                <option value="title">Title</option>
-                <option value="content">Content</option>
-                <option value="username">Writer</option>
+                <option value="" th:text="#{board.list.search.selectBox}">Select</option>
+                <option value="title" th:text="#{board.list.search.selectBox.title}">Title</option>
+                <option value="content" th:text="#{board.list.search.selectBox.content}">Content</option>
+                <option value="username" th:text="#{board.list.search.selectBox.writer}">Writer</option>
             </select>
-            <input type="text" id="keyword" class="form-control" placeholder="키워드를 입력해 주세요." style="width: 300px;" />
+            <input type="text" id="keyword" class="form-control" th:placeholder="#{board.list.search.input.placeholder}" placeholder="Enter a keyword" style="width: 300px;" />
         </form>
         <button type="button" class="btn btn-primary btn-search" onclick="findAll(0)">
             <span class="fa-solid fa-magnifying-glass"></span>
@@ -33,10 +33,10 @@
             <thead>
             <tr>
                 <th></th>
-                <th scope="col">Title</th>
-                <th scope="col">Writer</th>
-                <th scope="col">Date</th>
-                <th scope="col">Hits</th>
+                <th scope="col" th:text="#{board.list.title}">Title</th>
+                <th scope="col" th:text="#{board.list.writer}">Writer</th>
+                <th scope="col" th:text="#{board.list.date}">Date</th>
+                <th scope="col" th:text="#{board.list.hits}">Hits</th>
             </tr>
             </thead>
 
@@ -48,18 +48,18 @@
         <div class="list-button-area">
             <div>
                 <select name = "selectSize" class="form-control" onchange="setSize(this.value)">
-                    <option value="">Posts per Page</option>
-                    <option value="10">10 posts</option>
-                    <option value="15">15 posts</option>
-                    <option value="20">20 posts</option>
-                    <option value="30">30 posts</option>
+                    <option value="" th:text="#{board.list.postsPerPage}">Posts per Page</option>
+                    <option value="10" th:text="#{board.list.postsPerPage.first}">10 posts</option>
+                    <option value="15" th:text="#{board.list.postsPerPage.second}">15 posts</option>
+                    <option value="20" th:text="#{board.list.postsPerPage.third}">20 posts</option>
+                    <option value="30" th:text="#{board.list.postsPerPage.fourth}">30 posts</option>
                 </select>
             </div>
             <!-- 페이지네이션 Rendering 영역 -->
             <div id="page-navigation">
             </div>
             <div>
-                <a th:href="@{/posts/create/{board}(board=${board})}" class="btn-write btn btn-primary waves-effect waves-light">Write</a>
+                <a th:href="@{/posts/create/{board}(board=${board})}" class="btn-write btn btn-primary waves-effect waves-light" th:text="#{button.write}">Write</a>
             </div>
 
 

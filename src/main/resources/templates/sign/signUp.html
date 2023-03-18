@@ -5,7 +5,7 @@
 
     <div class="sign-block">
         <div class="sign-title">
-            <h2 class="title-text">Sign Up</h2>
+            <h2 class="title-text" th:text="#{auth.title.signUp}">Sign Up</h2>
         </div>
 
         <div class="sign-form">
@@ -16,23 +16,23 @@
                     </div>
 
                     <div class="sign-form-email">
-                        <label for="email">이메일</label>
+                        <label for="email" th:text="#{auth.email}">Email</label>
                         <input type="text" id="email" th:field="*{email}" class="form-control "
                                th:errorclass="field-error">
-                        <button type="button" class="btn btn-secondary" onclick="duplicateEmailCheck()">Check</button>
+                        <button type="button" class="btn btn-secondary" onclick="duplicateEmailCheck()" th:text="#{button.check}">Check</button>
                         <div class="field-error" th:text="${duplicateLoginId}? ${duplicateLoginIdErr}:''"></div>
 
                         <div class="field-error" th:errors="*{email}" />
                         <span id="duplicateCheckResult"></span>
                     </div>
                     <div>
-                        <label for="password">비밀번호</label>
+                        <label for="password" th:text="#{auth.password}">Password</label>
                         <input type="password" id="password" th:field="*{password}" class="form-control"
                                th:errorclass="field-error">
                         <div class="field-error" th:errors="*{password}" />
                     </div>
                     <div>
-                        <label for="username">이름</label>
+                        <label for="username" th:text="#{auth.username}">Username</label>
                         <input type="text" id="username" th:field="*{username}" class="form-control"
                                th:errorclass="field-error">
                         <div class="field-error" th:errors="*{username}" />
@@ -42,8 +42,8 @@
                 <div class="row">
                     <div class="btn-block">
                         <div class="btn-common btn-login">
-                            <button class="btn btn-secondary" th:onclick="|location.href='@{/}'|" type="button">취소</button>
-                            <button class="btn btn-primary" type="submit">회원 가입</button>
+                            <button class="btn btn-secondary" th:onclick="|location.href='@{/}'|" type="button" th:text="#{button.cancel}">Cancel</button>
+                            <button class="btn btn-primary" type="submit" th:text="#{button.signUp}">Sign Up</button>
                         </div>
 
                     </div>

@@ -22,6 +22,10 @@ spring:
     open-in-view: 'false' #OSIV 사용하지않기
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
 
+  # Messages
+  messages:
+    basename: messages
+
   #JWT, #OAuth
   profiles:
     active: local

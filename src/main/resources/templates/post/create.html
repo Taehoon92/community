@@ -8,31 +8,31 @@
 
     <div class="post-create-block">
         <div class="post-title">
-            <h2 id="title-text" class="title-text">Posting</h2>
+            <h2 id="title-text" class="title-text" th:text="#{board.create.header}">Create Post</h2>
         </div>
         <div class="post-create">
             <form action="" id="form" class="form-horizontal">
                 <div class="form-group">
                     <div class="post-create-title">
-                        <input type="text" id="title" name="title" class="form-control" placeholder="제목을 입력해 주세요." />
+                        <input type="text" id="title" name="title" class="form-control" th:placeholder="#{board.write.title.placeholder}" placeholder="Enter a title"/>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <div class="post-create-content">
-                        <textarea id="content" name="content" class="form-control" placeholder="내용을 입력해 주세요."></textarea>
+                        <textarea id="content" name="content" class="form-control" th:placeholder="#{board.write.content.placeholder}" placeholder="Enter contents"></textarea>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <div class="post-file-upload">
-                        <input type="file" id="images" name="images" accept="image/*" multiple>
+                        <input type="file" id="images" name="images" accept="image/*" th:placeholder="#{board.write.chooseFiles}" multiple>
                     </div>
                 </div>
 
                 <div class="btn_wrap text-center btn-post">
-                    <button type="button" onclick="goList();" class="btn btn-default waves-effect waves-light">Cancel</button>
-                    <button type="button" onclick="create();" class="btn btn-primary waves-effect waves-light">Save</button>
+                    <button type="button" onclick="goList();" class="btn btn-default waves-effect waves-light" th:text="#{button.cancel}">Cancel</button>
+                    <button type="button" onclick="create();" class="btn btn-primary waves-effect waves-light" th:text="#{button.save}">Save</button>
                 </div>
             </form>
         </div>
