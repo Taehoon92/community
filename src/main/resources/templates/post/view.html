@@ -230,6 +230,11 @@
                     username = obj.member.username;
                 }
 
+                let msgButtonReply = [[ #{button.reply} ]];
+                let msgButtonDelete = [[ #{button.delete} ]];
+                let msgButtonCancel = [[#{button.cancel}]];
+                let msgButtonSave = [[#{button.save}]];
+
                 commentHtml += `
                     <li id="comment-${obj.id}" class="comment-list-li" style="padding-left: ${commentDepth}%">
                         <div class="comment-area">
@@ -241,19 +246,19 @@
                             </div>
                             <div class="comment-info-box">
                                 <span class="comment-createdDate">${createdDate}</span>
-                                <a class="comment-button comment-button-reply" role="button" onclick="toggleReply(${obj.id})" th:text="#{button.reply}">Reply</a>
-                                <a class="comment-button comment-button-delete" role="button" onclick="deleteComment(${obj.id})" th:text="#{button.delete}">Delete</a>
+                                <a class="comment-button comment-button-reply" role="button" onclick="toggleReply(${obj.id})" >${msgButtonReply}</a>
+                                <a class="comment-button comment-button-delete" role="button" onclick="deleteComment(${obj.id})" >${msgButtonDelete}</a>
                             </div>
                         </div>
                     </li>
                     <li id="comment-reply-${obj.id}" class="comment-reply" style="padding-left: ${commentDepth}%">
                         <div class="comment-reply-area">
                             <div class="comment-reply-text-box">
-                                <textarea id="comment-reply-content-${obj.id}" class="form-control comment-reply-textarea" th:placeholder="#{board.view.comments.write.placeholder}" placeholder="Enter a comment"></textarea>
+                                <textarea id="comment-reply-content-${obj.id}" class="form-control comment-reply-textarea" placeholder=[[#{board.view.comments.write.placeholder}]] ></textarea>
                             </div>
                             <div class="comment-reply-buttons">
-                                <a class="comment-button comment-reply-button-cancel" role="button" onclick="cancelReply(${obj.id})" th:text="#{button.cancel}">Cancel</a>
-                                <a class="comment-button comment-reply-button-save" role="button" onclick="replySave(${obj.id})" th:text="#{button.save}">Save</a>
+                                <a class="comment-button comment-reply-button-cancel" role="button" onclick="cancelReply(${obj.id})" ><span text=[[#{button.cancel}]]>${msgButtonCancel}</span></a>
+                                <a class="comment-button comment-reply-button-save" role="button" onclick="replySave(${obj.id})">${msgButtonSave}</a>
                             </div>
                         </div>
                     </li>
