@@ -11,23 +11,23 @@ import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
 import java.util.List;
 
-@ApiModel(value = "게시글 수정 요청")
+@ApiModel(value = "Post update request")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class PostUpdateRequest {
 
-    @ApiModelProperty(value = "게시글 제목", notes = "게시글 제목을 입력해주세요", required = true, example = "Title")
-    @NotBlank(message = "게시글 제목을 입력해주세요")
+    @ApiModelProperty(value = "Title of post", notes = "Enter a title of post", required = true, example = "Title")
+    @NotBlank(message = "Enter a title of post")
     private String title;
 
-    @ApiModelProperty(value = "게시글 본문", notes = "게시글 본문을 입력해주세요", required = true, example = "Content")
-    @NotBlank(message = "게시글 본문을 입력해주세요")
+    @ApiModelProperty(value = "Content of post", notes = "Enter contents of post", required = true, example = "Content")
+    @NotBlank(message = "Enter contents of post")
     private String content;
 
-    @ApiModelProperty(value = "추가된 이미지", notes = "추가된 이미지를 첨부해주세요")
+    @ApiModelProperty(value = "Added Images", notes = "Add image files")
     private List<MultipartFile> addedImages = new ArrayList<>();
 
-    @ApiModelProperty(value = "제거된 이미지 아이디", notes = "제거된 이미지 아이디를 입력해주세요")
+    @ApiModelProperty(value = "Id of deleted images", notes = "Enter ids of deleted image")
     private List<Long> deletedImages = new ArrayList<>();
 }

@@ -85,10 +85,9 @@ public class SecurityConfig {
                 .antMatchers(HttpMethod.POST, "/api/comments").authenticated()
                 .antMatchers(HttpMethod.DELETE, "/api/comments/{id}").access("@commentGuard.check(#id)")
 
-                .antMatchers(HttpMethod.GET, "/posts/create").authenticated()
+                .antMatchers(HttpMethod.GET, "/posts/create/**").authenticated()
                 .antMatchers(HttpMethod.GET, "/posts/update/{id}").access("@postGuard.check(#id)")
-
-                .antMatchers(HttpMethod.GET, "/posts/**", "/posts/{id}").permitAll()
+                .antMatchers(HttpMethod.GET, "/posts/{id}").permitAll()
 
                 .antMatchers(HttpMethod.GET, "/members/details", "/members/modify/**").authenticated()
                 .antMatchers(HttpMethod.GET, "/members/list").permitAll()
@@ -110,7 +109,7 @@ public class SecurityConfig {
                 .oauth2Login()
                     .userInfoEndpoint().userService(customOAuth2UserService)
                 .and()
-                .successHandler(authenticationSuccessHandler)
+//                .successHandler(authenticationSuccessHandler)
 
                 .and()
                 .addFilterBefore(new JwtAuthenticationFilter(accessTokenHelper, userDetailsService), UsernamePasswordAuthenticationFilter.class);

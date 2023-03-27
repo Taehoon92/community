@@ -26,9 +26,6 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(CustomException.class)
     protected ResponseEntity<ErrorResponse> handleCustomException(final CustomException e, Locale locale) {
-        log.error("handleCustomException: {}", e.getErrorCode());
-        log.info("MessageSource Test = {}", messageSource.getMessage(e.getErrorCode().getMessage(), null, locale));
-        log.info("MessageSource Test = {}", messageSource.getMessage(e.getErrorCode().getMessage(), null, locale));
         return ResponseEntity
                 .status(e.getErrorCode().getStatus().value())
                 .body(new ErrorResponse(e.getErrorCode(), messageSource, locale));

@@ -58,8 +58,8 @@ public class PostWebController {
     }
 
     @GetMapping("/{id}")
-    public String view(@PathVariable final Long id, @SessionAttribute(name = "username", required = false) String username) {
-
+    public String view(@PathVariable final Long id) {
+        log.info("POST WEB CONTROLLER - VIEW");
         return "post/view";
     }
 }

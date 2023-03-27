@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -39,9 +40,13 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
          * View 용 쿠키에 임시 저장된 토큰값 가져오기
          */
         Cookie cookie = null;
+        Cookie userCookie = null;
+        String username = "";
+
         if(((HttpServletRequest) request).getCookies() != null) {
             cookie = Arrays.stream(((HttpServletRequest) request).getCookies()).filter(c -> c.getName().equals("accessToken")).findAny().orElse(null);
-            log.info("JWT - Cookie = {}", cookie);
+            userCookie = Arrays.stream(((HttpServletRequest) request).getCookies()).filter(c -> c.getName().equals("username")).findAny().orElse(null);
+            username = userCookie.getValue();
         }
 
         
@@ -52,11 +57,12 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
             token = extractToken(request);
         }
 
+
+
         if(validateToken(token)) {
-            log.info("JWT - validation -> setAuthentication");
             setAuthentication(token);
 
-            setSession(request, token);
+            setSession(request, username);
         }
 
         chain.doFilter(request, response);
@@ -71,28 +77,22 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
     }
 
     private void setAuthentication(String token) {
-        log.info("SET AUTHENTICATION");
-
         String userId = accessTokenHelper.extractSubject(token);
         CustomUserDetails userDetails = userDetailsService.loadUserByUsername(userId);
         SecurityContextHolder.getContext().setAuthentication(new CustomAuthenticationToken(userDetails, userDetails.getAuthorities()));
     }
 
     //사용자 정보용 세션 set
-    private void setSession(ServletRequest request, String token) {
+    private void setSession(ServletRequest request, String username) {
         HttpSession session = ((HttpServletRequest)request).getSession();
 
-        /**
-         * TODO!
-         * 세션이 계속 set 되는데, 이를 어떻게 해결할까?!
-         */
         Optional userRole;
         userRole = AuthHelper.extractMemberRoles().stream().filter(roleType -> roleType == RoleType.ROLE_ADMIN).findAny();
 
+        Enumeration<?> attrName = session.getAttributeNames();
 
+        session.setAttribute("username", username);
 
-        log.info("SetSession Role = {}", userRole);
-        log.info("세션에 저장된 username - {}", session.getAttribute("username"));
         if (userRole.isPresent()) {
             session.setAttribute("role", "Admin");
         }

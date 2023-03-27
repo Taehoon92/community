@@ -24,7 +24,7 @@ spring:
 
   # Messages
   messages:
-    basename: messages
+    basename: messages, errors
 
   #JWT, #OAuth
   profiles:

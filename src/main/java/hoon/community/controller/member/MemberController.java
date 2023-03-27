@@ -25,7 +25,7 @@ public class MemberController {
 
     private final MemberService memberService;
 
-    @ApiOperation(value = "사용자 정보 조회", notes = "사용자 정보를 조회한다.")
+    @ApiOperation(value = "Get a user details", notes = "Get a user details")
     @GetMapping("/api/members/{id}")
     @ResponseStatus(HttpStatus.OK)
     public Response read(@PathVariable Long id) {
@@ -39,7 +39,7 @@ public class MemberController {
     }
 
 
-    @ApiOperation(value = "사용자 정보 삭제", notes = "사용자 정보를 삭제한다.")
+    @ApiOperation(value = "Delete a user account", notes = "Delete a user account")
     @DeleteMapping("/api/members/{id}")
     @ResponseStatus(HttpStatus.OK)
     public Response delete(@PathVariable Long id) {
@@ -47,14 +47,14 @@ public class MemberController {
         return Response.success();
     }
 
-    @ApiOperation(value = "로그인 사용자 정보 조회", notes = "로그인된 사용자 정보를 조회한다.")
+    @ApiOperation(value = "Get login user details ", notes = "Get details about login user")
     @GetMapping("/api/members/details")
     @ResponseStatus(HttpStatus.OK)
     public Response details() {
         return Response.success(memberService.memberDetails(AuthHelper.extractMemberId()));
     }
 
-    @ApiOperation(value = "사용자 비밀번호 변경", notes = "사용자의 비밀번호를 변경한다.")
+    @ApiOperation(value = "Change user password", notes = "Change user password")
     @PostMapping("/api/members/modify/password")
     @ResponseStatus(HttpStatus.OK)
     @AssignMemberId

@@ -57,6 +57,12 @@ public class SignService {
         servletResponse.addCookie(cookie);
         servletResponse.addCookie(cookie2);
 
+        /* 쿠키에 username 임의로 넣은 것 */
+        Cookie userCookie = new Cookie("username", member.getUsername());
+        userCookie.setHttpOnly(true);
+        userCookie.setPath("/");
+        servletResponse.addCookie(userCookie);
+
         /* 세션에 username 임의로 넣은 것 */
         setSessionMemberInfo(member);
 
@@ -99,14 +105,6 @@ public class SignService {
     }
 
     private void setSessionMemberInfo(Member member) {
-//        String role = String.valueOf(AuthHelper.extractMemberRoles().stream().map(roleType -> roleType.equals(RoleType.ROLE_ADMIN)).findAny().orElse(null));
-//        Object sample = AuthHelper.extractMemberRoles().stream().map(roleType -> roleType.equals(RoleType.ROLE_ADMIN)).findAny().orElse(null);
-/*
-        AuthHelper.extractMemberRoles().stream().forEach(roleType -> {
-            log.info("ROLE TYPE FOREACH = {}", roleType);
-            log.info("COMPARE RoleType.ROLE_ADMIN = {}", roleType == RoleType.ROLE_ADMIN);
-        });
- */
         if(session != null) {
             session.setAttribute("username", member.getUsername());
         }

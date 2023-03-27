@@ -43,7 +43,7 @@ public class MemberWebController {
         return "member/modifyPassword";
     }
 
-    @ApiOperation(value = "사용자 비밀번호 변경", notes = "사용자의 비밀번호를 변경한다.")
+    @ApiOperation(value = "Change password", notes = "Change user's password")
     @PostMapping("/modify/password")
     @AssignMemberId
     public String password(@Valid @ModelAttribute("dto") MemberPasswordModifyDto request, BindingResult bindingResult) {

@@ -51,12 +51,12 @@ public class SignWebController {
             return "sign/signUp";
         }
         if(signService.duplicateEmailCheck(request.getEmail())) {
-            bindingResult.addError(new FieldError("member", "email", "중복된 email이 존재합니다."));
+            bindingResult.addError(new FieldError("member", "email", "There is duplicate email."));
             return "sign/signUp";
         }
         signService.signUp(request);
 
-        //회원가입 후 자동 로그인
+        //Sign in after Sign up
         SignInRequest signInRequest = SignUpRequest.toSignInRequest(request);
         signService.signIn(signInRequest, servletResponse);
 
@@ -65,13 +65,13 @@ public class SignWebController {
 
     @GetMapping("/sign-out")
     public String signOut(HttpServletRequest request, HttpServletResponse response) {
-        //세션 삭제
+        //Delete sessions
         HttpSession session = request.getSession(false);
         if (session != null) {
             session.invalidate();
         }
 
-        //쿠키 삭제
+        //Delete cookies
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (int i = 0; i < cookies.length; i++) {

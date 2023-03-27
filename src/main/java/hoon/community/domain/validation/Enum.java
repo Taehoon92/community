@@ -12,7 +12,7 @@ import static java.lang.annotation.ElementType.*;
 @Constraint(validatedBy = {EnumValidator.class})
 public @interface Enum {
 
-    String message() default "Enum에 없는 값입니다.";
+    String message() default "enum.notMatch";
 
     Class<?>[] groups() default {};
 

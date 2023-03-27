@@ -71,7 +71,8 @@
 
         window.onload = () => {
             getPostInfo();
-            getComments();
+            // getComments();
+
         }
 
         /**
@@ -130,6 +131,7 @@
                         document.getElementById('comment-total-count').innerText = json.result.data.comments;
 
                     }
+                    getComments();
                 },
                 error: function (error) {
                     alert('게시글 정보를 찾을 수 없습니다');
