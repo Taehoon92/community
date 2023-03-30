@@ -1,5 +1,6 @@
 package hoon.community.global.security;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 
@@ -12,6 +13,11 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
-        response.sendRedirect("/exception/entry-point");
+        if(request.getRequestURI().split("/")[1].equals("api")) {
+            response.sendRedirect("/exception/entry-point");
+        } else {
+            response.sendRedirect("/auth/sign-in");
+        }
+
     }
 }
