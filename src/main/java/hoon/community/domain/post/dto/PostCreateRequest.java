@@ -27,19 +27,19 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class PostCreateRequest {
 
-    @ApiModelProperty(value = "게시글 제목", notes = "게시글 제목을 입력해주세요", required = true, example = "This is title")
-    @NotBlank(message = "게시글 제목을 입력해주세요")
+    @ApiModelProperty(value = "Post title", notes = "Enter title of post", required = true, example = "This is title")
+    @NotBlank(message = "Enter title of post")
     private String title;
 
-    @ApiModelProperty(value = "게시글 본문", notes = "게시글 본문을 입력해주세요", required = true, example = "This is content")
-    @NotBlank(message = "게시글 본문을 입문해주세요")
+    @ApiModelProperty(value = "Post content", notes = "Enter content of post", required = true, example = "This is content")
+    @NotBlank(message = "Enter title of post")
     private String content;
 
     @ApiModelProperty(hidden = true)
     @Null
     private Long memberId;
 
-    @ApiModelProperty(value = "이미지", notes = "이미지를 첨부해주세요.")
+    @ApiModelProperty(value = "Image", notes = "Attach images")
     private List<MultipartFile> images = new ArrayList<>();
 
     public static Post toEntity(PostCreateRequest request, MemberRepository memberRepository, BoardType boardType) {
