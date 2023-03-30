@@ -9,7 +9,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
+import org.springframework.security.web.DefaultRedirectStrategy;
+import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
+import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
+import org.springframework.security.web.savedrequest.RequestCache;
+import org.springframework.security.web.savedrequest.SavedRequest;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.ServletException;
@@ -33,6 +38,10 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
     private final MemberRepository memberRepository;
 
+    private String defaultUrl = "/";
+    private RequestCache requestCache = new HttpSessionRequestCache();
+    private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
+
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
 
@@ -44,6 +53,8 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         String subject;
         String accessToken;
         String refreshToken;
+
+        log.info("OAUTH Success Handler");
 
         if(foundMember.isPresent()) {
             member = foundMember.get();
@@ -62,14 +73,21 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             response.addCookie(cookie);
             response.addCookie(cookie2);
 
-            /* 세션에 username 임의로 넣은 것 */
-            /*
-            if(session != null) {
-                session.setAttribute("username", member.getUsername());
-            }
-
-             */
         }
 
+        resultRedirectStrategy(request, response, authentication);
+
+    }
+
+    protected void resultRedirectStrategy(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+        SavedRequest savedRequest = requestCache.getRequest(request, response);
+
+        if(savedRequest != null) {
+            String targetUrl = savedRequest.getRedirectUrl();
+            log.info("TARGET URL = {}", targetUrl);
+            redirectStrategy.sendRedirect(request, response, targetUrl);
+        } else {
+            redirectStrategy.sendRedirect(request, response, defaultUrl);
+        }
     }
 }

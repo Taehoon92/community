@@ -109,7 +109,7 @@ public class SecurityConfig {
                 .oauth2Login()
                     .userInfoEndpoint().userService(customOAuth2UserService)
                 .and()
-//                .successHandler(authenticationSuccessHandler)
+                    .successHandler(authenticationSuccessHandler)
 
                 .and()
                 .addFilterBefore(new JwtAuthenticationFilter(accessTokenHelper, userDetailsService), UsernamePasswordAuthenticationFilter.class);
