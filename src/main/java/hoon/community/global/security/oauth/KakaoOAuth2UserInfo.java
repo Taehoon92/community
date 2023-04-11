@@ -22,9 +22,22 @@ public class KakaoOAuth2UserInfo extends OAuth2UserInfo{
         return (String) properties.get("nickname");
     }
 
+//    @Override
+//    public String getEmail() {
+//        return (String) attributes.get("account_email");
+//    }
+
+    //이메일 제공 필수가 아니라서 일단은 이메일 있으면 이메일, 없으면 id 넘버 이용
     @Override
     public String getEmail() {
-        return (String) attributes.get("account_email");
+
+        Map<String, Object> kakaoAccount = (Map<String, Object>) attributes.get("kakao_account");
+        if((boolean) kakaoAccount.get("has_email")) {
+            return (String) kakaoAccount.get("email");
+        }
+
+        return attributes.get("id").toString();
+
     }
 
     @Override

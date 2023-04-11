@@ -8,7 +8,7 @@ public class OAuth2UserInfoFactory {
             case GOOGLE: return new GoogleOAuth2UserInfo(attributes);
             case GITHUB: return new GithubOAuth2UserInfo(attributes);
             case FACEBOOK: return new FacebookOAuth2UserInfo(attributes);
-//            case KAKAO: return new KakaoOAuth2UserInfo(attributes);
+            case KAKAO: return new KakaoOAuth2UserInfo(attributes);
 //            case NAVER: return new NaverOAuth2UserInfo(attributes);
 
             default:

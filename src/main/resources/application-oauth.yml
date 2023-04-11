@@ -18,17 +18,17 @@ spring:
             scope:
               - email
               - public_profile
-#          kakao:
-#            clientId: f7b315d7af4ec228e0eb36c84e7ebb13
-#            clientSecret: ureuvWQdwwc6NugH3jQD5ckOKT4BSaab
-#            clientAuthenticationMethod: post
-#            authorizationGrantType: authorization_code
-#            redirectUri: "{baseUrl}/{action}/oauth2/code/{registrationId}"
-#            scope:
-#              - profile_nickname
-#              - profile_image
-#              - account_email
-#            clientName: Kakao
+          kakao:
+            clientId: f7b315d7af4ec228e0eb36c84e7ebb13
+            clientSecret: ureuvWQdwwc6NugH3jQD5ckOKT4BSaab
+            clientAuthenticationMethod: post
+            authorizationGrantType: authorization_code
+            redirectUri: "{baseUrl}/{action}/oauth2/code/{registrationId}"
+            scope:
+              - profile_nickname
+              - profile_image
+              - account_email
+            clientName: Kakao
 #          naver:
 #            clientId: ss
 #            clientSecret: ss
@@ -40,15 +40,15 @@ spring:
 #              - email
 #              - profile_image
 #            clientName: Naver
-#        # Provider 설정
-#      provider:
-#        naver:
-#          authorizationUri: https://nid.naver.com/oauth2.0/authorize
-#          tokenUri: https://nid.naver.com/oauth2.0/token
-#          userInfoUri: https://openapi.naver.com/v1/nid/me
-#          userNameAttribute: response
-#        kakao:
-#          authorizationUri: https://kauth.kakao.com/oauth/authorize
-#          tokenUri: https://kauth.kakao.com/oauth/token
-#          userInfoUri: https://kapi.kakao.com/v2/user/me
-#          userNameAttribute: id
+      # Provider 설정
+        provider:
+  #        naver:
+  #          authorizationUri: https://nid.naver.com/oauth2.0/authorize
+  #          tokenUri: https://nid.naver.com/oauth2.0/token
+  #          userInfoUri: https://openapi.naver.com/v1/nid/me
+  #          userNameAttribute: response
+          kakao:
+            authorizationUri: https://kauth.kakao.com/oauth/authorize
+            tokenUri: https://kauth.kakao.com/oauth/token
+            userInfoUri: https://kapi.kakao.com/v2/user/me
+            userNameAttribute: id
