@@ -46,7 +46,15 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
 
         DefaultOAuth2User user = (DefaultOAuth2User) authentication.getPrincipal();
-        String email = user.getAttribute("email").toString();
+        log.info("SUCCESS - User = {}", user);
+        String email;
+        if(user.getAttribute("email") != null) {
+            email = user.getAttribute("email").toString();
+        } else {
+            email = user.getAttribute("id").toString();
+        }
+
+
         Optional<Member> foundMember = memberRepository.findByEmail(email);
 
         Member member;
@@ -72,6 +80,15 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             cookie2.setPath("/");
             response.addCookie(cookie);
             response.addCookie(cookie2);
+
+            /* 쿠키에 username 임의로 넣은 것 */
+            Cookie userCookie = new Cookie("username", member.getUsername().split(" ")[0]);
+            //username에 공백 들어가있는 경우가 있어서 공백기준 앞에 단어만 쿠키에 저장
+            userCookie.setHttpOnly(true);
+            userCookie.setPath("/");
+            response.addCookie(userCookie);
+
+
 
         }
 

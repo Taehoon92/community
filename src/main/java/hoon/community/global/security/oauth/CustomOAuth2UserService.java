@@ -71,13 +71,29 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
             roleTypes.add(RoleType.ROLE_USER);
             roleTypes.add(RoleType.ROLE_SOCIAL);
 
-            member = Member.builder()
-                            .email(userInfo.getEmail())
-                            .username(userInfo.getUsername())
-                            .roleTypes(roleTypes)
-                            .mainRole("USER")
-                            .authProvider(authProvider)
-                            .build();
+            if(authProvider == AuthProvider.GITHUB) {
+                log.info("AUTH PROVIDER = {}", authProvider);
+                member = Member.builder()
+                        .email(userInfo.getId())
+                        .username(userInfo.getUsername())
+                        .roleTypes(roleTypes)
+                        .mainRole("USER")
+                        .authProvider(authProvider)
+                        .build();
+
+            }
+
+            else {
+                log.info("AUTH PROVIDER = {}", authProvider);
+                member = Member.builder()
+                        .email(userInfo.getEmail())
+                        .username(userInfo.getUsername())
+                        .roleTypes(roleTypes)
+                        .mainRole("USER")
+                        .authProvider(authProvider)
+                        .build();
+            }
+
             memberRepository.save(member);
 
 
