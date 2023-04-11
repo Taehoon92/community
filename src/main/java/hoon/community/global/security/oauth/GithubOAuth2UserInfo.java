@@ -26,7 +26,7 @@ public class GithubOAuth2UserInfo extends OAuth2UserInfo{
         if(attributes.get("email") != null) {
             return attributes.get("email").toString();
         }
-        return (String) attributes.get("email");
+        return attributes.get("id").toString();
     }
 
     @Override
