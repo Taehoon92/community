@@ -50,8 +50,12 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         String email;
         if(user.getAttribute("email") != null) {
             email = user.getAttribute("email").toString();
-        } else {
+        } else if(user.getAttribute("id") != null){
             email = user.getAttribute("id").toString();
+        } else if(user.getAttribute("response") != null) { // 네이버의 경우는 attribute에 response로 한번더 감싸서 값을 넘겨줌
+            email = (String)((Map<String, Object>) user.getAttribute("response")).get("email");
+        } else {
+            email = "";
         }
 
 
