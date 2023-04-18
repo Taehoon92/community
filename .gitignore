@@ -40,3 +40,6 @@ out/
 
 ### application-*.yml ###
 application-secret.yml
+
+### test code ###
+/src/test/resources/static/*

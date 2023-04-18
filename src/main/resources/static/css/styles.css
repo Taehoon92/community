@@ -11647,6 +11647,10 @@ header.masthead .site-heading .h1 {
   margin-left:5px;
 }
 
+.btn-oauth img {
+  width:200px;
+}
+
 .google-login-button img {
   width:205px;
 }
@@ -11674,6 +11678,14 @@ header.masthead .site-heading .h1 {
 .btn-github img{
   content:url(/img/signin/btn_github_signin.png);
   border-radius:2px;
+}
+
+.btn-naver img {
+  content:url(/img/signin/btn_naver_signin.png);
+}
+
+.btn-kakao img {
+  content: url(/img/signin/btn_kakao_signin.png);
 }
 
 /* Sign up */

@@ -39,14 +39,24 @@
                                 <img>
                             </button>
                         </div>
-                        <div class="fb-login-button">
-                            <button class="btn btn-fb" type="button">
-                                <img>
-                            </button>
-                        </div>
+<!--                        <div class="fb-login-button">-->
+<!--                            <button class="btn btn-fb" type="button">-->
+<!--                                <img>-->
+<!--                            </button>-->
+<!--                        </div>-->
 <!--                        <div class="fb-login-button" data-width="250" data-size="large" data-button-type="login_with" data-layout="default" data-auto-logout-link="false" data-use-continue-as="false"></div>-->
                         <div class="github-login-button">
                             <button class="btn btn-github" type="button" th:onclick="|location.href='@{/oauth2/authorization/github}'|">
+                                <img>
+                            </button>
+                        </div>
+                        <div class="naver-login-button">
+                            <button class="btn btn-naver" type="button" th:onclick="|location.href='@{/oauth2/authorization/naver}'|">
+                                <img>
+                            </button>
+                        </div>
+                        <div class="kakao-login-button">
+                            <button class="btn btn-kakao" type="button" th:onclick="|location.href='@{/oauth2/authorization/kakao}'|">
                                 <img>
                             </button>
                         </div>
