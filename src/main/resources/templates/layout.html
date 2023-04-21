@@ -33,7 +33,7 @@
         <ul class="navbar-nav ms-auto py-4 py-lg-0">
           <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="/posts/notice" th:text="#{menu.notice}">Notice</a></li>
           <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="/posts/forum" th:text="#{menu.forum}">Forum</a></li>
-          <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="/members" th:text="#{menu.member}">Member</a></li>
+          <li th:if="${session.role == 'ADMIN'}" class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="/members/list" th:text="#{menu.member}">Member</a></li>
           <li th:if="${session.username == null}" class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="/auth/sign-in" th:text="#{menu.login}">Login</a></li>
           <li th:if="${session.username}" class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="/members/details" th:text="|${session.role} : ${session.username}|"></a></li>
 

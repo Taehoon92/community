@@ -107,6 +107,7 @@ public class SignService {
     private void setSessionMemberInfo(Member member) {
         if(session != null) {
             session.setAttribute("username", member.getUsername());
+            session.setAttribute("role", member.getMainRole());
         }
 
     }

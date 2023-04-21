@@ -28,6 +28,7 @@
     </div>
     <div class="member-detail-button">
         <div class="btn_wrap text-right">
+            <a th:href="@{/auth/sign-out}" class="btn btn-default waves-effect waves-light" th:text="#{button.signOut}">Sign Out</a>
             <a th:href="@{/members/modify/password}" class="btn btn-primary waves-effect waves-light" th:text="#{button.changePassword}">Change Password</a>
             <a href="javascript: void(0);" onclick="deleteAccount();" class="btn btn-danger waves-effect waves-light" th:text="#{button.deleteAccount}">Delete Account</a>
         </div>

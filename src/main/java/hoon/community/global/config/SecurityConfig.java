@@ -70,14 +70,14 @@ public class SecurityConfig {
 
                 .antMatchers(HttpMethod.DELETE, "/api/members/{id}/**").access("@memberGuard.check(#id)")
                 .antMatchers(HttpMethod.GET, "/api/members/details").authenticated()
-                .antMatchers(HttpMethod.GET, "/api/members").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/members").authenticated()
                 .antMatchers(HttpMethod.POST, "/api/members/modify/password").authenticated()
 
 
                 .antMatchers(HttpMethod.POST, "/api/posts").authenticated()
+                .antMatchers(HttpMethod.POST, "/api/posts/notice").hasAnyRole("ADMIN")
                 .antMatchers(HttpMethod.POST, "/api/posts/**").authenticated()
                 .antMatchers(HttpMethod.GET, "/api/posts/**").permitAll()
-//                        .antMatchers(HttpMethod.GET, "/api/posts/**").access("@postGuard.check(#id)")
                 .antMatchers(HttpMethod.PATCH, "/api/posts/{id}").access("@postGuard.check(#id)")
                 .antMatchers(HttpMethod.DELETE, "/api/posts/{id}").access("@postGuard.check(#id)")
 
@@ -85,14 +85,16 @@ public class SecurityConfig {
                 .antMatchers(HttpMethod.POST, "/api/comments").authenticated()
                 .antMatchers(HttpMethod.DELETE, "/api/comments/{id}").access("@commentGuard.check(#id)")
 
+                .antMatchers(HttpMethod.GET, "/posts/create/notice").hasAnyRole("ADMIN")
                 .antMatchers(HttpMethod.GET, "/posts/create/**").authenticated()
+
                 .antMatchers(HttpMethod.GET, "/posts/update/{id}").access("@postGuard.check(#id)")
                 .antMatchers(HttpMethod.GET, "/posts/{id}").permitAll()
 
                 .antMatchers(HttpMethod.GET, "/members/details", "/members/modify/**").authenticated()
-                .antMatchers(HttpMethod.GET, "/members/list").permitAll()
+                .antMatchers(HttpMethod.GET, "/members/list").hasAnyRole("ADMIN")
                 .antMatchers(HttpMethod.POST, "/members/modify/password").authenticated()
-                .antMatchers(HttpMethod.POST, "/members/modify/roles/**").permitAll()
+                .antMatchers(HttpMethod.POST, "/members/modify/roles/**").hasAnyRole("ADMIN")
 
 
                 .antMatchers("/auth/**").permitAll()

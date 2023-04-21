@@ -94,10 +94,10 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
         session.setAttribute("username", username);
 
         if (userRole.isPresent()) {
-            session.setAttribute("role", "Admin");
+            session.setAttribute("role", "ADMIN");
         }
         else {
-            session.setAttribute("role", "User");
+            session.setAttribute("role", "USER");
         }
     }
 

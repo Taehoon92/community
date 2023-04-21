@@ -56,19 +56,23 @@
         <div class="btn-block">
             <div class="btn-oauth">
                 <div class="google-login-button">
-    <!--            <button class="btn btn-google" type="button" th:onclick="|location.href='@{/oauth2/authorization/google}'|">-->
-                    <button class="btn btn-google" type="button">
+                    <!--                    <button class="btn btn-google" type="button" th:onclick="|location.href='@{/oauth2/authorization/google}'|">-->
+                    <button class="btn btn-google" type="button" th:onclick="|location.href='@{/oauth2/authorization/google?redirect_uri=http://localhost:8080}'|">
                         <img>
                     </button>
                 </div>
-<!--                <div class="fb-login-button">-->
-<!--                    <button class="btn btn-fb" type="button">-->
-<!--                        <img>-->
-<!--                    </button>-->
-<!--                </div>-->
-    <!--            <div class="fb-login-button" data-width="250" data-size="large" data-button-type="login_with" data-layout="default" data-auto-logout-link="false" data-use-continue-as="false"></div>-->
                 <div class="github-login-button">
-                    <button class="btn btn-github" type="button">
+                    <button class="btn btn-github" type="button" th:onclick="|location.href='@{/oauth2/authorization/github}'|">
+                        <img>
+                    </button>
+                </div>
+                <div class="naver-login-button">
+                    <button class="btn btn-naver" type="button" th:onclick="|location.href='@{/oauth2/authorization/naver}'|">
+                        <img>
+                    </button>
+                </div>
+                <div class="kakao-login-button">
+                    <button class="btn btn-kakao" type="button" th:onclick="|location.href='@{/oauth2/authorization/kakao}'|">
                         <img>
                     </button>
                 </div>
