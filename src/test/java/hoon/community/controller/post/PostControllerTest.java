@@ -20,6 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -52,11 +53,18 @@ class PostControllerTest {
         //given
         ArgumentCaptor<PostCreateRequest> postCreateRequestArgumentCaptor = ArgumentCaptor.forClass(PostCreateRequest.class);
 
+        List<MultipartFile> imageFiles = List.of(
+                new MockMultipartFile("test1", "test1.PNG", MediaType.IMAGE_PNG_VALUE, "test1".getBytes()),
+                new MockMultipartFile("test2", "test2.PNG", MediaType.IMAGE_PNG_VALUE, "test2".getBytes())
+        );
+
         PostCreateRequest request = PostCreateRequestFactory.createPostCreateRequest();
 
         //when, then
         mockMvc.perform(
                 MockMvcRequestBuilders.multipart("/api/posts")
+                        .file("images", imageFiles.get(0).getBytes())
+                        .file("images", imageFiles.get(1).getBytes())
                         .param("title", request.getTitle())
                         .param("content", request.getContent())
                         .with(requestPostProcessor -> {
@@ -67,6 +75,9 @@ class PostControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isCreated());
 
         BDDMockito.verify(postService).create(postCreateRequestArgumentCaptor.capture());
+
+        PostCreateRequest capturedRequest = postCreateRequestArgumentCaptor.getValue();
+        Assertions.assertThat(capturedRequest.getImages().size()).isEqualTo(2);
 
     }
 
@@ -99,7 +110,7 @@ class PostControllerTest {
     void updateTest() throws Exception {
         //given
         ArgumentCaptor<PostUpdateRequest> postUpdateRequestArgumentCaptor = ArgumentCaptor.forClass(PostUpdateRequest.class);
-        PostUpdateRequest request = createPostUpdateRequest("title", "content");
+        PostUpdateRequest request = createPostUpdateRequest("title", "content", List.of(), List.of());
 
 
         //when,then

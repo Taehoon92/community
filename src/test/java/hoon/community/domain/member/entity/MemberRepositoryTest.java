@@ -1,15 +1,11 @@
 package hoon.community.domain.member.entity;
 
 import hoon.community.domain.member.repository.MemberRepository;
-import hoon.community.domain.role.entity.Role;
-import hoon.community.domain.role.repository.RoleRepository;
 import hoon.community.domain.role.entity.RoleType;
 import hoon.community.global.exception.CustomException;
 import hoon.community.global.exception.ErrorCode;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -18,11 +14,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import static hoon.community.global.factory.entity.MemberFactory.createMember;
-import static hoon.community.global.factory.entity.MemberFactory.createMemberWithRoles;
 import static org.assertj.core.api.Assertions.*;
 
 
@@ -32,8 +26,6 @@ class MemberRepositoryTest {
 
     @Autowired
     MemberRepository memberRepository;
-    @Autowired
-    RoleRepository roleRepository;
 
     @PersistenceContext
     EntityManager em;
@@ -182,24 +174,6 @@ class MemberRepositoryTest {
         assertThat(memberRepository.existsByUsername(member.getUsername()+"a")).isFalse();
     }
 
-    @Test
-    void memberRoleCascadePersistTest() {
-        //given
-        List<RoleType> roleTypes = List.of(RoleType.ROLE_USER, RoleType.ROLE_SOCIAL, RoleType.ROLE_ADMIN);
-        List<Role> roles = roleTypes.stream().map(roleType -> new Role(roleType)).collect(Collectors.toList());
-        roleRepository.saveAll(roles);
-        clear();
-
-        Member member = memberRepository.save(createMemberWithRoles(roleRepository.findAll()));
-        clear();
-
-        //when
-        Member foundMember = memberRepository.findById(member.getId()).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-        Set<MemberRole> memberRoles = foundMember.getRoles();
-
-        //then
-        assertThat(memberRoles.size()).isEqualTo(roles.size());
-    }
 
     private void clear() {
         em.flush();

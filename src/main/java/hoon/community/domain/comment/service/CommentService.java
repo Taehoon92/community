@@ -6,6 +6,7 @@ import hoon.community.domain.comment.dto.CommentReadCondition;
 import hoon.community.domain.comment.entity.Comment;
 import hoon.community.domain.comment.repository.CommentRepository;
 import hoon.community.domain.member.repository.MemberRepository;
+import hoon.community.domain.post.entity.Post;
 import hoon.community.domain.post.repository.PostRepository;
 import hoon.community.global.exception.CustomException;
 import hoon.community.global.exception.ErrorCode;
@@ -43,7 +44,10 @@ public class CommentService {
 
     @Transactional
     public void create(CommentCreateRequest req) {
-        commentRepository.save(CommentCreateRequest.toEntity(req, memberRepository, postRepository, commentRepository));
+        Comment comment = CommentCreateRequest.toEntity(req, memberRepository, postRepository, commentRepository);
+        Post post = postRepository.findById(req.getPostId()).orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
+        post.addComment(comment);
+        commentRepository.save(comment);
     }
 
     @Transactional

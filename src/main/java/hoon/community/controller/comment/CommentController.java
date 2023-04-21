@@ -24,7 +24,7 @@ public class CommentController {
 
     private final CommentService commentService;
 
-    @ApiOperation(value = "댓글 목록 조회", notes = "댓글 목록을 조회한다.")
+    @ApiOperation(value = "Get comment lists", notes = "Get comment lists")
     @GetMapping("/{postId}")
     @ResponseStatus(HttpStatus.OK)
 //    public Response readAll(@Valid @PathVariable CommentReadCondition condition) {
@@ -33,7 +33,7 @@ public class CommentController {
         return Response.success(commentService.readAll(postId));
     }
 
-    @ApiOperation(value = "댓글 생성", notes = "댓글을 생성한다")
+    @ApiOperation(value = "Create comment", notes = "Create comment")
     @PostMapping("")
     @ResponseStatus(HttpStatus.CREATED)
     @AssignMemberId
@@ -43,10 +43,10 @@ public class CommentController {
         return Response.success();
     }
 
-    @ApiOperation(value = "댓글 삭제", notes = "댓글을 삭제한다.")
+    @ApiOperation(value = "Delete comment", notes = "Delete comment")
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Response delete(@ApiParam(value = "댓글 id", required = true) @PathVariable Long id) {
+    public Response delete(@ApiParam(value = "Comment id", required = true) @PathVariable Long id) {
         commentService.delete(id);
         return Response.success();
     }

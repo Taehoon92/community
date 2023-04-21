@@ -5,6 +5,7 @@ import hoon.community.domain.sign.dto.DuplicateEmailCheckRequest;
 import hoon.community.domain.sign.dto.SignInRequest;
 import hoon.community.domain.sign.dto.SignUpRequest;
 import hoon.community.domain.sign.service.SignService;
+import hoon.community.global.exception.CustomException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -23,28 +24,36 @@ public class SignController {
 
     private final SignService signService;
 
-    @ApiOperation(value = "회원가입", notes = "회원가입을 한다.")
+    @ApiOperation(value = "Sign up", notes = "Sign up request")
     @PostMapping("/api/sign-up")
     @ResponseStatus(HttpStatus.CREATED)
-    public Response signUp(@Valid @RequestBody SignUpRequest request) {
+    public Response signUp(@Valid @RequestBody SignUpRequest request, BindingResult bindingResult, HttpServletResponse servletResponse) {
+        if(bindingResult.hasErrors()) {
+            return Response.failure(0, bindingResult.getFieldError().getDefaultMessage());
+        }
+        if(signService.duplicateEmailCheck(request.getEmail())){
+            return Response.failure(0, "There is duplicate email.");
+        }
         signService.signUp(request);
-        return Response.success();
+        SignInRequest signInRequest = new SignInRequest(request.getEmail(), request.getPassword());
+        return Response.success(signService.signIn(signInRequest, servletResponse));
     }
 
-    @ApiOperation(value = "로그인", notes = "로그인을 한다.")
+    @ApiOperation(value = "Sign in", notes = "Sign in request")
     @PostMapping("/api/sign-in")
     @ResponseStatus(HttpStatus.OK)
     public Response signIn(@Valid @RequestBody SignInRequest request, HttpServletResponse servletResponse) {
         return Response.success(signService.signIn(request, servletResponse));
     }
 
-    @ApiOperation(value = "토큰 재발급", notes = "Refresh Token으로 새로운 Access Token을 발급받는다.")
+    @ApiOperation(value = "Reissue access token", notes = "Reissue access token using refresh token")
     @PostMapping("/api/refresh-token")
     @ResponseStatus(HttpStatus.OK)
     public Response refreshToken(@RequestHeader(value = "Authorization") String refreshToken) {
         return Response.success(signService.refreshToken(refreshToken));
     }
 
+    @ApiOperation(value = "Email duplicate check", notes = "Email duplicate check")
     @PostMapping("/api/duplicate-email-check")
     @ResponseStatus(HttpStatus.OK)
     public Response duplicateEmailCheck(@Valid @RequestBody DuplicateEmailCheckRequest request, BindingResult bindingResult) {
@@ -52,7 +61,7 @@ public class SignController {
             return Response.failure(0, bindingResult.getFieldError().getDefaultMessage());
         }
         if(signService.duplicateEmailCheck(request.getEmail())){
-            return Response.failure(0, "이미 존재하는 이메일입니다.");
+            return Response.failure(0, "There is duplicate email.");
         }
         return Response.success(true);
     }

@@ -2,11 +2,7 @@ package hoon.community.global.init;
 
 import hoon.community.domain.member.entity.Member;
 import hoon.community.domain.member.repository.MemberRepository;
-import hoon.community.domain.role.entity.Role;
-import hoon.community.domain.role.repository.RoleRepository;
 import hoon.community.domain.role.entity.RoleType;
-import hoon.community.global.exception.CustomException;
-import hoon.community.global.exception.ErrorCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -16,8 +12,6 @@ import java.util.stream.Collectors;
 
 @Component
 public class TestInitDB {
-    @Autowired
-    RoleRepository roleRepository;
     @Autowired
     MemberRepository memberRepository;
     @Autowired
@@ -30,32 +24,24 @@ public class TestInitDB {
 
     @Transactional
     public void initDB() {
-        initRole();
         initTestAdmin();
         initTestMember();
     }
 
-    private void initRole() {
-        roleRepository.saveAll(
-                List.of(RoleType.values()).stream().map(roleType -> new Role(roleType)).collect(Collectors.toList())
-        );
-    }
 
     private void initTestAdmin() {
         memberRepository.save(
-                new Member(passwordEncoder.encode(password), "admin", adminEmail,
-                        List.of(roleRepository.findByRoleType(RoleType.ROLE_USER).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND)),
-                                roleRepository.findByRoleType(RoleType.ROLE_ADMIN).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND))))
-        );
+                new Member(passwordEncoder.encode(password), "admin", adminEmail, List.of(RoleType.ROLE_ADMIN, RoleType.ROLE_USER)
+                ));
     }
 
     private void initTestMember() {
         memberRepository.saveAll(
                 List.of(
                         new Member(passwordEncoder.encode(password), "member1", member1Email,
-                                List.of(roleRepository.findByRoleType(RoleType.ROLE_USER).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND)))),
+                                List.of(RoleType.ROLE_USER)),
                         new Member(passwordEncoder.encode(password), "member2", member2Email,
-                                List.of(roleRepository.findByRoleType(RoleType.ROLE_USER).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND)))))
+                                List.of(RoleType.ROLE_USER)))
         );
     }
 

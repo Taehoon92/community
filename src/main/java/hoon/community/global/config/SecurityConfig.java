@@ -6,6 +6,8 @@ import hoon.community.global.security.CustomAccessDeniedHandler;
 import hoon.community.global.security.CustomAuthenticationEntryPoint;
 import hoon.community.global.security.CustomUserDetailsService;
 import hoon.community.global.security.JwtAuthenticationFilter;
+import hoon.community.global.security.oauth.CustomOAuth2UserService;
+import hoon.community.global.security.oauth.OAuth2AuthenticationSuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -27,6 +29,9 @@ public class SecurityConfig {
 
     private final TokenHelper accessTokenHelper;
     private final CustomUserDetailsService userDetailsService;
+    private final CustomOAuth2UserService customOAuth2UserService;
+
+    private final OAuth2AuthenticationSuccessHandler authenticationSuccessHandler;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -40,7 +45,7 @@ public class SecurityConfig {
             web.ignoring()
                     .requestMatchers(PathRequest.toStaticResources().atCommonLocations())
                     .antMatchers(
-                            "/css/**", "/fonts/**", "/plugin/**", "/scripts/**", "/favicon.ico", "/resources/**", "/error", "/swagger-ui/**","/swagger-resources/**","/v3/api-docs/**", "**/favicon.ico"
+                            "/css/**", "/img/**", "/fonts/**", "/plugin/**", "/scripts/**", "/favicon.ico", "/resources/**", "/error", "/swagger-ui/**","/swagger-resources/**","/v3/api-docs/**", "**/favicon.ico"
                     )
                     .mvcMatchers(
                             "/exception/**"
@@ -59,19 +64,20 @@ public class SecurityConfig {
                 .and()
                 .authorizeRequests()
 
-                .antMatchers(HttpMethod.POST, "/api/sign-in", "/api/sign-up", "/api/refresh-token").permitAll()
+                .antMatchers(HttpMethod.GET, "/image/**").permitAll()
+
+                .antMatchers(HttpMethod.POST, "/api/sign-in", "/api/sign-up", "/api/refresh-token", "/api/duplicate-email-check").permitAll()
 
                 .antMatchers(HttpMethod.DELETE, "/api/members/{id}/**").access("@memberGuard.check(#id)")
                 .antMatchers(HttpMethod.GET, "/api/members/details").authenticated()
-                .antMatchers(HttpMethod.GET, "/api/members").permitAll()
-                .antMatchers(HttpMethod.GET, "/api/members/all").permitAll()
-                .antMatchers(HttpMethod.GET, "/api/members/allPageable").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/members").authenticated()
                 .antMatchers(HttpMethod.POST, "/api/members/modify/password").authenticated()
 
 
                 .antMatchers(HttpMethod.POST, "/api/posts").authenticated()
+                .antMatchers(HttpMethod.POST, "/api/posts/notice").hasAnyRole("ADMIN")
+                .antMatchers(HttpMethod.POST, "/api/posts/**").authenticated()
                 .antMatchers(HttpMethod.GET, "/api/posts/**").permitAll()
-//                        .antMatchers(HttpMethod.GET, "/api/posts/**").access("@postGuard.check(#id)")
                 .antMatchers(HttpMethod.PATCH, "/api/posts/{id}").access("@postGuard.check(#id)")
                 .antMatchers(HttpMethod.DELETE, "/api/posts/{id}").access("@postGuard.check(#id)")
 
@@ -79,15 +85,16 @@ public class SecurityConfig {
                 .antMatchers(HttpMethod.POST, "/api/comments").authenticated()
                 .antMatchers(HttpMethod.DELETE, "/api/comments/{id}").access("@commentGuard.check(#id)")
 
-                .antMatchers(HttpMethod.GET, "/posts/create").authenticated()
-                .antMatchers(HttpMethod.POST, "/posts/create").authenticated()
-                .antMatchers(HttpMethod.GET, "/posts/update/{id}").access("@postGuard.check(#id)")
+                .antMatchers(HttpMethod.GET, "/posts/create/notice").hasAnyRole("ADMIN")
+                .antMatchers(HttpMethod.GET, "/posts/create/**").authenticated()
 
-//                        .antMatchers(HttpMethod.PATCH, "/posts/update/{id}").access("@postGuard.check(#id)")
-                .antMatchers(HttpMethod.GET, "/posts", "/posts/{id}").permitAll()
+                .antMatchers(HttpMethod.GET, "/posts/update/{id}").access("@postGuard.check(#id)")
+                .antMatchers(HttpMethod.GET, "/posts/{id}").permitAll()
 
                 .antMatchers(HttpMethod.GET, "/members/details", "/members/modify/**").authenticated()
+                .antMatchers(HttpMethod.GET, "/members/list").hasAnyRole("ADMIN")
                 .antMatchers(HttpMethod.POST, "/members/modify/password").authenticated()
+                .antMatchers(HttpMethod.POST, "/members/modify/roles/**").hasAnyRole("ADMIN")
 
 
                 .antMatchers("/auth/**").permitAll()
@@ -100,7 +107,17 @@ public class SecurityConfig {
                 .and()
                 .exceptionHandling().authenticationEntryPoint(new CustomAuthenticationEntryPoint())
                 .and()
+
+                .oauth2Login()
+                    .userInfoEndpoint().userService(customOAuth2UserService)
+                .and()
+                    .successHandler(authenticationSuccessHandler)
+
+                .and()
                 .addFilterBefore(new JwtAuthenticationFilter(accessTokenHelper, userDetailsService), UsernamePasswordAuthenticationFilter.class);
+
+
+
 
         return http.build();
     }

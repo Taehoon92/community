@@ -5,8 +5,10 @@ import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import hoon.community.domain.comment.entity.QComment;
 import hoon.community.domain.post.dto.PostInfoDto;
 import hoon.community.domain.post.dto.PostReadCondition;
+import hoon.community.domain.post.entity.BoardType;
 import hoon.community.domain.post.entity.Post;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -19,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.function.Function;
 
+import static hoon.community.domain.comment.entity.QComment.comment;
 import static hoon.community.domain.post.entity.QPost.post;
 
 @Transactional(readOnly = true)
@@ -43,7 +46,7 @@ public class CustomPostRepositoryImpl extends QuerydslRepositorySupport implemen
         return getQuerydsl().applyPagination(
                 pageable,
                 jpaQueryFactory
-                        .select(Projections.constructor(PostInfoDto.class, post.id, post.title, post.member.username, post.hits, post.createdDate))
+                        .select(Projections.constructor(PostInfoDto.class, post.id, post.title, post.member.username, post.hits, post.comments.size(), post.existImages, post.createdDate))
                         .from(post)
                         .join(post.member)
                         .where(predicate)
@@ -60,7 +63,8 @@ public class CustomPostRepositoryImpl extends QuerydslRepositorySupport implemen
                 .and(orConditionsByEqMemberIds(condition.getMemberId()))
                 .and(orConditionsByEqUsername(condition.getUsername()))
                 .and(orConditionsByContainsContent(condition.getContent()))
-                .and(orConditionsByContainsTitle(condition.getTitle()));
+                .and(orConditionsByContainsTitle(condition.getTitle()))
+                .and(orConditionsByBoardType(condition.getBoardType()));
     }
 
     private Predicate orConditionsByEqMemberIds(List<Long> memberIds) {
@@ -78,6 +82,11 @@ public class CustomPostRepositoryImpl extends QuerydslRepositorySupport implemen
     private Predicate orConditionsByContainsTitle(List<String> title) {
         return orConditions(title, post.title::contains);
     }
+
+    private Predicate orConditionsByBoardType(List<BoardType> boardType) {
+        return orConditions(boardType, post.boardType::eq);
+    }
+
 
     private <T> Predicate orConditions(List<T> values, Function<T, BooleanExpression> term) {
         return values.stream()

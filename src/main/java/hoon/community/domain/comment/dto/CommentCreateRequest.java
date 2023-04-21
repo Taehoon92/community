@@ -15,26 +15,26 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.*;
 import java.util.Optional;
 
-@ApiModel(value = "댓글 생성 요청")
+@ApiModel(value = "Comment Create Request")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class CommentCreateRequest {
 
-    @ApiModelProperty(value = "댓글", notes = "댓글을 입력해주세요.", required = true, example = "my comment")
-    @NotBlank(message = "댓글을 입력해주세요.")
+    @ApiModelProperty(value = "Comment", notes = "Enter a comment", required = true, example = "this is a comment")
+    @NotBlank(message = "Enter a comment.")
     private String content;
 
-    @ApiModelProperty(value = "게시글 id", notes = "게시글 id를 입력해주세요.", example = "7")
-    @NotNull(message = "게시글 아이디를 입력해주세요")
-    @PositiveOrZero(message = "올바른 게시글 아이디를 입력해주세요")
+    @ApiModelProperty(value = "Post id", notes = "Enter a post id", example = "7")
+    @NotNull(message = "Enter a post id")
+    @PositiveOrZero(message = "Post id must be zero or positive number")
     private Long postId;
 
     @ApiModelProperty(hidden = true)
     @Null
     private Long memberId;
 
-    @ApiModelProperty(value = "부모 댓글 id", notes = "부모 댓글 아이디를 입력해주세요", example = "7")
+    @ApiModelProperty(value = "Parent comment id", notes = "Enter a parent comment id", example = "7")
     private Long parentId;
 
     public static Comment toEntity(CommentCreateRequest request, MemberRepository memberRepository, PostRepository postRepository, CommentRepository commentRepository) {

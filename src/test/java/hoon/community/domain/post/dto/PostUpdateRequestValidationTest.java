@@ -9,6 +9,7 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -22,7 +23,7 @@ class PostUpdateRequestValidationTest {
     @Test
     void validTest() {
         //given
-        PostUpdateRequest request = createPostUpdateRequest("title", "content");
+        PostUpdateRequest request = createPostUpdateRequest("title", "content", List.of(), List.of());
 
         //when
         Set<ConstraintViolation<PostUpdateRequest>> validate = validator.validate(request);

@@ -6,14 +6,18 @@
 
 <th:block layout:fragment="content">
 
+    <div class="member-detail-title">
+        <h2 id="title-text" class="title-text" th:text="#{member.detail}">Member Details</h2>
+    </div>
+
     <div class="table-responsive clearfix">
         <table class="table table-hover">
             <thead>
             <tr>
-                <th>Email</th>
-                <th>Username</th>
-                <th>User Roles</th>
-                <th>Sign-up Date</th>
+                <th th:text="#{member.detail.email}">Email</th>
+                <th th:text="#{member.detail.username}">Username</th>
+                <th th:text="#{member.detail.roles}">User Roles</th>
+                <th th:text="#{member.detail.signUpDate}">Sign-up Date</th>
             </tr>
             </thead>
 
@@ -22,17 +26,31 @@
             </tbody>
         </table>
     </div>
+    <div class="member-detail-button">
+        <div class="btn_wrap text-right">
+            <a th:href="@{/auth/sign-out}" class="btn btn-default waves-effect waves-light" th:text="#{button.signOut}">Sign Out</a>
+            <a th:href="@{/members/modify/password}" class="btn btn-primary waves-effect waves-light" th:text="#{button.changePassword}">Change Password</a>
+            <a href="javascript: void(0);" onclick="deleteAccount();" class="btn btn-danger waves-effect waves-light" th:text="#{button.deleteAccount}">Delete Account</a>
+        </div>
+    </div>
+
 
     <div class="table-responsive clearfix">
-        <p><span>작성한 게시글 : </span><span id="member-post-total"></span></p>
+        <p><span th:text="#{member.detail.userPosts}">User Posts : </span><span id="member-post-total"></span></p>
 
         <table class="table table-hover">
+            <colgroup>
+                <col style="width:5%">
+                <col style="width:55%">
+                <col style="width:30%">
+                <col style="width:10%">
+            </colgroup>
             <thead>
             <tr>
-                <th>번호</th>
-                <th>제목</th>
-                <th>등록일</th>
-                <th>조회 수</th>
+                <th></th>
+                <th scope="col" th:text="#{board.list.title}">Title</th>
+                <th scope="col" th:text="#{board.list.date}">Date</th>
+                <th scope="col" th:text="#{board.list.hits}">Hits</th>
             </tr>
             </thead>
 
@@ -40,15 +58,13 @@
 
             </tbody>
         </table>
+
+        <div class="page-navigation-single">
+            <div id="page-navigation">
+            </div>
+        </div>
+
     </div>
-
-    <div class="btn_wrap text-right">
-        <a th:href="@{/members/modify/password}" class="btn btn-primary waves-effect waves-light">Change Password</a>
-        <a href="javascript: void(0);" onclick="deleteAccount();" class="btn btn-primary waves-effect waves-light">Delete Account</a>
-    </div>
-
-
-
 
 </th:block>
 
@@ -88,58 +104,119 @@
                 });
 
                 html += `
-                    <tr>
-                    <td>${response.result.data.email}</td>
-                    <td>${response.result.data.username}</td>
-                    <td>${roles}</td>
-                    <td>${moment(response.result.data.createdDate).format('YYYY-MM-DD HH:mm:ss')}</td>
-                    </tr>
+                        <tr class="member-detail-tr">
+                        <td>
+                            <div class="member-detail-email">${response.result.data.email}</div>
+                        </td>
+                        <td>
+                            <div class="member-detail-username">${response.result.data.username}</div>
+                        </td>
+                        <td>
+                            <div class="member-detail-roles">${roles}</div>
+                        </td>
+                        <td>
+                            <div class="member-detail-date">${moment(response.result.data.createdDate).format('YYYY-MM-DD HH:mm')}</div>
+                        </td>
+                        </tr>
                 `;
 
                 document.getElementById('user-detail').innerHTML = html;
-
-                const getPostUri = `/api/posts?page=${page}&size=${size}&memberId=${id}`;
-                fetch(getPostUri, {
-                    method: 'GET',
-                }).then(response => {
-                    if(response.ok) {
-                        return response.json();
-                    }
-                }).then(json => {
-                    console.log(json);
-                    let postHtml ='';
-                    let postCount = 0;
-                    if(json.result.data.postList.length == 0) {
-                        //게시글 x
-                    }
-                    else {
-                        //전체 게시글 수 업데이트
-                        postCount = json.result.data.totalElements;
-                        document.getElementById('member-post-total').innerText = postCount;
-
-                        //게시글 목록 생성
-                        json.result.data.postList.forEach((obj, idx) => {
-                            postHtml += `
-                                <tr>
-                                <td>${json.result.data.totalElements - idx}</td>
-                                <td class = "text-left">
-                                    <a href="javascript: void(0);" onclick="goView(${obj.id})">${obj.title}</a>
-                                </td>
-                                <td>${moment(obj.createdDate).format('YYYY-MM-DD HH:mm:ss')}</td>
-                                <td>${obj.hits}</td>
-                            `;
-                        });
-                    }
-
-                    document.getElementById('post-list').innerHTML = postHtml;
-
-                }).catch(error => {
-                    console.log('error');
-                });
+                getUserPosts(page);
 
             }).catch(error => {
                 console.log('error');
             });
+        }
+
+        function getUserPosts(page) {
+            const getPostUri = `/api/posts?page=${page}&size=${size}&memberId=${id}`;
+            fetch(getPostUri, {
+                method: 'GET',
+            }).then(response => {
+                if(response.ok) {
+                    return response.json();
+                }
+            }).then(json => {
+                console.log(json);
+                let postHtml ='';
+                let postCount = 0;
+                let navHtml = '';
+
+                //전체 게시글 수 업데이트
+                postCount = json.result.data.totalElements;
+                document.getElementById('member-post-total').innerText = postCount;
+
+                if(json.result.data.postList.length == 0) {
+                    //게시글 x
+                }
+                else {
+
+
+                    //게시글 목록 생성
+                    json.result.data.postList.forEach((obj, idx) => {
+                        postHtml += `
+                                <tr class="member-post-tr">
+                                <td>
+                                    <div class="member-post-idx">${json.result.data.totalElements - (page * size) - idx}</div>
+                                </td>
+                                <td>
+                                    <div class="member-post-title">
+                                        <a href="javascript: void(0);" onclick="goView(${obj.id})">${obj.title}</a>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="member-post-date">${moment(obj.createdDate).format('YYYY-MM-DD HH:mm')}</div>
+                                </td>
+                                <td>
+                                    <div class="member-post-hits">${obj.hits}</div>
+                                </td>
+                                </tr>
+                            `;
+                    });
+
+                    navHtml = generatePageNavButton(json,page);
+                }
+
+                document.getElementById('post-list').innerHTML = postHtml;
+                document.getElementById('page-navigation').innerHTML = navHtml;
+
+            }).catch(error => {
+                console.log('error');
+            });
+        }
+
+        function generatePageNavButton(json, page) {
+
+            let generatedHtml = '';
+            let startPage = parseInt((page) / 10) * 10 + 1;
+
+            if(page != 0) {
+                generatedHtml += `
+                    <a href="javascript:void(0)", onclick="getUserPosts(0);" aria-label="Previous">&laquo;</a>
+                    <a href="javascript:void(0)", onclick="getUserPosts(${page-1});" aria-label="Previous">&lsaquo;</a>
+                `;
+            }
+
+            for (let i = startPage ; i < startPage+10; i++) {
+                if(i >json.result.data.totalPages) {
+                    break;
+                }
+                const active = (i === page+1) ? 'class="active"' : '';
+                generatedHtml += `
+                    <a href="javascript:void(0)" onclick="getUserPosts(${i-1})" ${active}>${i}</a>`;
+            }
+
+            if(json.result.data.hasNext) {
+                generatedHtml += `
+                    <a href="javascript:void(0)" onclick="getUserPosts(${page + 1});" aria-label="Next">&rsaquo;</a>
+                    <a href="javascript:void(0)" onclick="getUserPosts(${json.result.data.totalPages - 1});" aria-label="Next">&raquo;</a>
+                `;
+            }
+            return generatedHtml;
+        }
+
+        function goView(id) {
+            location.href = `/posts/${id}`;
         }
 
         function deleteAccount() {

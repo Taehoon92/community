@@ -3,6 +3,7 @@ package hoon.community.controller.post;
 import hoon.community.controller.response.Response;
 import hoon.community.domain.post.dto.PostCreateRequest;
 import hoon.community.domain.post.dto.PostUpdateRequest;
+import hoon.community.domain.post.entity.BoardType;
 import hoon.community.domain.post.service.PostService;
 import hoon.community.global.aop.AssignMemberId;
 import io.swagger.annotations.ApiOperation;
@@ -24,22 +25,30 @@ public class PostWebController {
 
     private final PostService postService;
 
-    @GetMapping("")
-    public String list() {
+    @GetMapping("/forum")
+    public String listForum(Model model) {
+        model.addAttribute("boardType",BoardType.FORUM);
+        model.addAttribute("board","forum");
         return "post/list";
     }
 
-    @GetMapping("/create")
-    public String createForm() {
+    @GetMapping("/notice")
+    public String listNotice(Model model) {
+        model.addAttribute("boardType",BoardType.NOTICE);
+        model.addAttribute("board","notice");
+        return "post/list";
+    }
+
+    @GetMapping("/create/forum")
+    public String createFormForum(Model model) {
+        model.addAttribute("board","forum");
         return "post/create";
     }
 
-    @PostMapping("/create")
-    @AssignMemberId
-    public String create(@Valid @ModelAttribute PostCreateRequest request) {
-        postService.create(request);
-
-        return "redirect:/";
+    @GetMapping("/create/notice")
+    public String createFormNotice(Model model) {
+        model.addAttribute("board","notice");
+        return "post/create";
     }
 
     @GetMapping("/update/{id}")
@@ -48,10 +57,9 @@ public class PostWebController {
         return "post/update";
     }
 
-
     @GetMapping("/{id}")
     public String view(@PathVariable final Long id) {
-
+        log.info("POST WEB CONTROLLER - VIEW");
         return "post/view";
     }
 }

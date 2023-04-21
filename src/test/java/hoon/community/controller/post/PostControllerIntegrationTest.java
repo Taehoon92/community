@@ -27,6 +27,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.util.List;
+
 import static hoon.community.global.factory.dto.PostReadConditionFactory.createPostReadCondition;
 import static hoon.community.global.factory.dto.SignInRequestFactory.createSignInRequest;
 import static hoon.community.global.factory.entity.PostFactory.createPost;
@@ -67,7 +69,7 @@ class PostControllerIntegrationTest {
         //given
         MockHttpServletResponse servletResponse = new MockHttpServletResponse();
         SignInResponse signInResponse = signService.signIn(createSignInRequest(member1.getEmail(), initDB.getPassword()),servletResponse);
-        PostCreateRequest request = PostCreateRequestFactory.createPostCreateRequest("title", "content", member1.getId());
+        PostCreateRequest request = PostCreateRequestFactory.createPostCreateRequest("title", "content", member1.getId(), List.of());
 
         //when, then
         mockMvc.perform(
@@ -92,7 +94,7 @@ class PostControllerIntegrationTest {
     @Test
     void createUnauthorizedByNoneTokenTest() throws Exception {
         //given
-        PostCreateRequest request = PostCreateRequestFactory.createPostCreateRequest("title", "content", member1.getId());
+        PostCreateRequest request = PostCreateRequestFactory.createPostCreateRequest("title", "content", member1.getId(), List.of());
 
         //when, then
         mockMvc.perform(

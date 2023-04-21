@@ -4,6 +4,7 @@ import hoon.community.controller.response.Response;
 import hoon.community.domain.post.dto.PostCreateRequest;
 import hoon.community.domain.post.dto.PostReadCondition;
 import hoon.community.domain.post.dto.PostUpdateRequest;
+import hoon.community.domain.post.entity.BoardType;
 import hoon.community.domain.post.service.PostService;
 import hoon.community.global.aop.AssignMemberId;
 import io.swagger.annotations.Api;
@@ -15,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @Api(value = "Post Controller", tags = "Post")
 @RestController
@@ -25,38 +27,50 @@ public class PostController {
 
     private final PostService postService;
 
-    @ApiOperation(value = "게시글 생성", notes = "게시글을 생성한다")
-    @PostMapping("")
+    @ApiOperation(value = "Create a post at FORUM", notes = "Create a post at FORUM board")
+    @PostMapping("/forum")
     @ResponseStatus(HttpStatus.CREATED)
     @AssignMemberId
-    public Response create(@Valid @ModelAttribute PostCreateRequest request) {
-        return Response.success(postService.create(request));
+    public Response createForum(@Valid @ModelAttribute PostCreateRequest request) {
+        log.info("REQUEST = {}", request);
+        return Response.success(postService.create(request, BoardType.FORUM));
     }
 
-    @ApiOperation(value = "게시글 조회", notes = "게시글을 조회한다")
+    @ApiOperation(value = "Create a post at NOTICE", notes = "Create a post at NOTICE board")
+    @PostMapping("/notice")
+    @ResponseStatus(HttpStatus.CREATED)
+    @AssignMemberId
+    public Response createNotice(@Valid @ModelAttribute PostCreateRequest request) {
+        return Response.success(postService.create(request, BoardType.NOTICE));
+    }
+
+    @ApiOperation(value = "Read a post", notes = "Read a post details")
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Response read(@ApiParam(value = "게시글 id", required = true) @PathVariable Long id) {
+    public Response read(@ApiParam(value = "Post id", required = true) @PathVariable Long id) {
+        postService.updateHits(id);
         return Response.success(postService.read(id));
     }
 
-    @ApiOperation(value = "게시글 삭제", notes = "게시글을 삭제한다")
+    @ApiOperation(value = "Delete a post", notes = "Delete a post")
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Response delete(@ApiParam(value = "게시글 id", required = true) @PathVariable Long id) {
+    public Response delete(@ApiParam(value = "Post id", required = true) @PathVariable Long id) {
         postService.delete(id);
         return Response.success();
     }
 
-    @ApiOperation(value = "게시글 수정", notes = "게시글을 수정한다.")
+
+    @ApiOperation(value = "Update a post", notes = "Update a post")
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Response update(@ApiParam(value = "게시글 id", required = true) @PathVariable Long id, @Valid @RequestBody PostUpdateRequest request) {
+    public Response update(@ApiParam(value = "Post id", required = true) @PathVariable Long id, @Valid PostUpdateRequest request) {
+        log.info("REQUEST UPDATE = {}", request);
         postService.update(id, request);
         return Response.success();
     }
 
-    @ApiOperation(value = "게시글 목록 조회", notes = "게시글 목록을 조회한다.")
+    @ApiOperation(value = "Read all posts", notes = "Read all posts")
     @GetMapping("")
     @ResponseStatus(HttpStatus.OK)
     public Response readAll(@Valid @ModelAttribute PostReadCondition condition) {

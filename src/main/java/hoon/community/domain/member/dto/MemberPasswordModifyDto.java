@@ -22,16 +22,16 @@ public class MemberPasswordModifyDto {
     @Null
     private Long memberId;
 
-    @ApiModelProperty(value = "현재 비밀번호", notes = "비밀번호는 최소 8자리이면서 1개 이상의 알파벳, 숫자, 특수문자를 포함해야합니다.", required = true, example = "password1!")
-    @NotBlank(message = "비밀번호를 입력하세요")
+    @ApiModelProperty(value = "Old password", notes = "Password must be at least 8 characters long, must contain letters in mixed case and must contain numbers and special symbols.", required = true, example = "password1!")
+    @NotBlank(message = "Enter old password")
     @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,}$",
-            message = "비밀번호는 최소 8자리이면서 1개 이상의 알파벳, 숫자, 특수문자를 포함해야합니다.")
+            message = "Password must be at least 8 characters long, must contain letters in mixed case and must contain numbers and special symbols.")
     private String oldPassword;
 
-    @ApiModelProperty(value = "새로운 비밀번호", notes = "비밀번호는 최소 8자리이면서 1개 이상의 알파벳, 숫자, 특수문자를 포함해야합니다.", required = true, example = "password1!")
-    @NotBlank(message = "비밀번호를 입력하세요")
+    @ApiModelProperty(value = "New password", notes = "Password must be at least 8 characters long, must contain letters in mixed case and must contain numbers and special symbols.", required = true, example = "password1!")
+    @NotBlank(message = "Enter new password")
     @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,}$",
-            message = "비밀번호는 최소 8자리이면서 1개 이상의 알파벳, 숫자, 특수문자를 포함해야합니다.")
+            message = "Password must be at least 8 characters long, must contain letters in mixed case and must contain numbers and special symbols.")
     private String newPassword;
 
 

@@ -2,8 +2,6 @@ package hoon.community.domain.sign.service;
 
 import hoon.community.domain.member.entity.*;
 import hoon.community.domain.member.repository.MemberRepository;
-import hoon.community.domain.role.entity.Role;
-import hoon.community.domain.role.repository.RoleRepository;
 import hoon.community.domain.role.entity.RoleType;
 import hoon.community.domain.sign.dto.RefreshTokenResponse;
 import hoon.community.domain.sign.dto.SignInRequest;
@@ -11,20 +9,16 @@ import hoon.community.domain.sign.dto.SignInResponse;
 import hoon.community.domain.sign.dto.SignUpRequest;
 import hoon.community.global.exception.CustomException;
 import hoon.community.global.exception.ErrorCode;
-import hoon.community.global.security.guard.AuthHelper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.List;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -32,7 +26,6 @@ import java.util.Set;
 public class SignService {
 
     private final MemberRepository memberRepository;
-    private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final TokenHelper accessTokenHelper;
     private final TokenHelper refreshTokenHelper;
@@ -42,8 +35,8 @@ public class SignService {
     @Transactional
     public void signUp(SignUpRequest req) {
         validateSignUpInfo(req);
-        List<Role> roles = List.of(roleRepository.findByRoleType(RoleType.ROLE_USER).orElseThrow(() -> new CustomException(ErrorCode.ROLE_NOT_FOUND)));
-        memberRepository.save(SignUpRequest.toEntity(req, roles, passwordEncoder));
+        List<RoleType> roleTypes = List.of(RoleType.ROLE_USER);
+        memberRepository.save(SignUpRequest.toEntity(req, roleTypes, passwordEncoder));
     }
 
     @Transactional(readOnly = true)
@@ -63,6 +56,12 @@ public class SignService {
         cookie2.setPath("/");
         servletResponse.addCookie(cookie);
         servletResponse.addCookie(cookie2);
+
+        /* 쿠키에 username 임의로 넣은 것 */
+        Cookie userCookie = new Cookie("username", member.getUsername());
+        userCookie.setHttpOnly(true);
+        userCookie.setPath("/");
+        servletResponse.addCookie(userCookie);
 
         /* 세션에 username 임의로 넣은 것 */
         setSessionMemberInfo(member);
@@ -106,16 +105,9 @@ public class SignService {
     }
 
     private void setSessionMemberInfo(Member member) {
-//        String role = String.valueOf(AuthHelper.extractMemberRoles().stream().map(roleType -> roleType.equals(RoleType.ROLE_ADMIN)).findAny().orElse(null));
-//        Object sample = AuthHelper.extractMemberRoles().stream().map(roleType -> roleType.equals(RoleType.ROLE_ADMIN)).findAny().orElse(null);
-/*
-        AuthHelper.extractMemberRoles().stream().forEach(roleType -> {
-            log.info("ROLE TYPE FOREACH = {}", roleType);
-            log.info("COMPARE RoleType.ROLE_ADMIN = {}", roleType == RoleType.ROLE_ADMIN);
-        });
- */
         if(session != null) {
             session.setAttribute("username", member.getUsername());
+            session.setAttribute("role", member.getMainRole());
         }
 
     }

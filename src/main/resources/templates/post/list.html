@@ -4,31 +4,39 @@
 <th:block layout:fragment="content">
 
     <!--/* 검색 영역 */-->
-    <div class="input-group" id="adv-search">
+    <div class="input-group post-list-search" id="adv-search">
         <form id="searchForm" onsubmit="return false;">
             <select id="searchType" class="form-control" style="width: 100px;">
-                <option value="">전체</option>
-                <option value="title">제목</option>
-                <option value="content">내용</option>
-                <option value="username">작성자</option>
+                <option value="" th:text="#{board.list.search.selectBox}">Select</option>
+                <option value="title" th:text="#{board.list.search.selectBox.title}">Title</option>
+                <option value="content" th:text="#{board.list.search.selectBox.content}">Content</option>
+                <option value="username" th:text="#{board.list.search.selectBox.writer}">Writer</option>
             </select>
-            <input type="text" id="keyword" class="form-control" placeholder="키워드를 입력해 주세요." style="width: 300px;" />
+            <input type="text" id="keyword" class="form-control" th:placeholder="#{board.list.search.input.placeholder}" placeholder="Enter a keyword" style="width: 300px;" />
         </form>
-        <button type="button" class="btn btn-primary" onclick="findAll(0)">
-            <span aria-hidden="true" class="glyphicon glyphicon-search"></span>
+        <button type="button" class="btn btn-primary btn-search" onclick="findAll(0)">
+            <span class="fa-solid fa-magnifying-glass"></span>
         </button>
     </div>
 
     <!--/* 게시글 영역 */-->
     <div class="table-responsive clearfix">
         <table class="table table-hover">
+            <colgroup>
+                <col style="width:5%">
+                <col style="width:50%">
+                <col style="width:15%">
+                <col style="width:20%">
+                <col style="width:10%">
+
+            </colgroup>
             <thead>
             <tr>
-                <th>번호</th>
-                <th>제목</th>
-                <th>작성자</th>
-                <th>등록일</th>
-                <th>조회 수</th>
+                <th></th>
+                <th scope="col" th:text="#{board.list.title}">Title</th>
+                <th scope="col" th:text="#{board.list.writer}">Writer</th>
+                <th scope="col" th:text="#{board.list.date}">Date</th>
+                <th scope="col" th:text="#{board.list.hits}">Hits</th>
             </tr>
             </thead>
 
@@ -39,13 +47,19 @@
         </table>
         <div class="list-button-area">
             <div>
-
+                <select name = "selectSize" class="form-control" onchange="setSize(this.value)">
+                    <option value="" th:text="#{board.list.postsPerPage}">Posts per Page</option>
+                    <option value="10" th:text="#{board.list.postsPerPage.first}">10 posts</option>
+                    <option value="15" th:text="#{board.list.postsPerPage.second}">15 posts</option>
+                    <option value="20" th:text="#{board.list.postsPerPage.third}">20 posts</option>
+                    <option value="30" th:text="#{board.list.postsPerPage.fourth}">30 posts</option>
+                </select>
             </div>
             <!-- 페이지네이션 Rendering 영역 -->
             <div id="page-navigation">
             </div>
             <div>
-                <a th:href="@{/posts/create}" class="btn-write btn btn-primary waves-effect waves-light">Write</a>
+                <a th:href="@{/posts/create/{board}(board=${board})}" class="btn-write btn btn-primary waves-effect waves-light" th:text="#{button.write}">Write</a>
             </div>
 
 
@@ -59,10 +73,12 @@
 
         let page = 0;
         let size = 10;
+        const boardType = /*[[ ${boardType} ]]*/;
+
 
 
         window.onload = () => {
-            findAll(page);
+            findAll(page, size);
             addEnterSearchEvent();
         }
 
@@ -82,18 +98,23 @@
             location.href = `/posts/${id}`;
         }
 
-        function findAll(page) {
+        function findAll(page, size) {
             const searchTypeElement = document.getElementById('searchType');
             const searchType = searchTypeElement.options[searchTypeElement.selectedIndex].value;
             const keyword = document.getElementById('keyword').value;
             console.log(searchType);
 
-            let uri = '';
+            // let uri = `/api/posts/${boardType}`;
+            let uri = `/api/posts`;
+
+            if(boardType == null) {
+                throw err;
+            } else {
+                uri += `?boardType=${boardType}&page=${page}&size=${size}`
+            }
 
             if(searchType && keyword) {
-                uri += `/api/posts?page=${page}&size=${size}&${searchType}=${keyword}`;
-            } else {
-                uri += `/api/posts?page=${page}&size=${size}`;
+                uri += `&${searchType}=${keyword}`;
             }
 
 
@@ -107,6 +128,7 @@
             }).then(json => {
                 let html = '';
                 let navHtml = '';
+                let imgIconHtml = '';
                 console.log(json.result.data);
                 if(json.result.data.postList.length == 0) {
                     //게시글 x
@@ -115,15 +137,41 @@
                     console.log(json.result.data.postList);
 
                     json.result.data.postList.forEach((obj, idx) => {
+
+                        if(obj.existImages) { // 첨부된 이미지 있을떄
+                            imgIconHtml = `<i class="fa-regular fa-image"></i>`;
+                        } else {
+                            imgIconHtml = ``;
+                        }
                         html += `
                             <tr>
-                            <td>${json.result.data.totalElements - (page * size) - idx}</td>
-                            <td class = "text-left">
-                                <a href="javascript: void(0);" onclick="goView(${obj.id})">${obj.title}</a>
+                            <td colspan="2" class = "td-post">
+                                <div class = "post-number">
+                                    <div class="inner-number">${json.result.data.totalElements - (page * size) - idx}</div>
+                                </div>
+                                <div class = "post-title">
+                                    <div class="inner-title">
+                                        <a class="list-subject" href="javascript: void(0);" onclick="goView(${obj.id})">${obj.title}</a>
+                                        <span class="list-icon">${imgIconHtml}</span>
+                                        <span class="list-reply">[${obj.comments}]</span>
+                                    </div>
+                                </div>
                             </td>
-                            <td>${obj.username}</td>
-                            <td>${moment(obj.createdDate).format('YYYY-MM-DD HH:mm:ss')}</td>
-                            <td>${obj.hits}</td>
+                            <td class="td-name">
+                                <div class="post-name">
+                                    <div class="inner-name">${obj.username}</div>
+                                </div>
+                            </td>
+                            <td class="td-date">
+                                <div class="post-date">
+                                    <div class="inner-date">${moment(obj.createdDate).format('YYYY-MM-DD')}</div>
+                                </div>
+                            </td>
+                            <td class="td-hits">
+                                <div class="post-hits">
+                                    <div class="inner-hits">${obj.hits}</div>
+                                </div>
+                            </td>
                         `;
                     });
 
@@ -133,6 +181,7 @@
 
                 document.getElementById('list').innerHTML = html;
                 document.getElementById('page-navigation').innerHTML = navHtml;
+
             }).catch(error => {
                 alert('오류가 발생했습니다');
             })
@@ -147,8 +196,8 @@
 
             if(page != 0) {
                 generatedHtml += `
-                    <a href="javascript:void(0)", onclick="findAll(0);" aria-label="Previous">&laquo;</a>
-                    <a href="javascript:void(0)", onclick="findAll(${page-1});" aria-label="Previous">&lsaquo;</a>
+                    <a href="javascript:void(0)", onclick="findAll(0, size);" aria-label="Previous">&laquo;</a>
+                    <a href="javascript:void(0)", onclick="findAll(${page-1}, size);" aria-label="Previous">&lsaquo;</a>
                 `;
             }
 
@@ -160,19 +209,26 @@
                 const active = (i === page+1) ? 'class="active"' : '';
 
                 generatedHtml += `
-                    <a href="javascript:void(0)" onclick="findAll(${i-1})" ${active}>${i}</a>`;
+                    <a href="javascript:void(0)" onclick="findAll(${i-1}, size)" ${active}>${i}</a>`;
             }
 
             if(json.result.data.hasNext) {
                 generatedHtml += `
-                    <a href="javascript:void(0)" onclick="findAll(${page + 1});" aria-label="Next">&rsaquo;</a>
-                    <a href="javascript:void(0)" onclick="findAll(${json.result.data.totalPages - 1});" aria-label="Next">&raquo;</a>
+                    <a href="javascript:void(0)" onclick="findAll(${page + 1}, size);" aria-label="Next">&rsaquo;</a>
+                    <a href="javascript:void(0)" onclick="findAll(${json.result.data.totalPages - 1}, size);" aria-label="Next">&raquo;</a>
                 `;
             }
 
             return generatedHtml;
 
 
+        }
+
+        function setSize(value) {
+            if(value !== "") {
+                size = parseInt(value);
+                findAll(page, size);
+            }
         }
 
     </script>

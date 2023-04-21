@@ -4,6 +4,8 @@ import hoon.community.controller.response.Response;
 import hoon.community.domain.member.dto.MemberPasswordModifyDto;
 import hoon.community.domain.member.entity.Member;
 import hoon.community.domain.member.service.MemberService;
+import hoon.community.domain.role.dto.RoleModifyDto;
+import hoon.community.domain.role.entity.RoleType;
 import hoon.community.global.aop.AssignMemberId;
 import hoon.community.global.security.guard.AuthHelper;
 import io.swagger.annotations.ApiOperation;
@@ -15,6 +17,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 @Slf4j
 @Controller
@@ -24,14 +28,14 @@ public class MemberWebController {
 
     private final MemberService memberService;
 
-    @GetMapping("/modify")
-    public String modify() {
-        return "member/modifyMember";
-    }
-
     @GetMapping("/details")
     public String details() {
         return "member/details";
+    }
+
+    @GetMapping("/list")
+    public String lists(@ModelAttribute RoleModifyDto dto) {
+        return "member/list";
     }
 
     @GetMapping("/modify/password")
@@ -39,7 +43,7 @@ public class MemberWebController {
         return "member/modifyPassword";
     }
 
-    @ApiOperation(value = "사용자 비밀번호 변경", notes = "사용자의 비밀번호를 변경한다.")
+    @ApiOperation(value = "Change password", notes = "Change user's password")
     @PostMapping("/modify/password")
     @AssignMemberId
     public String password(@Valid @ModelAttribute("dto") MemberPasswordModifyDto request, BindingResult bindingResult) {
@@ -55,4 +59,13 @@ public class MemberWebController {
 
         return "redirect:/members/details";
     }
+
+    @PostMapping("/modify/roles/{id}")
+    public String modifyRoles(@PathVariable Long id, @ModelAttribute("roles") RoleModifyDto dto) {
+
+        memberService.modifyRoles(id, dto);
+
+        return "redirect:/members/list";
+    }
+
 }

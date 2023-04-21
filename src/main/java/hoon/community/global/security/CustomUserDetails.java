@@ -4,17 +4,24 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.Set;
 
 @Getter
 @AllArgsConstructor
 public class CustomUserDetails implements UserDetails {
 
+
     private final String userId;
+    private final String email;
     private final Set<GrantedAuthority> authorities;
 
+
+
+    //UserDetails Override
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return authorities;
@@ -23,6 +30,10 @@ public class CustomUserDetails implements UserDetails {
     @Override
     public String getUsername() {
         return userId;
+    }
+
+    public String getEmail() {
+        return email;
     }
 
     @Override
@@ -49,4 +60,5 @@ public class CustomUserDetails implements UserDetails {
     public boolean isEnabled() {
         throw new UnsupportedOperationException();
     }
+
 }

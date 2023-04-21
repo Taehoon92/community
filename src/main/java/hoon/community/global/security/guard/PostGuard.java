@@ -23,15 +23,11 @@ public class PostGuard extends Guard {
 
     @Override
     protected List<RoleType> getRoleTypes() {
-        log.info("POST GUARD - getRoleTypes call");
         return roleTypes;
     }
 
     @Override
     protected boolean isResourceOwner(Long id) {
-        log.info("POST GUARD - isResourceOwner call");
-
-        log.info("Post Guard = {}", SecurityContextHolder.getContext().getAuthentication());
 
         Post post = postRepository.findById(id).orElseThrow(() -> {throw new AccessDeniedException("");});
         Long memberId = AuthHelper.extractMemberId();

@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -49,9 +50,13 @@ public class SignWebController {
         if (bindingResult.hasErrors()) {
             return "sign/signUp";
         }
+        if(signService.duplicateEmailCheck(request.getEmail())) {
+            bindingResult.addError(new FieldError("member", "email", "There is duplicate email."));
+            return "sign/signUp";
+        }
         signService.signUp(request);
 
-        //회원가입 후 자동 로그인
+        //Sign in after Sign up
         SignInRequest signInRequest = SignUpRequest.toSignInRequest(request);
         signService.signIn(signInRequest, servletResponse);
 
@@ -60,13 +65,13 @@ public class SignWebController {
 
     @GetMapping("/sign-out")
     public String signOut(HttpServletRequest request, HttpServletResponse response) {
-        //세션 삭제
+        //Delete sessions
         HttpSession session = request.getSession(false);
         if (session != null) {
             session.invalidate();
         }
 
-        //쿠키 삭제
+        //Delete cookies
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (int i = 0; i < cookies.length; i++) {

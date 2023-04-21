@@ -8,8 +8,6 @@ import java.util.List;
 @Slf4j
 public abstract class Guard {
     public final boolean check(Long id) {
-        log.info("GUARD - CHECK call");
-        log.info("GUARD - AuthHelper ={}", AuthHelper.isAuthenticated());
         return AuthHelper.isAuthenticated() && (hasRole(getRoleTypes()) || isResourceOwner(id));
     }
 
@@ -17,7 +15,6 @@ public abstract class Guard {
     abstract protected boolean isResourceOwner(Long id);
 
     private boolean hasRole(List<RoleType> roleTypes) {
-        log.info("GUARD - hasRole call");
         return roleTypes.stream().allMatch(roleType -> AuthHelper.extractMemberRoles().contains(roleType));
     }
 }

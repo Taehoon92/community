@@ -2,19 +2,11 @@ package hoon.community.domain.member.repository;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
-import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import hoon.community.domain.member.dto.MemberDetailsDto;
-import hoon.community.domain.member.dto.MemberDetailsTestDto;
-import hoon.community.domain.member.dto.MemberDetailsTestTestDto;
 import hoon.community.domain.member.dto.MemberReadCondition;
 import hoon.community.domain.member.entity.Member;
-import hoon.community.domain.member.entity.MemberRole;
-import hoon.community.domain.member.entity.QMember;
-import hoon.community.domain.member.entity.QMemberRole;
-import hoon.community.domain.role.entity.QRole;
-import hoon.community.domain.role.entity.Role;
 import hoon.community.domain.role.entity.RoleType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -24,13 +16,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static hoon.community.domain.member.entity.QMember.member;
-import static hoon.community.domain.member.entity.QMemberRole.memberRole;
-import static hoon.community.domain.role.entity.QRole.*;
 
 @Transactional(readOnly = true)
 @Slf4j
@@ -44,35 +35,13 @@ public class CustomMemberRepositoryImpl extends QuerydslRepositorySupport implem
     }
 
     @Override
-    public Page<MemberDetailsTestDto> findAllByCondition(MemberReadCondition condition) {
+    public Page<MemberDetailsDto> findAllByCondition(MemberReadCondition condition) {
         Pageable pageable = PageRequest.of(condition.getPage(), condition.getSize());
         Predicate predicate = createPredicate(condition);
         return new PageImpl<>(fetchAll(predicate, pageable), pageable, fetchCount(predicate));
     }
 
-    @Override
-    public Page<MemberDetailsTestTestDto> findAllByCondition2(MemberReadCondition condition) {
-        Pageable pageable = PageRequest.of(condition.getPage(), condition.getSize());
-        Predicate predicate = createPredicate(condition);
-        return new PageImpl<>(fetchAll2(predicate, pageable), pageable, fetchCount(predicate));
-    }
-
-
-    private List<MemberDetailsTestDto> fetchAll(Predicate predicate, Pageable pageable) {
-        return getQuerydsl().applyPagination(
-                pageable,
-                jpaQueryFactory
-                        .select(Projections.constructor(MemberDetailsTestDto.class, memberRole.member.id, memberRole.member.email, memberRole.member.username, memberRole.role.roleType, memberRole.member.createdDate))
-                        .from(memberRole)
-                        .join(memberRole.member)
-                        .where(predicate)
-                        .orderBy(memberRole.member.id.desc())
-        ).fetch();
-    }
-
-
-
-    private List<MemberDetailsTestTestDto> fetchAll2(Predicate predicate, Pageable pageable) {
+    private List<MemberDetailsDto> fetchAll(Predicate predicate, Pageable pageable) {
         List<Member> memberList = getQuerydsl().applyPagination(
                 pageable,
                 jpaQueryFactory
@@ -83,7 +52,7 @@ public class CustomMemberRepositoryImpl extends QuerydslRepositorySupport implem
                         .orderBy(member.id.desc())
         ).fetch();
 
-        return memberList.stream().map(member -> MemberDetailsTestTestDto.toDto(member)).collect(Collectors.toList());
+        return memberList.stream().map(member -> MemberDetailsDto.toDto(member)).collect(Collectors.toList());
     }
 
 
@@ -93,28 +62,28 @@ public class CustomMemberRepositoryImpl extends QuerydslRepositorySupport implem
     }
 
     private Predicate createPredicate(MemberReadCondition condition) {
-        List<RoleType> roleType = null;
-        List<Role> roleList = List.of(new Role(RoleType.ROLE_ADMIN));
 
+        //Role 검색 관련
+        List<RoleType> roleTypeList = new ArrayList<>();
 
-        /*
-        if(condition.getRoles() != null ) {
-            List<String> rolesString = condition.getRoles();
+        if(condition.getRole() != null ) {
+            List<String> rolesString = condition.getRole();
             String role = String.join("",rolesString);
             log.info("ROLE 추출값 ={}=",role);
             if(role.equals("ADMIN")) {
-                roleType = List.of(RoleType.ROLE_ADMIN);
+                roleTypeList = List.of(RoleType.ROLE_ADMIN);
             } else if(role.equals("USER")) {
-                roleType = List.of(RoleType.ROLE_USER);
+                roleTypeList = List.of(RoleType.ROLE_USER);
+            } else if(role.equals("SOCIAL")) {
+                roleTypeList = List.of(RoleType.ROLE_SOCIAL);
             }
         }
-        */
 
         return new BooleanBuilder()
                 .and(orConditionByEqMemberId(condition.getMemberId()))
                 .and(orConditionByEqUsername(condition.getUsername()))
                 .and(orConditionByEqEmail(condition.getEmail()))
-                .and(orConditionByContainsRole(roleList));
+                .and(orConditionByContainsRole(roleTypeList));
 //                .and(orConditionByContainsRole(condition.getRoles()));
     }
 
@@ -130,12 +99,9 @@ public class CustomMemberRepositoryImpl extends QuerydslRepositorySupport implem
         return orConditions(email, member.email::eq);
     }
 
-    private Predicate orConditionByContainsRole(List<Role> roles) {
-
-//        return orConditions(roles, memberRole.role::eq);
-        return null;
+    private Predicate orConditionByContainsRole(List<RoleType> roleTypes) {
+        return orConditions(roleTypes, member.roleTypes::contains);
     }
-
 
     private <T> Predicate orConditions(List<T> values, Function<T, BooleanExpression> term) {
         return

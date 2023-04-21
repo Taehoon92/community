@@ -12,8 +12,8 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 public class DuplicateEmailCheckRequest {
 
-    @Email(message = "이메일 형식을 맞춰주세요")
-    @NotBlank(message = "이메일을 입력하세요")
+    @Email(message = "Enter a valid email")
+    @NotBlank(message = "Enter a email")
     private String email;
 }
 

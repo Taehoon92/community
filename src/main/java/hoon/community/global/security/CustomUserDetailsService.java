@@ -21,14 +21,13 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public CustomUserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
-        Member member = memberRepository.findWithRolesById(Long.valueOf(userId))
+        Member member = memberRepository.findById(Long.valueOf(userId))
                 .orElseGet(() -> new Member(null, null, null, List.of()));
         return new CustomUserDetails(
                 String.valueOf(member.getId()),
-                member.getRoles().stream().map(memberRole -> memberRole.getRole())
-                        .map(role -> role.getRoleType())
-                        .map(roleType -> roleType.toString())
-                        .map(SimpleGrantedAuthority::new).collect(Collectors.toSet())
+                String.valueOf(member.getEmail()),
+                member.getRoleTypes().stream().map(roleType -> roleType.toString())
+                                .map(SimpleGrantedAuthority::new).collect(Collectors.toSet())
         );
     }
 }
