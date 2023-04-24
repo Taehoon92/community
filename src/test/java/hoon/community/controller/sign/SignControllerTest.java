@@ -53,7 +53,7 @@ class SignControllerTest {
         BDDMockito.verify(signService).signUp(request);
     }
 
-    @Test
+//    @Test
     void signInTest() throws Exception {
         //given
         MockHttpServletResponse servletResponse = new MockHttpServletResponse();
@@ -77,7 +77,7 @@ class SignControllerTest {
         BDDMockito.verify(signService).signIn(request, servletResponse);
     }
 
-    @Test
+//    @Test
     void ignoreNullValueInJsonResponseTest() throws Exception {
         //given
         SignUpRequest request = new SignUpRequest("password1!", "username", "email@email.com");

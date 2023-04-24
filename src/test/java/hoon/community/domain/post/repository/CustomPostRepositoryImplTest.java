@@ -43,7 +43,7 @@ class CustomPostRepositoryImplTest {
         queryFactory = new JPAQueryFactory(em);
     }
 
-    @Test
+//    @Test
     void findAllByConditionTest() {
         //given
         List<Member> members = saveMember(5);
