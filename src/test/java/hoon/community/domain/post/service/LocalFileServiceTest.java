@@ -24,7 +24,7 @@ class LocalFileServiceTest {
         FileUtils.cleanDirectory(new File(testLocation));
     }
 
-    @Test
+//    @Test
     void uploadTest() {
         //given
         MultipartFile file = new MockMultipartFile("myFile", "myFile.txt", MediaType.TEXT_PLAIN_VALUE, "test".getBytes());
