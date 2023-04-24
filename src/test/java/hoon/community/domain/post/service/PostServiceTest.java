@@ -5,6 +5,7 @@ import hoon.community.domain.post.dto.PostCreateRequest;
 import hoon.community.domain.post.dto.PostDto;
 import hoon.community.domain.post.dto.PostListDto;
 import hoon.community.domain.post.dto.PostUpdateRequest;
+import hoon.community.domain.post.entity.BoardType;
 import hoon.community.domain.post.entity.Image;
 import hoon.community.domain.post.entity.Post;
 import hoon.community.domain.post.repository.PostRepository;
@@ -60,7 +61,7 @@ class PostServiceTest {
         ));
 
         //when
-        postService.create(request);
+        postService.create(request, BoardType.FORUM);
 
         //then
         verify(postRepository).save(any());
@@ -74,7 +75,7 @@ class PostServiceTest {
         given(memberRepository.findById(anyLong())).willReturn(Optional.empty());
 
         //when, then
-        assertThatThrownBy(() -> postService.create(request)).isInstanceOf(CustomException.class);
+        assertThatThrownBy(() -> postService.create(request, BoardType.FORUM)).isInstanceOf(CustomException.class);
     }
 
     @Test
@@ -86,7 +87,7 @@ class PostServiceTest {
         given(memberRepository.findById(anyLong())).willReturn(Optional.of(createMember()));
 
         //when, then
-        assertThatThrownBy(() -> postService.create(request)).isInstanceOf(CustomException.class);
+        assertThatThrownBy(() -> postService.create(request, BoardType.FORUM)).isInstanceOf(CustomException.class);
     }
 
     @Test

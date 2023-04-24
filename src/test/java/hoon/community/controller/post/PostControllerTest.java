@@ -3,6 +3,7 @@ package hoon.community.controller.post;
 import hoon.community.domain.post.dto.PostCreateRequest;
 import hoon.community.domain.post.dto.PostReadCondition;
 import hoon.community.domain.post.dto.PostUpdateRequest;
+import hoon.community.domain.post.entity.BoardType;
 import hoon.community.domain.post.entity.Post;
 import hoon.community.domain.post.service.PostService;
 import hoon.community.global.factory.dto.PostCreateRequestFactory;
@@ -74,7 +75,7 @@ class PostControllerTest {
                         .contentType(MediaType.MULTIPART_FORM_DATA))
                 .andExpect(MockMvcResultMatchers.status().isCreated());
 
-        BDDMockito.verify(postService).create(postCreateRequestArgumentCaptor.capture());
+        BDDMockito.verify(postService).create(postCreateRequestArgumentCaptor.capture(), BoardType.FORUM);
 
         PostCreateRequest capturedRequest = postCreateRequestArgumentCaptor.getValue();
         Assertions.assertThat(capturedRequest.getImages().size()).isEqualTo(2);
