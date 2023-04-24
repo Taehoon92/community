@@ -1,6 +1,7 @@
 package hoon.community.global.factory.entity;
 
 import hoon.community.domain.member.entity.Member;
+import hoon.community.domain.post.entity.BoardType;
 import hoon.community.domain.post.entity.Image;
 import hoon.community.domain.post.entity.Post;
 
@@ -15,14 +16,14 @@ public class PostFactory {
     }
 
     public static Post createPost(Member member) {
-        return new Post("title", "content", member, List.of());
+        return new Post("title", "content", BoardType.FORUM ,member, List.of());
     }
 
     public static Post createPostWithImages(Member member, List<Image> images) {
-        return new Post("title", "content", member, images);
+        return new Post("title", "content", BoardType.FORUM ,member, images);
     }
 
     public static Post createPostWithImages(List<Image> images) {
-        return new Post("title", "content", createMember(), images);
+        return new Post("title", "content", BoardType.FORUM , createMember(), images);
     }
 }
