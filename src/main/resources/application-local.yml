@@ -1,3 +1,8 @@
 upload:
   image:
     location: C:/Users/exclu/Documents/web_develop/side project/image_db/
+
+custom:
+  path:
+#    upload-images: '/var/lib/files/images/community/upload-images/'
+    upload-images: '/home/ubuntu/files/images/community/upload-images/'

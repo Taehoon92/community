@@ -1,12 +1,17 @@
+#server:
+#  address: 152.69.164.196
+#  port: 8080
+
+
 spring:
   # Database Setting
   datasource:
     hikari:
       driver-class-name: org.mariadb.jdbc.Driver
-      jdbc-url: jdbc:mariadb://152.67.103.121:3306/comm?serverTimezone=Australia/Sydney&useUnicode=true&characterEncoding=utf8
+      jdbc-url: jdbc:mariadb://152.69.164.196:3306/community?serverTimezone=Australia/Sydney&useUnicode=true&characterEncoding=utf8
 #      jdbc-url: jdbc:mariadb://localhost:3306/comm?serverTimezone=Australia/Sydney&useUnicode=true&characterEncoding=utf8
       username: root
-      password: '0000'
+      password: 'password'
 
   # JPA Properties
   jpa:

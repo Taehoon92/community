@@ -13,7 +13,8 @@ import java.io.IOException;
 @Service
 public class LocalFileService implements FileService{
 
-    @Value("${upload.image.location}")
+//    @Value("${upload.image.location}")
+    @Value("${custom.path.upload-images}")
     private String location;
 
     @PostConstruct
