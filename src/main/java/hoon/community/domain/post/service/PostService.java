@@ -70,7 +70,6 @@ public class PostService {
     }
 
     private void uploadImages(List<Image> images, List<MultipartFile> fileImages) {
-        log.info("UPLOAD IMAGES METHOD");
         IntStream.range(0, images.size()).forEach(i -> fileService.upload(fileImages.get(i), images.get(i).getUniqueName()));
     }
 
