@@ -45,7 +45,3 @@ spring:
   servlet.multipart:
     max-file-size: 5MB
     max-request-size: 5MB
-
-server:
-  address: 152.69.164.196
-  port: 8080
