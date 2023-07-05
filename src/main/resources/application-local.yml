@@ -4,5 +4,4 @@ upload:
 
 custom:
   path:
-#    upload-images: '/var/lib/files/images/community/upload-images/'
     upload-images: '/home/ubuntu/files/images/community/upload-images/'
